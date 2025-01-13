@@ -90,9 +90,11 @@ st_options(lang = "en",
 df_study1 <- df_study1_long_t7 %>% dplyr::select(idencuesta,ola, segmento, estrato, ponderador_long_total,
                                                  part_marchas,
                                                  part_rrss,
-                                                 mov_soc,
+                                                 mov_estudiantil,
+                                                 mov_feminista,
                                                  part_electoral,
                                                  interes_pol,
+                                                 voto_influye,
                                                  autoritarismo1,
                                                  autoritarismo2,
                                                  autoritarismo3,
@@ -101,6 +103,7 @@ df_study1 <- df_study1_long_t7 %>% dplyr::select(idencuesta,ola, segmento, estra
                                                  adop_homo,
                                                  aborto,
                                                  restriccion_migrantes,
+                                                 pensiones,
                                                  perc_des,
                                                  rol_estado_educ,
                                                  edad)
@@ -440,10 +443,119 @@ h1 <- "ola"
 h2 <- "ola+edad"
 h3 <- "ola*edad"
 
-marchar.null <- lmer(formula(paste0("mov_estudiantil~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
-marchar1 <- lmer(formula(paste0("mov_estudiantil~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
-marchar2 <- lmer(formula(paste0("mov_estudiantil~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
-marchar3 <- lmer(formula(paste0("mov_estudiantil~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar.null <- glmer(formula(paste0("mov_estudiantil~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = 'binomial')
+marchar1 <- glmer(formula(paste0("mov_estudiantil~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = 'binomial')
+marchar2 <- glmer(formula(paste0("mov_estudiantil~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = 'binomial')
+marchar3 <- glmer(formula(paste0("mov_estudiantil~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = 'binomial')
+
+performance::icc(marchar.null)
+```
+
+```{r results='asis'}
+texreg::htmlreg(list(marchar.null, marchar1, marchar2, marchar3),
+                custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
+```
+
+### interacciones
+
+```{r}
+interact_plot(marchar3, pred = ola, modx = edad, interval = TRUE)
+```
+
+# Apoyo mov feminista (desde 2018 en adelante)
+
+```{r}
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+df_study1 <- df_study1_long_t7 %>% dplyr::select(idencuesta,ola, segmento, estrato, ponderador_long_total,
+                                                 mov_feminista,
+                                                 edad) %>% na.omit()
+df_study1 <- df_study1[complete.cases(df_study1$segmento), ]
+
+df_study1$mov_feminista <- factor(df_study1$mov_feminista,
+         labels = c("No", "Si"))
+
+df_study1 <- df_study1 %>%
+  dplyr::filter(!ola %in% c("1", "2"))
+
+elsoc_diseno <- svydesign(ids = ~segmento, #muestreo por conglomerado a nivel de manzanas (segmento)
+                          strata = ~estrato, #muestreo estratificado a nivel ciudad (estato)
+                          weights = ~ponderador_long_total, #ponderador longitudinal
+                          nest = TRUE,
+                          data = df_study1)
+
+
+#Paso 1
+datos.marchar <- data.frame((svytable(~mov_feminista + ola + idencuesta, elsoc_diseno, round = F))) %>% 
+  dplyr::filter(Freq>0)  %>% group_by(ola) %>% 
+  mutate(porcentaje=Freq/sum(Freq)) %>% na.omit()
+
+#Paso 2
+etiquetas.marchar <- data.frame((svytable(~mov_feminista + ola, elsoc_diseno, round = F))) %>% 
+  group_by(ola) %>% mutate(porcentaje=Freq/sum(Freq)) %>% na.omit() %>% 
+  mutate(idencuesta = 1)
+
+datos.marchar$mov_feminista <- factor(datos.marchar$mov_feminista, levels = rev(levels(datos.marchar$mov_feminista)))
+etiquetas.marchar$mov_feminista <- factor(etiquetas.marchar$mov_feminista, levels = rev(levels(etiquetas.marchar$mov_feminista)))
+
+ggplot(datos.marchar, aes(x = ola, fill = mov_feminista, stratum = mov_feminista,
+                             alluvium = idencuesta, y = porcentaje))+
+    ggalluvial::geom_flow(alpha = .66) + 
+    ggalluvial::geom_stratum(linetype = 0) +
+    scale_y_continuous(labels = scales::percent) + 
+    ylab(label = NULL) +
+    xlab(label = NULL) + 
+    theme(#legend.position = 'top',
+          legend.title = element_blank(),
+          plot.caption = element_text(hjust = 1)) +
+    scale_fill_manual(values = colors) +
+    geom_shadowtext(data = etiquetas.marchar, 
+              aes(label = ifelse(porcentaje > 0 , scales::percent(porcentaje, accuracy = .1),"")),
+              position = position_stack(vjust = .5),
+              show.legend = FALSE,
+              size = 4,
+              color = rep('white'),
+              bg.colour='grey30')+
+  scale_x_discrete(labels = c(2018, 2019, 2021, 2022, 2023))
+```
+
+## Regresión
+
+```{r}
+#if (!require("pacman")) install.packages("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,mov_feminista, edad, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola)
+         )
+
+df_study1$mov_feminista <- factor(df_study1$mov_feminista,
+         labels = c("No", "Si"))
+
+df_study1 <- df_study1 %>%
+  dplyr::filter(!ola %in% c("1", "2"))
+# Hipotesis
+h1 <- "ola"
+h2 <- "ola+edad"
+h3 <- "ola*edad"
+
+marchar.null <- glmer(formula(paste0("mov_feminista~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = 'binomial')
+marchar1 <- glmer(formula(paste0("mov_feminista~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = 'binomial')
+marchar2 <- glmer(formula(paste0("mov_feminista~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = 'binomial')
+marchar3 <- glmer(formula(paste0("mov_feminista~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = 'binomial')
 
 performance::icc(marchar.null)
 ```
@@ -471,14 +583,17 @@ Variables:
 
 ```{r}
 load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
-
 df_study1 <- df_study1_long_t7 %>% dplyr::select(idencuesta,ola, segmento, estrato, ponderador_long_total,
                                                  part_electoral,
                                                  edad) %>% na.omit()
+sjmisc::frq(df_study1$part_electoral)
+
 df_study1 <- df_study1[complete.cases(df_study1$segmento), ]
 
-df_study1$part_electoral <- factor(df_study1$part_electoral,
-         labels = c("Si", "No", "No tenía edad"))
+df_study1$part_electoral <- factor(df_study1$part_electoral, levels = c(1,2),
+         labels = c("Si", "No"))
+df_study1$part_electoral <- car::recode(df_study1$part_electoral, c("1=2; 2=1"))
+sjmisc::frq(df_study1$part_electoral)
 
 elsoc_diseno <- svydesign(ids = ~segmento, #muestreo por conglomerado a nivel de manzanas (segmento)
                           strata = ~estrato, #muestreo estratificado a nivel ciudad (estato)
@@ -518,7 +633,14 @@ ggplot(datos.marchar, aes(x = ola, fill = part_electoral, stratum = part_elector
               size = 4,
               color = rep('white'),
               bg.colour='grey30')+
-  scale_x_discrete(labels = c(2016, 2017, 2018, 2019, 2021, 2022, 2023))
+  scale_x_discrete(labels = c("Presidenciales
+2013", "Presidenciales
+2013", "Presidenciales
+2017", "Presidenciales
+2017", "Plebiscito
+constitucional", "Primera vuelta
+presidencial 2021", "Segunda vuelta
+presidencial 2021"))
 ```
 
 ## Regresión
@@ -543,21 +665,27 @@ df_study1 <-
   mutate(ola_num=as.numeric(ola),
          ola=as.factor(ola)
          )
+
+df_study1$part_electoral <- factor(df_study1$part_electoral, levels = c(1,2),
+         labels = c("Si", "No"))
+df_study1$part_electoral <- car::recode(df_study1$part_electoral, c("1=2; 2=1"))
+df_study1 <- df_study1 %>%
+  dplyr::mutate(part_electoral = ifelse(part_electoral == "Si", 1, 0))
 # Hipotesis
 h1 <- "ola"
 h2 <- "ola+edad"
 h3 <- "ola*edad"
 
-marchar.null <- lmer(formula(paste0("part_electoral~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
-marchar1 <- lmer(formula(paste0("part_electoral~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
-marchar2 <- lmer(formula(paste0("part_electoral~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
-marchar3 <- lmer(formula(paste0("part_electoral~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar.null <- glmer(formula(paste0("part_electoral~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = "binomial")
+marchar1 <- glmer(formula(paste0("part_electoral~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = "binomial")
+marchar2 <- glmer(formula(paste0("part_electoral~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = "binomial")
+marchar3 <- glmer(formula(paste0("part_electoral~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = "binomial")
 
 performance::icc(marchar.null)
 ```
 
 ```{r results='asis'}
-texreg::htmlreg(list(marchar.null, marchar1, marchar2, marchar3),
+texreg::knitreg(list(marchar.null, marchar1, marchar2, marchar3),
                 custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
 ```
 
@@ -1069,6 +1197,109 @@ marchar.null <- lmer(formula(paste0("aborto~","1 + (1|idencuesta)")),data = df_s
 marchar1 <- lmer(formula(paste0("aborto~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
 marchar2 <- lmer(formula(paste0("aborto~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
 marchar3 <- lmer(formula(paste0("aborto~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+
+performance::icc(marchar.null)
+```
+
+```{r results='asis'}
+texreg::htmlreg(list(marchar.null, marchar1, marchar2, marchar3),
+                custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
+```
+
+### interacciones
+
+```{r}
+interact_plot(marchar3, pred = ola, modx = edad, interval = TRUE)
+```
+
+# Cada persona debiera asegurarse por Si mismo su futura pensión para la tercera edad (ola 3 en adelante)
+
+```{r}
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+df_study1 <- df_study1_long_t7 %>% dplyr::select(idencuesta,ola, segmento, estrato, ponderador_long_total,
+                                                 pensiones,
+                                                 edad) %>% na.omit()
+
+df_study1 <- df_study1[complete.cases(df_study1$segmento), ]
+
+df_study1$pensiones <- factor(df_study1$pensiones,
+         labels = c("Totalmente
+en desacuerdo", "Desacuerdo", "Ni de acuerdo
+Ni desacuerdo", "De acuerdo", "Totalmente
+de acuerdo"))
+
+elsoc_diseno <- svydesign(ids = ~segmento, #muestreo por conglomerado a nivel de manzanas (segmento)
+                          strata = ~estrato, #muestreo estratificado a nivel ciudad (estato)
+                          weights = ~ponderador_long_total, #ponderador longitudinal
+                          nest = TRUE,
+                          data = df_study1)
+
+#Paso 1
+datos.marchar <- data.frame((svytable(~pensiones + ola + idencuesta, elsoc_diseno, round = F))) %>% 
+  dplyr::filter(Freq>0)  %>% group_by(ola) %>% 
+  mutate(porcentaje=Freq/sum(Freq)) %>% na.omit()
+
+#Paso 2
+etiquetas.marchar <- data.frame((svytable(~pensiones + ola, elsoc_diseno, round = F))) %>% 
+  group_by(ola) %>% mutate(porcentaje=Freq/sum(Freq)) %>% na.omit() %>% 
+  mutate(idencuesta = 1)
+
+datos.marchar$pensiones <- factor(datos.marchar$pensiones, levels = rev(levels(datos.marchar$pensiones)))
+etiquetas.marchar$pensiones <- factor(etiquetas.marchar$pensiones, levels = rev(levels(etiquetas.marchar$pensiones)))
+
+ggplot(datos.marchar, aes(x = ola, fill = pensiones, stratum = pensiones,
+                             alluvium = idencuesta, y = porcentaje))+
+    ggalluvial::geom_flow(alpha = .66) + 
+    ggalluvial::geom_stratum(linetype = 0) +
+    scale_y_continuous(labels = scales::percent) + 
+    ylab(label = NULL) +
+    xlab(label = NULL) + 
+    theme(#legend.position = 'top',
+          legend.title = element_blank(),
+          plot.caption = element_text(hjust = 1)) +
+    scale_fill_manual(values = colors) +
+    geom_shadowtext(data = etiquetas.marchar, 
+              aes(label = ifelse(porcentaje > 0 , scales::percent(porcentaje, accuracy = .1),"")),
+              position = position_stack(vjust = .5),
+              show.legend = FALSE,
+              size = 4,
+              color = rep('white'),
+              bg.colour='grey30')+
+  scale_x_discrete(labels = c(2018, 2019, 2021, 2022, 2023))
+```
+
+## Regresión
+
+```{r}
+#if (!require("pacman")) install.packages("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,pensiones, edad, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola)
+         )
+# Hipotesis
+h1 <- "ola"
+h2 <- "ola+edad"
+h3 <- "ola*edad"
+
+marchar.null <- lmer(formula(paste0("pensiones~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar1 <- lmer(formula(paste0("pensiones~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar2 <- lmer(formula(paste0("pensiones~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar3 <- lmer(formula(paste0("pensiones~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
 
 performance::icc(marchar.null)
 ```

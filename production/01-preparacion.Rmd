@@ -69,6 +69,7 @@ elsoc_long_2016_2023 %>%
          part_electoral4=c50, # presidenciales primera vuelta
          part_electoral5=c52, # presidenciales segunda vuelta
          interes_pol=c13,
+         voto_influye=c10_02,
          autoritarismo1=c18_04,
          autoritarismo2=c18_05,
          autoritarismo3=c18_06,
@@ -77,6 +78,7 @@ elsoc_long_2016_2023 %>%
          adop_homo=c37_01,
          aborto=c37_02,
          restriccion_migrantes=c37_05,
+         pensiones=c37_04,
          perc_des=c18_11,
          rol_estado_educ=c37_03,
          # sexo=m0_sexo,
@@ -268,6 +270,7 @@ elsoc_long_2016_2023 %>%
          part_electoral4,
          part_electoral5,
          interes_pol,
+         voto_influye,
          autoritarismo1,
          autoritarismo2,
          autoritarismo3,
@@ -276,6 +279,7 @@ elsoc_long_2016_2023 %>%
          adop_homo,
          aborto,
          restriccion_migrantes,
+         pensiones,
          perc_des,
          rol_estado_educ,
          #educ,educyear,
@@ -379,9 +383,9 @@ df_study1_long <- data.table::melt.data.table(data.table::setDT(df_study1_wide),
                                  "^part_marchas_", "^part_rrss_",
                                  "^mov_soc_",  "^part_electoral_",
                                  "^part_electoral1_", "^part_electoral3_", "^part_electoral4_", "^part_electoral5_",
-                                 "^interes_pol_", 
+                                 "^interes_pol_", "^voto_influye_", 
                                  "^autoritarismo1_", "^autoritarismo2_", "^autoritarismo3_", "^autoritarismo4_", "^autoritarismo5_", 
-                                 "^adop_homo_", "^aborto_", "^restriccion_migrantes_",
+                                 "^adop_homo_", "^aborto_", "^restriccion_migrantes_", "^pensiones_",
                                  "^perc_des_", "^rol_estado_educ_",
                      #            "^educ_", "^quintil1_","^ess_",
                                  #"^pos_id_",
@@ -392,9 +396,9 @@ df_study1_long <- data.table::melt.data.table(data.table::setDT(df_study1_wide),
                                  "part_marchas", "part_rrss",
                                  "mov_soc", "part_electoral",
                                  "part_electoral1", "part_electoral3", "part_electoral4", "part_electoral5",
-                                 "interes_pol", 
+                                 "interes_pol", "voto_influye",
                                  "autoritarismo1", "autoritarismo2", "autoritarismo3", "autoritarismo4", "autoritarismo5", 
-                                 "adop_homo", "aborto", "restriccion_migrantes",
+                                 "adop_homo", "aborto", "restriccion_migrantes", "pensiones",
                                  "perc_des", "rol_estado_educ",
                      #            "^educ_", "^quintil1_","^ess_",
                                  #"^pos_id_",
@@ -405,7 +409,7 @@ df_study1_long <- data.table::melt.data.table(data.table::setDT(df_study1_wide),
               )
 
 df_study1_long$mov_estudiantil <- as.numeric(df_study1_long$mov_soc == 1)
-
+df_study1_long$mov_feminista <- as.numeric(df_study1_long$mov_soc == 8)
 names(df_study1_long) #check names of long dataset
 dim(df_study1_long) #check dimensions of the dataframe
 # Original dataset with 6 waves

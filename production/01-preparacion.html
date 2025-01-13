@@ -1566,7 +1566,7 @@ border-radius: 0px;
 
 
 <h1 class="title toc-ignore">Preparación de datos</h1>
-<h4 class="date">lunes 13 enero 2025 0:34:58</h4>
+<h4 class="date">lunes 13 enero 2025 12:21:31</h4>
 
 </div>
 
@@ -1621,6 +1621,7 @@ elsoc_long_2016_2023 %&gt;%
          part_electoral4=c50, # presidenciales primera vuelta
          part_electoral5=c52, # presidenciales segunda vuelta
          interes_pol=c13,
+         voto_influye=c10_02,
          autoritarismo1=c18_04,
          autoritarismo2=c18_05,
          autoritarismo3=c18_06,
@@ -1629,6 +1630,7 @@ elsoc_long_2016_2023 %&gt;%
          adop_homo=c37_01,
          aborto=c37_02,
          restriccion_migrantes=c37_05,
+         pensiones=c37_04,
          perc_des=c18_11,
          rol_estado_educ=c37_03,
          # sexo=m0_sexo,
@@ -1816,6 +1818,7 @@ elsoc_long_2016_2023 %&gt;%
          part_electoral4,
          part_electoral5,
          interes_pol,
+         voto_influye,
          autoritarismo1,
          autoritarismo2,
          autoritarismo3,
@@ -1824,6 +1827,7 @@ elsoc_long_2016_2023 %&gt;%
          adop_homo,
          aborto,
          restriccion_migrantes,
+         pensiones,
          perc_des,
          rol_estado_educ,
          #educ,educyear,
@@ -1952,54 +1956,61 @@ names(df_study1_wide)</code></pre>
 ##  [87] &quot;interes_pol_1&quot;           &quot;interes_pol_2&quot;          
 ##  [89] &quot;interes_pol_3&quot;           &quot;interes_pol_4&quot;          
 ##  [91] &quot;interes_pol_5&quot;           &quot;interes_pol_6&quot;          
-##  [93] &quot;interes_pol_7&quot;           &quot;autoritarismo1_1&quot;       
-##  [95] &quot;autoritarismo1_2&quot;        &quot;autoritarismo1_3&quot;       
-##  [97] &quot;autoritarismo1_4&quot;        &quot;autoritarismo1_5&quot;       
-##  [99] &quot;autoritarismo1_6&quot;        &quot;autoritarismo1_7&quot;       
-## [101] &quot;autoritarismo2_1&quot;        &quot;autoritarismo2_2&quot;       
-## [103] &quot;autoritarismo2_3&quot;        &quot;autoritarismo2_4&quot;       
-## [105] &quot;autoritarismo2_5&quot;        &quot;autoritarismo2_6&quot;       
-## [107] &quot;autoritarismo2_7&quot;        &quot;autoritarismo3_1&quot;       
-## [109] &quot;autoritarismo3_2&quot;        &quot;autoritarismo3_3&quot;       
-## [111] &quot;autoritarismo3_4&quot;        &quot;autoritarismo3_5&quot;       
-## [113] &quot;autoritarismo3_6&quot;        &quot;autoritarismo3_7&quot;       
-## [115] &quot;autoritarismo4_1&quot;        &quot;autoritarismo4_2&quot;       
-## [117] &quot;autoritarismo4_3&quot;        &quot;autoritarismo4_4&quot;       
-## [119] &quot;autoritarismo4_5&quot;        &quot;autoritarismo4_6&quot;       
-## [121] &quot;autoritarismo4_7&quot;        &quot;autoritarismo5_1&quot;       
-## [123] &quot;autoritarismo5_2&quot;        &quot;autoritarismo5_3&quot;       
-## [125] &quot;autoritarismo5_4&quot;        &quot;autoritarismo5_5&quot;       
-## [127] &quot;autoritarismo5_6&quot;        &quot;autoritarismo5_7&quot;       
-## [129] &quot;adop_homo_1&quot;             &quot;adop_homo_2&quot;            
-## [131] &quot;adop_homo_3&quot;             &quot;adop_homo_4&quot;            
-## [133] &quot;adop_homo_5&quot;             &quot;adop_homo_6&quot;            
-## [135] &quot;adop_homo_7&quot;             &quot;aborto_1&quot;               
-## [137] &quot;aborto_2&quot;                &quot;aborto_3&quot;               
-## [139] &quot;aborto_4&quot;                &quot;aborto_5&quot;               
-## [141] &quot;aborto_6&quot;                &quot;aborto_7&quot;               
-## [143] &quot;restriccion_migrantes_1&quot; &quot;restriccion_migrantes_2&quot;
-## [145] &quot;restriccion_migrantes_3&quot; &quot;restriccion_migrantes_4&quot;
-## [147] &quot;restriccion_migrantes_5&quot; &quot;restriccion_migrantes_6&quot;
-## [149] &quot;restriccion_migrantes_7&quot; &quot;perc_des_1&quot;             
-## [151] &quot;perc_des_2&quot;              &quot;perc_des_3&quot;             
-## [153] &quot;perc_des_4&quot;              &quot;perc_des_5&quot;             
-## [155] &quot;perc_des_6&quot;              &quot;perc_des_7&quot;             
-## [157] &quot;rol_estado_educ_1&quot;       &quot;rol_estado_educ_2&quot;      
-## [159] &quot;rol_estado_educ_3&quot;       &quot;rol_estado_educ_4&quot;      
-## [161] &quot;rol_estado_educ_5&quot;       &quot;rol_estado_educ_6&quot;      
-## [163] &quot;rol_estado_educ_7&quot;       &quot;edad_1&quot;                 
-## [165] &quot;edad_2&quot;                  &quot;edad_3&quot;                 
-## [167] &quot;edad_4&quot;                  &quot;edad_5&quot;                 
-## [169] &quot;edad_6&quot;                  &quot;edad_7&quot;                 
-## [171] &quot;part_electoral_1&quot;        &quot;part_electoral_2&quot;       
-## [173] &quot;part_electoral_3&quot;        &quot;part_electoral_4&quot;       
-## [175] &quot;part_electoral_5&quot;        &quot;part_electoral_6&quot;       
-## [177] &quot;part_electoral_7&quot;</code></pre>
+##  [93] &quot;interes_pol_7&quot;           &quot;voto_influye_1&quot;         
+##  [95] &quot;voto_influye_2&quot;          &quot;voto_influye_3&quot;         
+##  [97] &quot;voto_influye_4&quot;          &quot;voto_influye_5&quot;         
+##  [99] &quot;voto_influye_6&quot;          &quot;voto_influye_7&quot;         
+## [101] &quot;autoritarismo1_1&quot;        &quot;autoritarismo1_2&quot;       
+## [103] &quot;autoritarismo1_3&quot;        &quot;autoritarismo1_4&quot;       
+## [105] &quot;autoritarismo1_5&quot;        &quot;autoritarismo1_6&quot;       
+## [107] &quot;autoritarismo1_7&quot;        &quot;autoritarismo2_1&quot;       
+## [109] &quot;autoritarismo2_2&quot;        &quot;autoritarismo2_3&quot;       
+## [111] &quot;autoritarismo2_4&quot;        &quot;autoritarismo2_5&quot;       
+## [113] &quot;autoritarismo2_6&quot;        &quot;autoritarismo2_7&quot;       
+## [115] &quot;autoritarismo3_1&quot;        &quot;autoritarismo3_2&quot;       
+## [117] &quot;autoritarismo3_3&quot;        &quot;autoritarismo3_4&quot;       
+## [119] &quot;autoritarismo3_5&quot;        &quot;autoritarismo3_6&quot;       
+## [121] &quot;autoritarismo3_7&quot;        &quot;autoritarismo4_1&quot;       
+## [123] &quot;autoritarismo4_2&quot;        &quot;autoritarismo4_3&quot;       
+## [125] &quot;autoritarismo4_4&quot;        &quot;autoritarismo4_5&quot;       
+## [127] &quot;autoritarismo4_6&quot;        &quot;autoritarismo4_7&quot;       
+## [129] &quot;autoritarismo5_1&quot;        &quot;autoritarismo5_2&quot;       
+## [131] &quot;autoritarismo5_3&quot;        &quot;autoritarismo5_4&quot;       
+## [133] &quot;autoritarismo5_5&quot;        &quot;autoritarismo5_6&quot;       
+## [135] &quot;autoritarismo5_7&quot;        &quot;adop_homo_1&quot;            
+## [137] &quot;adop_homo_2&quot;             &quot;adop_homo_3&quot;            
+## [139] &quot;adop_homo_4&quot;             &quot;adop_homo_5&quot;            
+## [141] &quot;adop_homo_6&quot;             &quot;adop_homo_7&quot;            
+## [143] &quot;aborto_1&quot;                &quot;aborto_2&quot;               
+## [145] &quot;aborto_3&quot;                &quot;aborto_4&quot;               
+## [147] &quot;aborto_5&quot;                &quot;aborto_6&quot;               
+## [149] &quot;aborto_7&quot;                &quot;restriccion_migrantes_1&quot;
+## [151] &quot;restriccion_migrantes_2&quot; &quot;restriccion_migrantes_3&quot;
+## [153] &quot;restriccion_migrantes_4&quot; &quot;restriccion_migrantes_5&quot;
+## [155] &quot;restriccion_migrantes_6&quot; &quot;restriccion_migrantes_7&quot;
+## [157] &quot;pensiones_1&quot;             &quot;pensiones_2&quot;            
+## [159] &quot;pensiones_3&quot;             &quot;pensiones_4&quot;            
+## [161] &quot;pensiones_5&quot;             &quot;pensiones_6&quot;            
+## [163] &quot;pensiones_7&quot;             &quot;perc_des_1&quot;             
+## [165] &quot;perc_des_2&quot;              &quot;perc_des_3&quot;             
+## [167] &quot;perc_des_4&quot;              &quot;perc_des_5&quot;             
+## [169] &quot;perc_des_6&quot;              &quot;perc_des_7&quot;             
+## [171] &quot;rol_estado_educ_1&quot;       &quot;rol_estado_educ_2&quot;      
+## [173] &quot;rol_estado_educ_3&quot;       &quot;rol_estado_educ_4&quot;      
+## [175] &quot;rol_estado_educ_5&quot;       &quot;rol_estado_educ_6&quot;      
+## [177] &quot;rol_estado_educ_7&quot;       &quot;edad_1&quot;                 
+## [179] &quot;edad_2&quot;                  &quot;edad_3&quot;                 
+## [181] &quot;edad_4&quot;                  &quot;edad_5&quot;                 
+## [183] &quot;edad_6&quot;                  &quot;edad_7&quot;                 
+## [185] &quot;part_electoral_1&quot;        &quot;part_electoral_2&quot;       
+## [187] &quot;part_electoral_3&quot;        &quot;part_electoral_4&quot;       
+## [189] &quot;part_electoral_5&quot;        &quot;part_electoral_6&quot;       
+## [191] &quot;part_electoral_7&quot;</code></pre>
 <pre class="r"><code>dim(df_study1_wide)</code></pre>
-<pre><code>## [1] 2928  177</code></pre>
+<pre><code>## [1] 2928  191</code></pre>
 <pre class="r"><code>sjPlot::view_df(df_study1_wide,
                  show.frq = T,show.values = T,show.na = T,show.prc = T, show.type = T)</code></pre>
-<pre><code>## disp_marchas_2 [39], disp_marchas_4 [41], disp_marchas_5 [42], disp_marchas_7 [44], disp_rrss_2 [46], disp_rrss_4 [48], disp_rrss_5 [49], disp_rrss_7 [51], part_electoral1_2 [60], part_electoral1_4 [62], part_electoral1_5 [63], part_electoral1_6 [64], part_electoral1_7 [65], part_electoral3_1 [66], part_electoral3_2 [67], part_electoral3_3 [68], part_electoral3_4 [69], part_electoral3_6 [71], part_electoral3_7 [72], part_electoral4_1 [73], part_electoral4_2 [74], part_electoral4_3 [75], part_electoral4_4 [76], part_electoral4_5 [77], part_electoral4_7 [79], part_electoral5_1 [80], part_electoral5_2 [81], part_electoral5_3 [82], part_electoral5_4 [83], part_electoral5_5 [84], part_electoral5_7 [86], adop_homo_1 [129], adop_homo_2 [130], aborto_1 [136], aborto_2 [137], restriccion_migrantes_1 [143], restriccion_migrantes_2 [144], rol_estado_educ_1 [157], rol_estado_educ_2 [158]</code></pre>
+<pre><code>## disp_marchas_2 [39], disp_marchas_4 [41], disp_marchas_5 [42], disp_marchas_7 [44], disp_rrss_2 [46], disp_rrss_4 [48], disp_rrss_5 [49], disp_rrss_7 [51], part_electoral1_2 [60], part_electoral1_4 [62], part_electoral1_5 [63], part_electoral1_6 [64], part_electoral1_7 [65], part_electoral3_1 [66], part_electoral3_2 [67], part_electoral3_3 [68], part_electoral3_4 [69], part_electoral3_6 [71], part_electoral3_7 [72], part_electoral4_1 [73], part_electoral4_2 [74], part_electoral4_3 [75], part_electoral4_4 [76], part_electoral4_5 [77], part_electoral4_7 [79], part_electoral5_1 [80], part_electoral5_2 [81], part_electoral5_3 [82], part_electoral5_4 [83], part_electoral5_5 [84], part_electoral5_7 [86], adop_homo_1 [136], adop_homo_2 [137], aborto_1 [143], aborto_2 [144], restriccion_migrantes_1 [150], restriccion_migrantes_2 [151], pensiones_1 [157], pensiones_2 [158], rol_estado_educ_1 [171], rol_estado_educ_2 [172]</code></pre>
 <table style="border-collapse:collapse; border:none;">
 <caption>
 Data frame: df_study1_wide
@@ -3857,29 +3868,29 @@ interesado<br>Muy interesado
 94
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo1_1
+voto_influye_1
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: Mas que derechos necesitamos un<br>gobierno firme
+Grado de acuerdo: Mi voto influye en el resultado
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-22 (0.75%)
+21 (0.72%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-109<br>465<br>390<br>1541<br>401
+122<br>358<br>323<br>1615<br>489
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-3.75<br>16.00<br>13.42<br>53.03<br>13.80
+4.20<br>12.32<br>11.11<br>55.56<br>16.82
 </td>
 </tr>
 <tr>
@@ -3887,29 +3898,29 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 95
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo1_2
+voto_influye_2
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: Mas que derechos necesitamos un<br>gobierno firme
+Grado de acuerdo: Mi voto influye en el resultado
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-473 (16.15%)
+477 (16.29%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-126<br>361<br>305<br>1271<br>392
+116<br>261<br>203<br>1149<br>722
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-5.13<br>14.70<br>12.42<br>51.77<br>15.97
+4.73<br>10.65<br>8.28<br>46.88<br>29.46
 </td>
 </tr>
 <tr>
@@ -3917,29 +3928,29 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 96
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo1_3
+voto_influye_3
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: Mas que derechos necesitamos un<br>gobierno firme
+Grado de acuerdo: Mi voto influye en el resultado
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-722 (24.66%)
+714 (24.39%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-109<br>335<br>318<br>1085<br>359
+59<br>175<br>167<br>1078<br>735
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-4.94<br>15.19<br>14.42<br>49.18<br>16.27
+2.66<br>7.90<br>7.54<br>48.69<br>33.20
 </td>
 </tr>
 <tr>
@@ -3947,29 +3958,29 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 97
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo1_4
+voto_influye_4
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: Mas que derechos necesitamos un<br>gobierno firme
+Grado de acuerdo: Mi voto influye en el resultado
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-792 (27.05%)
+788 (26.91%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-240<br>520<br>280<br>811<br>285
+32<br>122<br>136<br>1062<br>788
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-11.24<br>24.34<br>13.11<br>37.97<br>13.34
+1.50<br>5.70<br>6.36<br>49.63<br>36.82
 </td>
 </tr>
 <tr>
@@ -3977,29 +3988,29 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 98
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo1_5
+voto_influye_5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: Mas que derechos necesitamos un<br>gobierno firme
+Grado de acuerdo: Mi voto influye en el resultado
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1210 (41.33%)
+1197 (40.88%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-97<br>335<br>224<br>782<br>280
+24<br>139<br>101<br>966<br>501
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-5.65<br>19.50<br>13.04<br>45.52<br>16.30
+1.39<br>8.03<br>5.83<br>55.81<br>28.94
 </td>
 </tr>
 <tr>
@@ -4007,29 +4018,29 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 99
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo1_6
+voto_influye_6
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: Mas que derechos necesitamos un<br>gobierno firme
+Grado de acuerdo: Mi voto influye en el resultado
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1210 (41.33%)
+1203 (41.09%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-97<br>335<br>224<br>782<br>280
+21<br>81<br>112<br>981<br>530
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-5.65<br>19.50<br>13.04<br>45.52<br>16.30
+1.22<br>4.70<br>6.49<br>56.87<br>30.72
 </td>
 </tr>
 <tr>
@@ -4037,7 +4048,67 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 100
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo1_7
+voto_influye_7
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Grado de acuerdo: Mi voto influye en el resultado
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1196 (40.85%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+30<br>107<br>122<br>995<br>478
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1.73<br>6.18<br>7.04<br>57.45<br>27.60
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+101
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+autoritarismo1_1
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Grado de acuerdo: Mas que derechos necesitamos un<br>gobierno firme
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+22 (0.75%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+109<br>465<br>390<br>1541<br>401
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+3.75<br>16.00<br>13.42<br>53.03<br>13.80
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+102
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+autoritarismo1_2
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
@@ -4046,7 +4117,7 @@ numeric
 Grado de acuerdo: Mas que derechos necesitamos un<br>gobierno firme
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1199 (40.95%)
+473 (16.15%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
@@ -4056,70 +4127,10 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
 acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-58<br>184<br>177<br>932<br>378
+126<br>361<br>305<br>1271<br>392
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-3.35<br>10.64<br>10.24<br>53.90<br>21.86
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-101
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo2_1
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: Pais necesita un mandatario<br>fuerte
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-30 (1.02%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-80<br>336<br>376<br>1686<br>420
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-2.76<br>11.59<br>12.97<br>58.18<br>14.49
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-102
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo2_2
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: Pais necesita un mandatario<br>fuerte
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-479 (16.36%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-92<br>250<br>301<br>1383<br>423
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-3.76<br>10.21<br>12.29<br>56.47<br>17.27
+5.13<br>14.70<br>12.42<br>51.77<br>15.97
 </td>
 </tr>
 <tr>
@@ -4127,13 +4138,13 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 103
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo2_3
+autoritarismo1_3
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: Pais necesita un mandatario<br>fuerte
+Grado de acuerdo: Mas que derechos necesitamos un<br>gobierno firme
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 722 (24.66%)
@@ -4146,10 +4157,10 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
 acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-71<br>247<br>306<br>1181<br>401
+109<br>335<br>318<br>1085<br>359
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-3.22<br>11.20<br>13.87<br>53.54<br>18.18
+4.94<br>15.19<br>14.42<br>49.18<br>16.27
 </td>
 </tr>
 <tr>
@@ -4157,16 +4168,16 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 104
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo2_4
+autoritarismo1_4
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: Pais necesita un mandatario<br>fuerte
+Grado de acuerdo: Mas que derechos necesitamos un<br>gobierno firme
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-801 (27.36%)
+792 (27.05%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
@@ -4176,10 +4187,10 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
 acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-141<br>319<br>279<br>1010<br>378
+240<br>520<br>280<br>811<br>285
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-6.63<br>15.00<br>13.12<br>47.48<br>17.77
+11.24<br>24.34<br>13.11<br>37.97<br>13.34
 </td>
 </tr>
 <tr>
@@ -4187,16 +4198,16 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 105
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo2_5
+autoritarismo1_5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: Pais necesita un mandatario<br>fuerte
+Grado de acuerdo: Mas que derechos necesitamos un<br>gobierno firme
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1209 (41.29%)
+1210 (41.33%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
@@ -4206,10 +4217,10 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
 acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-44<br>163<br>181<br>1033<br>298
+97<br>335<br>224<br>782<br>280
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-2.56<br>9.48<br>10.53<br>60.09<br>17.34
+5.65<br>19.50<br>13.04<br>45.52<br>16.30
 </td>
 </tr>
 <tr>
@@ -4217,680 +4228,13 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 106
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo2_6
+autoritarismo1_6
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: Pais necesita un mandatario<br>fuerte
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1213 (41.43%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-30<br>88<br>165<br>1009<br>423
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1.75<br>5.13<br>9.62<br>58.83<br>24.66
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-107
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo2_7
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: Pais necesita un mandatario<br>fuerte
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1201 (41.02%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-34<br>113<br>164<br>970<br>446
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1.97<br>6.54<br>9.50<br>56.17<br>25.83
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-108
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo3_1
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: Obediencia y respeto importantes<br>que aprendan los
-ninnios
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-10 (0.34%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-82<br>391<br>324<br>1686<br>435
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-2.81<br>13.40<br>11.10<br>57.78<br>14.91
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-109
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo3_2
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: Obediencia y respeto importantes<br>que aprendan los
-ninnios
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-461 (15.74%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-107<br>313<br>256<br>1372<br>419
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-4.34<br>12.69<br>10.38<br>55.61<br>16.98
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-110
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo3_3
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: Obediencia y respeto importantes<br>que aprendan los
-ninnios
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-716 (24.45%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-69<br>215<br>266<br>1186<br>476
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-3.12<br>9.72<br>12.03<br>53.62<br>21.52
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-111
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo3_4
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: Obediencia y respeto importantes<br>que aprendan los
-ninnios
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-782 (26.71%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-138<br>399<br>307<br>968<br>334
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-6.43<br>18.59<br>14.31<br>45.11<br>15.56
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-112
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo3_5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: Obediencia y respeto importantes<br>que aprendan los
-ninnios
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1201 (41.02%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-51<br>228<br>151<br>997<br>300
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-2.95<br>13.20<br>8.74<br>57.73<br>17.37
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-113
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo3_6
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: Obediencia y respeto importantes<br>que aprendan los
-ninnios
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1201 (41.02%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-51<br>228<br>151<br>997<br>300
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-2.95<br>13.20<br>8.74<br>57.73<br>17.37
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-114
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo3_7
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: Obediencia y respeto importantes<br>que aprendan los
-ninnios
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1192 (40.71%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-42<br>141<br>179<br>1008<br>366
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-2.42<br>8.12<br>10.31<br>58.06<br>21.08
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-115
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo4_1
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: Obediencia y disciplina son<br>claves para buena vida
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-6 (0.20%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-58<br>338<br>373<br>1768<br>385
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1.98<br>11.57<br>12.77<br>60.51<br>13.18
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-116
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo4_2
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: Obediencia y disciplina son<br>claves para buena vida
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-470 (16.05%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-103<br>298<br>301<br>1430<br>326
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-4.19<br>12.12<br>12.25<br>58.18<br>13.26
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-117
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo4_3
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: Obediencia y disciplina son<br>claves para buena vida
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-713 (24.35%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-52<br>194<br>279<br>1270<br>420
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-2.35<br>8.76<br>12.60<br>57.34<br>18.96
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-118
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo4_4
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: Obediencia y disciplina son<br>claves para buena vida
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-780 (26.64%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-107<br>343<br>282<br>1093<br>323
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-4.98<br>15.97<br>13.13<br>50.88<br>15.04
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-119
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo4_5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: Obediencia y disciplina son<br>claves para buena vida
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1202 (41.05%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-33<br>212<br>205<br>1008<br>268
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1.91<br>12.28<br>11.88<br>58.40<br>15.53
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-120
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo4_6
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: Obediencia y disciplina son<br>claves para buena vida
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1202 (41.05%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-33<br>212<br>205<br>1008<br>268
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1.91<br>12.28<br>11.88<br>58.40<br>15.53
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-121
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo4_7
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: Obediencia y disciplina son<br>claves para buena vida
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1191 (40.68%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-28<br>150<br>230<br>1027<br>302
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1.61<br>8.64<br>13.24<br>59.12<br>17.39
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-122
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo5_1
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: El cambio social es posible
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-29 (0.99%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-52<br>282<br>329<br>1882<br>354
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1.79<br>9.73<br>11.35<br>64.92<br>12.21
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-123
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo5_2
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: El cambio social es posible
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-483 (16.50%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-45<br>240<br>335<br>1492<br>333
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1.84<br>9.82<br>13.70<br>61.02<br>13.62
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-124
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo5_3
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: El cambio social es posible
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-730 (24.93%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-28<br>156<br>241<br>1367<br>406
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1.27<br>7.10<br>10.96<br>62.19<br>18.47
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-125
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo5_4
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: El cambio social es posible
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-800 (27.32%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-9<br>97<br>147<br>1286<br>589
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-0.42<br>4.56<br>6.91<br>60.43<br>27.68
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-126
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo5_5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: El cambio social es posible
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1215 (41.50%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-10<br>106<br>143<br>1183<br>271
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-0.58<br>6.19<br>8.35<br>69.06<br>15.82
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-127
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo5_6
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: El cambio social es posible
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1216 (41.53%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1<br>2<br>3<br>4<br>5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-22<br>189<br>232<br>1065<br>204
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1.29<br>11.04<br>13.55<br>62.21<br>11.92
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-128
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo5_7
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: El cambio social es posible
+Grado de acuerdo: Mas que derechos necesitamos un<br>gobierno firme
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1210 (41.33%)
@@ -4903,444 +4247,451 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
 acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-24<br>167<br>244<br>1080<br>203
+97<br>335<br>224<br>782<br>280
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1.40<br>9.72<br>14.20<br>62.86<br>11.82
+5.65<br>19.50<br>13.04<br>45.52<br>16.30
 </td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-131
+107
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-adop_homo_3
+autoritarismo1_7
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: adopcion homoparental
+Grado de acuerdo: Mas que derechos necesitamos un<br>gobierno firme
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-733 (25.03%)
+1199 (40.95%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
-desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-494<br>579<br>278<br>626<br>218
+58<br>184<br>177<br>932<br>378
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-22.51<br>26.38<br>12.67<br>28.52<br>9.93
+3.35<br>10.64<br>10.24<br>53.90<br>21.86
 </td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-132
+108
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-adop_homo_4
+autoritarismo2_1
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: adopcion homoparental
+Grado de acuerdo: Pais necesita un mandatario<br>fuerte
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-797 (27.22%)
+30 (1.02%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
-desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-326<br>561<br>270<br>720<br>254
+80<br>336<br>376<br>1686<br>420
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-15.30<br>26.33<br>12.67<br>33.79<br>11.92
+2.76<br>11.59<br>12.97<br>58.18<br>14.49
 </td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-133
+109
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-adop_homo_5
+autoritarismo2_2
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: adopcion homoparental
+Grado de acuerdo: Pais necesita un mandatario<br>fuerte
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1220 (41.67%)
+479 (16.36%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
-desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-173<br>405<br>222<br>718<br>190
+92<br>250<br>301<br>1383<br>423
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-10.13<br>23.71<br>13.00<br>42.04<br>11.12
+3.76<br>10.21<br>12.29<br>56.47<br>17.27
 </td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-134
+110
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-adop_homo_6
+autoritarismo2_3
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: adopcion homoparental
+Grado de acuerdo: Pais necesita un mandatario<br>fuerte
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1220 (41.67%)
+722 (24.66%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
-desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-173<br>405<br>222<br>718<br>190
+71<br>247<br>306<br>1181<br>401
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-10.13<br>23.71<br>13.00<br>42.04<br>11.12
+3.22<br>11.20<br>13.87<br>53.54<br>18.18
 </td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-135
+111
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-adop_homo_7
+autoritarismo2_4
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: adopcion homoparental
+Grado de acuerdo: Pais necesita un mandatario<br>fuerte
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1215 (41.50%)
+801 (27.36%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
-desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-153<br>422<br>220<br>724<br>194
+141<br>319<br>279<br>1010<br>378
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-8.93<br>24.64<br>12.84<br>42.27<br>11.33
+6.63<br>15.00<br>13.12<br>47.48<br>17.77
 </td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-138
+112
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-aborto_3
+autoritarismo2_5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: aborto
+Grado de acuerdo: Pais necesita un mandatario<br>fuerte
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-725 (24.76%)
+1209 (41.29%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
-desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-546<br>742<br>259<br>481<br>175
+44<br>163<br>181<br>1033<br>298
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-24.78<br>33.68<br>11.76<br>21.83<br>7.94
+2.56<br>9.48<br>10.53<br>60.09<br>17.34
 </td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-139
+113
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-aborto_4
+autoritarismo2_6
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: aborto
+Grado de acuerdo: Pais necesita un mandatario<br>fuerte
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-787 (26.88%)
+1213 (41.43%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
-desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-368<br>786<br>235<br>545<br>207
+30<br>88<br>165<br>1009<br>423
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-17.19<br>36.71<br>10.98<br>25.46<br>9.67
+1.75<br>5.13<br>9.62<br>58.83<br>24.66
 </td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-140
+114
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-aborto_5
+autoritarismo2_7
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: aborto
+Grado de acuerdo: Pais necesita un mandatario<br>fuerte
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1211 (41.36%)
+1201 (41.02%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
-desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-193<br>722<br>205<br>413<br>184
+34<br>113<br>164<br>970<br>446
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-11.24<br>42.05<br>11.94<br>24.05<br>10.72
+1.97<br>6.54<br>9.50<br>56.17<br>25.83
 </td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-141
+115
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-aborto_6
+autoritarismo3_1
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: aborto
+Grado de acuerdo: Obediencia y respeto importantes<br>que aprendan los
+ninnios
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1220 (41.67%)
+10 (0.34%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
-desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-243<br>713<br>217<br>415<br>120
+82<br>391<br>324<br>1686<br>435
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-14.23<br>41.74<br>12.70<br>24.30<br>7.03
+2.81<br>13.40<br>11.10<br>57.78<br>14.91
 </td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-142
+116
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-aborto_7
+autoritarismo3_2
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: aborto
+Grado de acuerdo: Obediencia y respeto importantes<br>que aprendan los
+ninnios
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1206 (41.19%)
+461 (15.74%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
-desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-223<br>643<br>231<br>456<br>169
+107<br>313<br>256<br>1372<br>419
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-12.95<br>37.34<br>13.41<br>26.48<br>9.81
+4.34<br>12.69<br>10.38<br>55.61<br>16.98
 </td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-145
+117
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-restriccion_migrantes_3
+autoritarismo3_3
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: restricciones ingreso migrantes
+Grado de acuerdo: Obediencia y respeto importantes<br>que aprendan los
+ninnios
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-714 (24.39%)
+716 (24.45%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
-desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-94<br>264<br>320<br>956<br>580
+69<br>215<br>266<br>1186<br>476
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-4.25<br>11.92<br>14.45<br>43.18<br>26.20
+3.12<br>9.72<br>12.03<br>53.62<br>21.52
 </td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-146
+118
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-restriccion_migrantes_4
+autoritarismo3_4
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: restricciones ingreso migrantes
+Grado de acuerdo: Obediencia y respeto importantes<br>que aprendan los
+ninnios
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-784 (26.78%)
+782 (26.71%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
-desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-85<br>327<br>318<br>963<br>451
+138<br>399<br>307<br>968<br>334
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-3.96<br>15.25<br>14.83<br>44.92<br>21.04
+6.43<br>18.59<br>14.31<br>45.11<br>15.56
 </td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-147
+119
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-restriccion_migrantes_5
+autoritarismo3_5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: restricciones ingreso migrantes
+Grado de acuerdo: Obediencia y respeto importantes<br>que aprendan los
+ninnios
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1206 (41.19%)
+1201 (41.02%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
-desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-33<br>200<br>160<br>904<br>425
+51<br>228<br>151<br>997<br>300
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1.92<br>11.61<br>9.29<br>52.50<br>24.68
+2.95<br>13.20<br>8.74<br>57.73<br>17.37
 </td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-148
+120
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-restriccion_migrantes_6
+autoritarismo3_6
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: restricciones ingreso migrantes
+Grado de acuerdo: Obediencia y respeto importantes<br>que aprendan los
+ninnios
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1212 (41.39%)
+1201 (41.02%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
-desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-13<br>94<br>95<br>884<br>630
+51<br>228<br>151<br>997<br>300
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-0.76<br>5.48<br>5.54<br>51.52<br>36.71
+2.95<br>13.20<br>8.74<br>57.73<br>17.37
 </td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-149
+121
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-restriccion_migrantes_7
+autoritarismo3_7
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: restricciones ingreso migrantes
+Grado de acuerdo: Obediencia y respeto importantes<br>que aprendan los
+ninnios
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1192 (40.71%)
@@ -5349,19 +4700,1039 @@ Grado de acuerdo: restricciones ingreso migrantes
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
-desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-14<br>60<br>111<br>812<br>739
+42<br>141<br>179<br>1008<br>366
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-0.81<br>3.46<br>6.39<br>46.77<br>42.57
+2.42<br>8.12<br>10.31<br>58.06<br>21.08
 </td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-150
+122
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+autoritarismo4_1
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Grado de acuerdo: Obediencia y disciplina son<br>claves para buena vida
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+6 (0.20%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+58<br>338<br>373<br>1768<br>385
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1.98<br>11.57<br>12.77<br>60.51<br>13.18
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+123
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+autoritarismo4_2
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Grado de acuerdo: Obediencia y disciplina son<br>claves para buena vida
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+470 (16.05%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+103<br>298<br>301<br>1430<br>326
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+4.19<br>12.12<br>12.25<br>58.18<br>13.26
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+124
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+autoritarismo4_3
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Grado de acuerdo: Obediencia y disciplina son<br>claves para buena vida
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+713 (24.35%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+52<br>194<br>279<br>1270<br>420
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+2.35<br>8.76<br>12.60<br>57.34<br>18.96
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+125
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+autoritarismo4_4
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Grado de acuerdo: Obediencia y disciplina son<br>claves para buena vida
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+780 (26.64%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+107<br>343<br>282<br>1093<br>323
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+4.98<br>15.97<br>13.13<br>50.88<br>15.04
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+126
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+autoritarismo4_5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Grado de acuerdo: Obediencia y disciplina son<br>claves para buena vida
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1202 (41.05%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+33<br>212<br>205<br>1008<br>268
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1.91<br>12.28<br>11.88<br>58.40<br>15.53
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+127
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+autoritarismo4_6
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Grado de acuerdo: Obediencia y disciplina son<br>claves para buena vida
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1202 (41.05%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+33<br>212<br>205<br>1008<br>268
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1.91<br>12.28<br>11.88<br>58.40<br>15.53
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+128
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+autoritarismo4_7
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Grado de acuerdo: Obediencia y disciplina son<br>claves para buena vida
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1191 (40.68%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+28<br>150<br>230<br>1027<br>302
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1.61<br>8.64<br>13.24<br>59.12<br>17.39
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+129
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+autoritarismo5_1
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Grado de acuerdo: El cambio social es posible
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+29 (0.99%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+52<br>282<br>329<br>1882<br>354
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1.79<br>9.73<br>11.35<br>64.92<br>12.21
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+130
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+autoritarismo5_2
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Grado de acuerdo: El cambio social es posible
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+483 (16.50%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+45<br>240<br>335<br>1492<br>333
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1.84<br>9.82<br>13.70<br>61.02<br>13.62
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+131
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+autoritarismo5_3
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Grado de acuerdo: El cambio social es posible
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+730 (24.93%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+28<br>156<br>241<br>1367<br>406
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1.27<br>7.10<br>10.96<br>62.19<br>18.47
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+132
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+autoritarismo5_4
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Grado de acuerdo: El cambio social es posible
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+800 (27.32%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+9<br>97<br>147<br>1286<br>589
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+0.42<br>4.56<br>6.91<br>60.43<br>27.68
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+133
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+autoritarismo5_5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Grado de acuerdo: El cambio social es posible
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1215 (41.50%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+10<br>106<br>143<br>1183<br>271
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+0.58<br>6.19<br>8.35<br>69.06<br>15.82
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+134
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+autoritarismo5_6
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Grado de acuerdo: El cambio social es posible
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1216 (41.53%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+22<br>189<br>232<br>1065<br>204
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1.29<br>11.04<br>13.55<br>62.21<br>11.92
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+135
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+autoritarismo5_7
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Grado de acuerdo: El cambio social es posible
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1210 (41.33%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+24<br>167<br>244<br>1080<br>203
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1.40<br>9.72<br>14.20<br>62.86<br>11.82
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+138
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+adop_homo_3
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Grado de acuerdo: adopcion homoparental
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+733 (25.03%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+494<br>579<br>278<br>626<br>218
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+22.51<br>26.38<br>12.67<br>28.52<br>9.93
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+139
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+adop_homo_4
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Grado de acuerdo: adopcion homoparental
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+797 (27.22%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+326<br>561<br>270<br>720<br>254
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+15.30<br>26.33<br>12.67<br>33.79<br>11.92
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+140
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+adop_homo_5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Grado de acuerdo: adopcion homoparental
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1220 (41.67%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+173<br>405<br>222<br>718<br>190
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+10.13<br>23.71<br>13.00<br>42.04<br>11.12
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+141
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+adop_homo_6
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Grado de acuerdo: adopcion homoparental
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1220 (41.67%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+173<br>405<br>222<br>718<br>190
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+10.13<br>23.71<br>13.00<br>42.04<br>11.12
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+142
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+adop_homo_7
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Grado de acuerdo: adopcion homoparental
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1215 (41.50%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+153<br>422<br>220<br>724<br>194
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+8.93<br>24.64<br>12.84<br>42.27<br>11.33
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+145
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+aborto_3
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Grado de acuerdo: aborto
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+725 (24.76%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+546<br>742<br>259<br>481<br>175
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+24.78<br>33.68<br>11.76<br>21.83<br>7.94
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+146
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+aborto_4
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Grado de acuerdo: aborto
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+787 (26.88%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+368<br>786<br>235<br>545<br>207
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+17.19<br>36.71<br>10.98<br>25.46<br>9.67
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+147
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+aborto_5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Grado de acuerdo: aborto
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1211 (41.36%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+193<br>722<br>205<br>413<br>184
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+11.24<br>42.05<br>11.94<br>24.05<br>10.72
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+148
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+aborto_6
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Grado de acuerdo: aborto
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1220 (41.67%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+243<br>713<br>217<br>415<br>120
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+14.23<br>41.74<br>12.70<br>24.30<br>7.03
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+149
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+aborto_7
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Grado de acuerdo: aborto
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1206 (41.19%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+223<br>643<br>231<br>456<br>169
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+12.95<br>37.34<br>13.41<br>26.48<br>9.81
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+152
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+restriccion_migrantes_3
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Grado de acuerdo: restricciones ingreso migrantes
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+714 (24.39%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+94<br>264<br>320<br>956<br>580
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+4.25<br>11.92<br>14.45<br>43.18<br>26.20
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+153
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+restriccion_migrantes_4
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Grado de acuerdo: restricciones ingreso migrantes
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+784 (26.78%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+85<br>327<br>318<br>963<br>451
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+3.96<br>15.25<br>14.83<br>44.92<br>21.04
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+154
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+restriccion_migrantes_5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Grado de acuerdo: restricciones ingreso migrantes
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1206 (41.19%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+33<br>200<br>160<br>904<br>425
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1.92<br>11.61<br>9.29<br>52.50<br>24.68
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+155
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+restriccion_migrantes_6
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Grado de acuerdo: restricciones ingreso migrantes
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1212 (41.39%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+13<br>94<br>95<br>884<br>630
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+0.76<br>5.48<br>5.54<br>51.52<br>36.71
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+156
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+restriccion_migrantes_7
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Grado de acuerdo: restricciones ingreso migrantes
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1192 (40.71%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+14<br>60<br>111<br>812<br>739
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+0.81<br>3.46<br>6.39<br>46.77<br>42.57
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+159
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+pensiones_3
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Grado de acuerdo: capitalizacion individual<br>pensiones
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+716 (24.45%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+253<br>639<br>296<br>747<br>277
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+11.44<br>28.89<br>13.38<br>33.77<br>12.52
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+160
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+pensiones_4
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Grado de acuerdo: capitalizacion individual<br>pensiones
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+792 (27.05%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+219<br>658<br>296<br>746<br>217
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+10.25<br>30.81<br>13.86<br>34.93<br>10.16
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+161
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+pensiones_5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Grado de acuerdo: capitalizacion individual<br>pensiones
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1212 (41.39%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+117<br>590<br>178<br>708<br>123
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+6.82<br>34.38<br>10.37<br>41.26<br>7.17
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+162
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+pensiones_6
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Grado de acuerdo: capitalizacion individual<br>pensiones
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1225 (41.84%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+120<br>565<br>245<br>666<br>107
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+7.05<br>33.18<br>14.39<br>39.11<br>6.28
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+163
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+pensiones_7
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Grado de acuerdo: capitalizacion individual<br>pensiones
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1198 (40.92%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+120<br>566<br>284<br>651<br>109
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+6.94<br>32.72<br>16.42<br>37.63<br>6.30
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+164
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 perc_des_1
@@ -5391,7 +5762,7 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-151
+165
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 perc_des_2
@@ -5421,7 +5792,7 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-152
+166
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 perc_des_3
@@ -5451,7 +5822,7 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-153
+167
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 perc_des_4
@@ -5481,7 +5852,7 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-154
+168
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 perc_des_5
@@ -5511,7 +5882,7 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-155
+169
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 perc_des_6
@@ -5541,7 +5912,7 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-156
+170
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 perc_des_7
@@ -5571,7 +5942,7 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-159
+173
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 rol_estado_educ_3
@@ -5601,7 +5972,7 @@ desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-160
+174
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 rol_estado_educ_4
@@ -5631,7 +6002,7 @@ desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-161
+175
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 rol_estado_educ_5
@@ -5661,7 +6032,7 @@ desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-162
+176
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 rol_estado_educ_6
@@ -5691,7 +6062,7 @@ desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-163
+177
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 rol_estado_educ_7
@@ -5721,7 +6092,7 @@ desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-164
+178
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 edad_1
@@ -5744,7 +6115,7 @@ numeric
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-165
+179
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 edad_2
@@ -5767,7 +6138,7 @@ numeric
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-166
+180
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 edad_3
@@ -5790,7 +6161,7 @@ numeric
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-167
+181
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 edad_4
@@ -5813,7 +6184,7 @@ numeric
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-168
+182
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 edad_5
@@ -5836,7 +6207,7 @@ numeric
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-169
+183
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 edad_6
@@ -5859,7 +6230,7 @@ numeric
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-170
+184
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 edad_7
@@ -5882,7 +6253,7 @@ numeric
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-171
+185
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 part_electoral_1
@@ -5911,7 +6282,7 @@ Si<br>No<br>No tenia edad para hacerlo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-172
+186
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 part_electoral_2
@@ -5940,7 +6311,7 @@ Si<br>No<br>No tenia edad para hacerlo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-173
+187
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 part_electoral_3
@@ -5969,7 +6340,7 @@ Si<br>No<br>No tenia edad para hacerlo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-174
+188
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 part_electoral_4
@@ -5998,7 +6369,7 @@ Si<br>No<br>No tenia edad para hacerlo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-175
+189
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 part_electoral_5
@@ -6027,7 +6398,7 @@ Si<br>No<br>No tenia edad para hacerlo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-176
+190
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 part_electoral_6
@@ -6056,7 +6427,7 @@ Si<br>No
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-177
+191
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 part_electoral_7
@@ -6093,9 +6464,9 @@ df_study1_long &lt;- data.table::melt.data.table(data.table::setDT(df_study1_wid
                                  &quot;^part_marchas_&quot;, &quot;^part_rrss_&quot;,
                                  &quot;^mov_soc_&quot;,  &quot;^part_electoral_&quot;,
                                  &quot;^part_electoral1_&quot;, &quot;^part_electoral3_&quot;, &quot;^part_electoral4_&quot;, &quot;^part_electoral5_&quot;,
-                                 &quot;^interes_pol_&quot;, 
+                                 &quot;^interes_pol_&quot;, &quot;^voto_influye_&quot;, 
                                  &quot;^autoritarismo1_&quot;, &quot;^autoritarismo2_&quot;, &quot;^autoritarismo3_&quot;, &quot;^autoritarismo4_&quot;, &quot;^autoritarismo5_&quot;, 
-                                 &quot;^adop_homo_&quot;, &quot;^aborto_&quot;, &quot;^restriccion_migrantes_&quot;,
+                                 &quot;^adop_homo_&quot;, &quot;^aborto_&quot;, &quot;^restriccion_migrantes_&quot;, &quot;^pensiones_&quot;,
                                  &quot;^perc_des_&quot;, &quot;^rol_estado_educ_&quot;,
                      #            &quot;^educ_&quot;, &quot;^quintil1_&quot;,&quot;^ess_&quot;,
                                  #&quot;^pos_id_&quot;,
@@ -6106,9 +6477,9 @@ df_study1_long &lt;- data.table::melt.data.table(data.table::setDT(df_study1_wid
                                  &quot;part_marchas&quot;, &quot;part_rrss&quot;,
                                  &quot;mov_soc&quot;, &quot;part_electoral&quot;,
                                  &quot;part_electoral1&quot;, &quot;part_electoral3&quot;, &quot;part_electoral4&quot;, &quot;part_electoral5&quot;,
-                                 &quot;interes_pol&quot;, 
+                                 &quot;interes_pol&quot;, &quot;voto_influye&quot;,
                                  &quot;autoritarismo1&quot;, &quot;autoritarismo2&quot;, &quot;autoritarismo3&quot;, &quot;autoritarismo4&quot;, &quot;autoritarismo5&quot;, 
-                                 &quot;adop_homo&quot;, &quot;aborto&quot;, &quot;restriccion_migrantes&quot;,
+                                 &quot;adop_homo&quot;, &quot;aborto&quot;, &quot;restriccion_migrantes&quot;, &quot;pensiones&quot;,
                                  &quot;perc_des&quot;, &quot;rol_estado_educ&quot;,
                      #            &quot;^educ_&quot;, &quot;^quintil1_&quot;,&quot;^ess_&quot;,
                                  #&quot;^pos_id_&quot;,
@@ -6119,19 +6490,20 @@ df_study1_long &lt;- data.table::melt.data.table(data.table::setDT(df_study1_wid
               )
 
 df_study1_long$mov_estudiantil &lt;- as.numeric(df_study1_long$mov_soc == 1)
-
+df_study1_long$mov_feminista &lt;- as.numeric(df_study1_long$mov_soc == 8)
 names(df_study1_long) #check names of long dataset</code></pre>
 <pre><code>##  [1] &quot;idencuesta&quot;            &quot;muestra&quot;               &quot;ola&quot;                  
 ##  [4] &quot;ponderador_long_total&quot; &quot;segmento&quot;              &quot;estrato&quot;              
 ##  [7] &quot;part_marchas&quot;          &quot;part_rrss&quot;             &quot;mov_soc&quot;              
 ## [10] &quot;part_electoral&quot;        &quot;part_electoral1&quot;       &quot;part_electoral3&quot;      
 ## [13] &quot;part_electoral4&quot;       &quot;part_electoral5&quot;       &quot;interes_pol&quot;          
-## [16] &quot;autoritarismo1&quot;        &quot;autoritarismo2&quot;        &quot;autoritarismo3&quot;       
-## [19] &quot;autoritarismo4&quot;        &quot;autoritarismo5&quot;        &quot;adop_homo&quot;            
-## [22] &quot;aborto&quot;                &quot;restriccion_migrantes&quot; &quot;perc_des&quot;             
-## [25] &quot;rol_estado_educ&quot;       &quot;edad&quot;                  &quot;mov_estudiantil&quot;</code></pre>
+## [16] &quot;voto_influye&quot;          &quot;autoritarismo1&quot;        &quot;autoritarismo2&quot;       
+## [19] &quot;autoritarismo3&quot;        &quot;autoritarismo4&quot;        &quot;autoritarismo5&quot;       
+## [22] &quot;adop_homo&quot;             &quot;aborto&quot;                &quot;restriccion_migrantes&quot;
+## [25] &quot;pensiones&quot;             &quot;perc_des&quot;              &quot;rol_estado_educ&quot;      
+## [28] &quot;edad&quot;                  &quot;mov_estudiantil&quot;       &quot;mov_feminista&quot;</code></pre>
 <pre class="r"><code>dim(df_study1_long) #check dimensions of the dataframe</code></pre>
-<pre><code>## [1] 20496    27</code></pre>
+<pre><code>## [1] 20496    30</code></pre>
 <pre class="r"><code># Original dataset with 6 waves
 df_study2_long &lt;- df_study1_long
 
@@ -6618,29 +6990,29 @@ interesado<br>Muy interesado
 16
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo1
+voto_influye
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: Mas que derechos necesitamos un<br>gobierno firme
+Grado de acuerdo: Mi voto influye en el resultado
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-5628 (27.46%)
+5596 (27.30%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-836<br>2535<br>1918<br>7204<br>2375
+404<br>1243<br>1164<br>7846<br>4243
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-5.62<br>17.05<br>12.90<br>48.45<br>15.97
+2.71<br>8.34<br>7.81<br>52.66<br>28.48
 </td>
 </tr>
 <tr>
@@ -6648,16 +7020,16 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 17
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo2
+autoritarismo1
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: Pais necesita un mandatario<br>fuerte
+Grado de acuerdo: Mas que derechos necesitamos un<br>gobierno firme
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-5655 (27.59%)
+5628 (27.46%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
@@ -6667,10 +7039,10 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
 acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-492<br>1516<br>1772<br>8272<br>2789
+836<br>2535<br>1918<br>7204<br>2375
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-3.32<br>10.21<br>11.94<br>55.74<br>18.79
+5.62<br>17.05<br>12.90<br>48.45<br>15.97
 </td>
 </tr>
 <tr>
@@ -6678,17 +7050,16 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 18
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo3
+autoritarismo2
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: Obediencia y respeto importantes<br>que aprendan los
-ninnios
+Grado de acuerdo: Pais necesita un mandatario<br>fuerte
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-5563 (27.14%)
+5655 (27.59%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
@@ -6698,10 +7069,10 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
 acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-540<br>1915<br>1634<br>8214<br>2630
+492<br>1516<br>1772<br>8272<br>2789
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-3.62<br>12.82<br>10.94<br>55.01<br>17.61
+3.32<br>10.21<br>11.94<br>55.74<br>18.79
 </td>
 </tr>
 <tr>
@@ -6709,16 +7080,17 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 19
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo4
+autoritarismo3
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: Obediencia y disciplina son<br>claves para buena vida
+Grado de acuerdo: Obediencia y respeto importantes<br>que aprendan los
+ninnios
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-5564 (27.15%)
+5563 (27.14%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
@@ -6728,10 +7100,10 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
 acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-414<br>1747<br>1875<br>8604<br>2292
+540<br>1915<br>1634<br>8214<br>2630
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-2.77<br>11.70<br>12.56<br>57.62<br>15.35
+3.62<br>12.82<br>10.94<br>55.01<br>17.61
 </td>
 </tr>
 <tr>
@@ -6739,16 +7111,16 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 20
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo5
+autoritarismo4
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: El cambio social es posible
+Grado de acuerdo: Obediencia y disciplina son<br>claves para buena vida
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-5683 (27.73%)
+5564 (27.15%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
@@ -6758,10 +7130,10 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
 acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-190<br>1237<br>1671<br>9355<br>2360
+414<br>1747<br>1875<br>8604<br>2292
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1.28<br>8.35<br>11.28<br>63.15<br>15.93
+2.77<br>11.70<br>12.56<br>57.62<br>15.35
 </td>
 </tr>
 <tr>
@@ -6769,29 +7141,29 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 21
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-adop_homo
+autoritarismo5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: adopcion homoparental
+Grado de acuerdo: El cambio social es posible
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-11041 (53.87%)
+5683 (27.73%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
-desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1319<br>2372<br>1212<br>3506<br>1046
+190<br>1237<br>1671<br>9355<br>2360
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-13.95<br>25.09<br>12.82<br>37.08<br>11.06
+1.28<br>8.35<br>11.28<br>63.15<br>15.93
 </td>
 </tr>
 <tr>
@@ -6799,16 +7171,16 @@ desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 22
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-aborto
+adop_homo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: aborto
+Grado de acuerdo: adopcion homoparental
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-11005 (53.69%)
+11041 (53.87%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
@@ -6818,10 +7190,10 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
 desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1573<br>3606<br>1147<br>2310<br>855
+1319<br>2372<br>1212<br>3506<br>1046
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-16.57<br>37.99<br>12.09<br>24.34<br>9.01
+13.95<br>25.09<br>12.82<br>37.08<br>11.06
 </td>
 </tr>
 <tr>
@@ -6829,16 +7201,16 @@ desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 23
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-restriccion_migrantes
+aborto
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: restricciones ingreso migrantes
+Grado de acuerdo: aborto
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-10964 (53.49%)
+11005 (53.69%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
@@ -6848,15 +7220,75 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
 desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-239<br>945<br>1004<br>4519<br>2825
+1573<br>3606<br>1147<br>2310<br>855
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-2.51<br>9.91<br>10.53<br>47.41<br>29.64
+16.57<br>37.99<br>12.09<br>24.34<br>9.01
 </td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 24
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+restriccion_migrantes
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Grado de acuerdo: restricciones ingreso migrantes
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+10964 (53.49%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+239<br>945<br>1004<br>4519<br>2825
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+2.51<br>9.91<br>10.53<br>47.41<br>29.64
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+25
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+pensiones
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Grado de acuerdo: capitalizacion individual<br>pensiones
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+10999 (53.66%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+829<br>3018<br>1299<br>3518<br>833
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+8.73<br>31.78<br>13.68<br>37.04<br>8.77
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+26
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 perc_des
@@ -6886,7 +7318,7 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-25
+27
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 rol_estado_educ
@@ -6916,7 +7348,7 @@ desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-26
+28
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 edad
@@ -6939,7 +7371,7 @@ numeric
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-27
+29
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 mov_estudiantil
@@ -6958,6 +7390,29 @@ numeric
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+30
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+mov_feminista
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+5709 (27.85%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee" colspan="2">
+<em>range: 0-1</em>
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 </td>
 </tr>
 </table>
@@ -6981,12 +7436,13 @@ names(df_study1_long_t7)</code></pre>
 ##  [7] &quot;part_marchas&quot;          &quot;part_rrss&quot;             &quot;mov_soc&quot;              
 ## [10] &quot;part_electoral&quot;        &quot;part_electoral1&quot;       &quot;part_electoral3&quot;      
 ## [13] &quot;part_electoral4&quot;       &quot;part_electoral5&quot;       &quot;interes_pol&quot;          
-## [16] &quot;autoritarismo1&quot;        &quot;autoritarismo2&quot;        &quot;autoritarismo3&quot;       
-## [19] &quot;autoritarismo4&quot;        &quot;autoritarismo5&quot;        &quot;adop_homo&quot;            
-## [22] &quot;aborto&quot;                &quot;restriccion_migrantes&quot; &quot;perc_des&quot;             
-## [25] &quot;rol_estado_educ&quot;       &quot;edad&quot;                  &quot;mov_estudiantil&quot;</code></pre>
+## [16] &quot;voto_influye&quot;          &quot;autoritarismo1&quot;        &quot;autoritarismo2&quot;       
+## [19] &quot;autoritarismo3&quot;        &quot;autoritarismo4&quot;        &quot;autoritarismo5&quot;       
+## [22] &quot;adop_homo&quot;             &quot;aborto&quot;                &quot;restriccion_migrantes&quot;
+## [25] &quot;pensiones&quot;             &quot;perc_des&quot;              &quot;rol_estado_educ&quot;      
+## [28] &quot;edad&quot;                  &quot;mov_estudiantil&quot;       &quot;mov_feminista&quot;</code></pre>
 <pre class="r"><code>dim(df_study1_long_t7)</code></pre>
-<pre><code>## [1] 12159    27</code></pre>
+<pre><code>## [1] 12159    30</code></pre>
 <pre class="r"><code>sjmisc::frq(df_study1_long_t7$ola)</code></pre>
 <pre><code>## x &lt;categorical&gt; 
 ## # total N=12159 valid N=12159 mean=4.00 sd=2.00
@@ -7431,26 +7887,26 @@ interesado<br>Muy interesado
 16
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo1
+voto_influye
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: Mas que derechos necesitamos un<br>gobierno firme
+Grado de acuerdo: Mi voto influye en el resultado
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-5628 (27.46%)
+5596 (27.30%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-836<br>2535<br>1918<br>7204<br>2375
+404<br>1243<br>1164<br>7846<br>4243
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-5.62<br>17.05<br>12.90<br>48.45<br>15.97
+2.71<br>8.34<br>7.81<br>52.66<br>28.48
 </td>
 </tr>
 <tr>
@@ -7458,13 +7914,13 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 17
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo2
+autoritarismo1
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: Pais necesita un mandatario<br>fuerte
+Grado de acuerdo: Mas que derechos necesitamos un<br>gobierno firme
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-5655 (27.59%)
+5628 (27.46%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
@@ -7474,10 +7930,10 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
 acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-492<br>1516<br>1772<br>8272<br>2789
+836<br>2535<br>1918<br>7204<br>2375
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-3.32<br>10.21<br>11.94<br>55.74<br>18.79
+5.62<br>17.05<br>12.90<br>48.45<br>15.97
 </td>
 </tr>
 <tr>
@@ -7485,14 +7941,13 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 18
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo3
+autoritarismo2
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: Obediencia y respeto importantes<br>que aprendan los
-ninnios
+Grado de acuerdo: Pais necesita un mandatario<br>fuerte
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-5563 (27.14%)
+5655 (27.59%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
@@ -7502,10 +7957,10 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
 acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-540<br>1915<br>1634<br>8214<br>2630
+492<br>1516<br>1772<br>8272<br>2789
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-3.62<br>12.82<br>10.94<br>55.01<br>17.61
+3.32<br>10.21<br>11.94<br>55.74<br>18.79
 </td>
 </tr>
 <tr>
@@ -7513,13 +7968,14 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 19
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo4
+autoritarismo3
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: Obediencia y disciplina son<br>claves para buena vida
+Grado de acuerdo: Obediencia y respeto importantes<br>que aprendan los
+ninnios
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-5564 (27.15%)
+5563 (27.14%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
@@ -7529,10 +7985,10 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
 acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-414<br>1747<br>1875<br>8604<br>2292
+540<br>1915<br>1634<br>8214<br>2630
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-2.77<br>11.70<br>12.56<br>57.62<br>15.35
+3.62<br>12.82<br>10.94<br>55.01<br>17.61
 </td>
 </tr>
 <tr>
@@ -7540,13 +7996,13 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 20
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo5
+autoritarismo4
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: El cambio social es posible
+Grado de acuerdo: Obediencia y disciplina son<br>claves para buena vida
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-5683 (27.73%)
+5564 (27.15%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
@@ -7556,10 +8012,10 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
 acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-190<br>1237<br>1671<br>9355<br>2360
+414<br>1747<br>1875<br>8604<br>2292
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1.28<br>8.35<br>11.28<br>63.15<br>15.93
+2.77<br>11.70<br>12.56<br>57.62<br>15.35
 </td>
 </tr>
 <tr>
@@ -7567,26 +8023,26 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 21
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-adop_homo
+autoritarismo5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: adopcion homoparental
+Grado de acuerdo: El cambio social es posible
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-11041 (53.87%)
+5683 (27.73%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
-desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1319<br>2372<br>1212<br>3506<br>1046
+190<br>1237<br>1671<br>9355<br>2360
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-13.95<br>25.09<br>12.82<br>37.08<br>11.06
+1.28<br>8.35<br>11.28<br>63.15<br>15.93
 </td>
 </tr>
 <tr>
@@ -7594,13 +8050,13 @@ desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 22
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-aborto
+adop_homo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: aborto
+Grado de acuerdo: adopcion homoparental
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-11005 (53.69%)
+11041 (53.87%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
@@ -7610,10 +8066,10 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
 desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1573<br>3606<br>1147<br>2310<br>855
+1319<br>2372<br>1212<br>3506<br>1046
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-16.57<br>37.99<br>12.09<br>24.34<br>9.01
+13.95<br>25.09<br>12.82<br>37.08<br>11.06
 </td>
 </tr>
 <tr>
@@ -7621,13 +8077,13 @@ desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 23
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-restriccion_migrantes
+aborto
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: restricciones ingreso migrantes
+Grado de acuerdo: aborto
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-10964 (53.49%)
+11005 (53.69%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
@@ -7637,15 +8093,69 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
 desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-239<br>945<br>1004<br>4519<br>2825
+1573<br>3606<br>1147<br>2310<br>855
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-2.51<br>9.91<br>10.53<br>47.41<br>29.64
+16.57<br>37.99<br>12.09<br>24.34<br>9.01
 </td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 24
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+restriccion_migrantes
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Grado de acuerdo: restricciones ingreso migrantes
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+10964 (53.49%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+239<br>945<br>1004<br>4519<br>2825
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+2.51<br>9.91<br>10.53<br>47.41<br>29.64
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+25
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+pensiones
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Grado de acuerdo: capitalizacion individual<br>pensiones
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+10999 (53.66%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+829<br>3018<br>1299<br>3518<br>833
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+8.73<br>31.78<br>13.68<br>37.04<br>8.77
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+26
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 perc_des
@@ -7672,7 +8182,7 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-25
+27
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 rol_estado_educ
@@ -7699,7 +8209,7 @@ desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-26
+28
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 edad
@@ -7719,7 +8229,7 @@ edad
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-27
+29
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 mov_estudiantil
@@ -7735,6 +8245,26 @@ mov_estudiantil
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+30
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+mov_feminista
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+5709 (27.85%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee" colspan="2">
+<em>range: 0-1</em>
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 </td>
 </tr>
 </table>
@@ -8163,26 +8693,26 @@ interesado<br>Muy interesado
 16
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo1
+voto_influye
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: Mas que derechos necesitamos un<br>gobierno firme
+Grado de acuerdo: Mi voto influye en el resultado
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1076 (8.85%)
+973 (8.00%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
-acuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-614<br>1859<br>1399<br>5372<br>1839
+277<br>880<br>841<br>5932<br>3256
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-5.54<br>16.77<br>12.62<br>48.47<br>16.59
+2.48<br>7.87<br>7.52<br>53.03<br>29.11
 </td>
 </tr>
 <tr>
@@ -8190,13 +8720,13 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 17
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo2
+autoritarismo1
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: Pais necesita un mandatario<br>fuerte
+Grado de acuerdo: Mas que derechos necesitamos un<br>gobierno firme
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1015 (8.35%)
+1076 (8.85%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
@@ -8206,10 +8736,10 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
 acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-350<br>1092<br>1288<br>6211<br>2203
+614<br>1859<br>1399<br>5372<br>1839
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-3.14<br>9.80<br>11.56<br>55.73<br>19.77
+5.54<br>16.77<br>12.62<br>48.47<br>16.59
 </td>
 </tr>
 <tr>
@@ -8217,14 +8747,13 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 18
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo3
+autoritarismo2
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: Obediencia y respeto importantes<br>que aprendan los
-ninnios
+Grado de acuerdo: Pais necesita un mandatario<br>fuerte
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1031 (8.48%)
+1015 (8.35%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
@@ -8234,10 +8763,10 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
 acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-396<br>1391<br>1166<br>6141<br>2034
+350<br>1092<br>1288<br>6211<br>2203
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-3.56<br>12.50<br>10.48<br>55.19<br>18.28
+3.14<br>9.80<br>11.56<br>55.73<br>19.77
 </td>
 </tr>
 <tr>
@@ -8245,13 +8774,14 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 19
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-autoritarismo4
+autoritarismo3
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: Obediencia y disciplina son<br>claves para buena vida
+Grado de acuerdo: Obediencia y respeto importantes<br>que aprendan los
+ninnios
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1034 (8.50%)
+1031 (8.48%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
@@ -8261,10 +8791,10 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
 acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-294<br>1288<br>1388<br>6380<br>1775
+396<br>1391<br>1166<br>6141<br>2034
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-2.64<br>11.58<br>12.48<br>57.35<br>15.96
+3.56<br>12.50<br>10.48<br>55.19<br>18.28
 </td>
 </tr>
 <tr>
@@ -8272,13 +8802,13 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 20
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-autoritarismo5
+autoritarismo4
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: El cambio social es posible
+Grado de acuerdo: Obediencia y disciplina son<br>claves para buena vida
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1042 (8.57%)
+1034 (8.50%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
@@ -8288,10 +8818,10 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
 acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-140<br>914<br>1281<br>7001<br>1781
+294<br>1288<br>1388<br>6380<br>1775
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1.26<br>8.22<br>11.52<br>62.98<br>16.02
+2.64<br>11.58<br>12.48<br>57.35<br>15.96
 </td>
 </tr>
 <tr>
@@ -8299,26 +8829,26 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 21
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-adop_homo
+autoritarismo5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: adopcion homoparental
+Grado de acuerdo: El cambio social es posible
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-4318 (35.51%)
+1042 (8.57%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
-desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni en desacuerdo ni de
+acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1056<br>1963<br>988<br>2950<br>884
+140<br>914<br>1281<br>7001<br>1781
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-13.47<br>25.04<br>12.60<br>37.62<br>11.27
+1.26<br>8.22<br>11.52<br>62.98<br>16.02
 </td>
 </tr>
 <tr>
@@ -8326,13 +8856,13 @@ desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 22
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-aborto
+adop_homo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Grado de acuerdo: aborto
+Grado de acuerdo: adopcion homoparental
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-4366 (35.91%)
+4318 (35.51%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2<br>3<br>4<br>5
@@ -8342,10 +8872,10 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
 desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1266<br>2965<br>930<br>1908<br>724
+1056<br>1963<br>988<br>2950<br>884
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-16.25<br>38.05<br>11.93<br>24.48<br>9.29
+13.47<br>25.04<br>12.60<br>37.62<br>11.27
 </td>
 </tr>
 <tr>
@@ -8353,13 +8883,13 @@ desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 23
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-restriccion_migrantes
+aborto
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Grado de acuerdo: restricciones ingreso migrantes
+Grado de acuerdo: aborto
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-4338 (35.68%)
+4366 (35.91%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1<br>2<br>3<br>4<br>5
@@ -8369,15 +8899,69 @@ Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
 desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-183<br>753<br>787<br>3715<br>2383
+1266<br>2965<br>930<br>1908<br>724
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-2.34<br>9.63<br>10.06<br>47.50<br>30.47
+16.25<br>38.05<br>11.93<br>24.48<br>9.29
 </td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 24
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+restriccion_migrantes
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Grado de acuerdo: restricciones ingreso migrantes
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+4338 (35.68%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+183<br>753<br>787<br>3715<br>2383
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+2.34<br>9.63<br>10.06<br>47.50<br>30.47
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+25
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+pensiones
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Grado de acuerdo: capitalizacion individual<br>pensiones
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+4369 (35.93%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3<br>4<br>5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Totalmente en desacuerdo<br>En desacuerdo<br>Ni de acuerdo ni en
+desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+678<br>2510<br>1074<br>2865<br>663
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+8.70<br>32.22<br>13.79<br>36.78<br>8.51
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+26
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 perc_des
@@ -8404,7 +8988,7 @@ acuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-25
+27
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 rol_estado_educ
@@ -8431,7 +9015,7 @@ desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-26
+28
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 edad
@@ -8451,7 +9035,7 @@ edad
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-27
+29
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 mov_estudiantil
@@ -8467,6 +9051,26 @@ mov_estudiantil
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+30
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+mov_feminista
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1056 (8.68%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee" colspan="2">
+<em>range: 0-1</em>
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 </td>
 </tr>
 </table>
