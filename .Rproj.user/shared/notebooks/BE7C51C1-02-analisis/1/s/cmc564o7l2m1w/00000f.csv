@@ -1,0 +1,7 @@
+"0","interact_plot(marchar3, pred = ola, modx = edad, interval = TRUE)
+"
+"1","[38;5;252m[31m✖[38;5;252m Detected factor predictor.
+[36mℹ[38;5;252m Plotting with cat_plot() instead.
+[36mℹ[38;5;252m See ]8;;ide:help:interactions::cat_plotinteractions::cat_plot]8;; for full details on how to specify models with categorical predictors.
+[36mℹ[38;5;252m If you experience errors or unexpected results, try using cat_plot() directly.[39m
+"

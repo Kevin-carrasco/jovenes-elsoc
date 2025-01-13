@@ -1,0 +1,9 @@
+"0","df$Variable <- NULL # delete variable column"
+"0","summarytools::view(df,"
+"0","     file = here::here(""output/tables/desc02.html"")"
+"0","     ) # Ver tabla en un archivo HTML"
+"2","Output file written: C:\Users\kevin\Documents\jovenes-elsoc\output\tables\desc02.html
+"
+"0","webshot::webshot(url =here::here(""output/tables/desc02.html""),"
+"0","        file =here::here(""output/tables/desc02.png"")) # Remover archivo HTML"
+"0","# print(df, method = ""render"")"
