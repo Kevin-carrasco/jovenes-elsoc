@@ -32,10 +32,12 @@ df_study1 <-
   na.omit() %>% 
   mutate(ola_num=as.numeric(ola),
          ola=as.factor(ola),
-         edad = case_when(edad <=30~"30 o menos",
-                          edad >30 & edad <=50 ~ "Entre 31 y 50",
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=34 ~ "Entre 29 y 34",
+                          edad >34 & edad <=50 ~ "Entre 35 y 50",
                           edad > 50 ~ "Más de 50")) 
-df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 31 y 50", "30 o menos"))
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 35 y 50", "Entre 29 y 34", "Entre 24 y 28", "Entre 18 y 23"))
 
 sjmisc::frq(df_study1$edad)
 # Hipotesis
@@ -82,10 +84,12 @@ df_study1 <-
   na.omit() %>% 
   mutate(ola_num=as.numeric(ola),
          ola=as.factor(ola),
-         edad = case_when(edad <=30~"30 o menos",
-                          edad >30 & edad <=50 ~ "Entre 31 y 50",
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=34 ~ "Entre 29 y 34",
+                          edad >34 & edad <=50 ~ "Entre 35 y 50",
                           edad > 50 ~ "Más de 50")) 
-df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 31 y 50", "30 o menos"))
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 35 y 50", "Entre 29 y 34", "Entre 24 y 28", "Entre 18 y 23"))
 # Hipotesis
 h1 <- "ola"
 h2 <- "ola+edad"
@@ -130,10 +134,12 @@ df_study1 <-
   na.omit() %>% 
   mutate(ola_num=as.numeric(ola),
          ola=as.factor(ola),
-         edad = case_when(edad <=30~"30 o menos",
-                          edad >30 & edad <=50 ~ "Entre 31 y 50",
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=34 ~ "Entre 29 y 34",
+                          edad >34 & edad <=50 ~ "Entre 35 y 50",
                           edad > 50 ~ "Más de 50")) 
-df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 31 y 50", "30 o menos"))
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 35 y 50", "Entre 29 y 34", "Entre 24 y 28", "Entre 18 y 23"))
 # Hipotesis
 h1 <- "ola"
 h2 <- "ola+edad"
@@ -178,10 +184,12 @@ df_study1 <-
   na.omit() %>% 
   mutate(ola_num=as.numeric(ola),
          ola=as.factor(ola),
-         edad = case_when(edad <=30~"30 o menos",
-                          edad >30 & edad <=50 ~ "Entre 31 y 50",
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=34 ~ "Entre 29 y 34",
+                          edad >34 & edad <=50 ~ "Entre 35 y 50",
                           edad > 50 ~ "Más de 50")) 
-df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 31 y 50", "30 o menos"))
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 35 y 50", "Entre 29 y 34", "Entre 24 y 28", "Entre 18 y 23"))
 
 df_study1$mov_feminista <- factor(df_study1$mov_feminista,
          labels = c("No", "Si"))
@@ -241,10 +249,12 @@ df_study1 <-
   na.omit() %>% 
   mutate(ola_num=as.numeric(ola),
          ola=as.factor(ola),
-         edad = case_when(edad <=30~"30 o menos",
-                          edad >30 & edad <=50 ~ "Entre 31 y 50",
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=34 ~ "Entre 29 y 34",
+                          edad >34 & edad <=50 ~ "Entre 35 y 50",
                           edad > 50 ~ "Más de 50")) 
-df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 31 y 50", "30 o menos"))
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 35 y 50", "Entre 29 y 34", "Entre 24 y 28", "Entre 18 y 23"))
 
 df_study1$part_electoral <- factor(df_study1$part_electoral, levels = c(1,2),
          labels = c("Si", "No"))
@@ -296,10 +306,12 @@ df_study1 <-
   na.omit() %>% 
   mutate(ola_num=as.numeric(ola),
          ola=as.factor(ola),
-         edad = case_when(edad <=30~"30 o menos",
-                          edad >30 & edad <=50 ~ "Entre 31 y 50",
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=34 ~ "Entre 29 y 34",
+                          edad >34 & edad <=50 ~ "Entre 35 y 50",
                           edad > 50 ~ "Más de 50")) 
-df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 31 y 50", "30 o menos"))
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 35 y 50", "Entre 29 y 34", "Entre 24 y 28", "Entre 18 y 23"))
 # Hipotesis
 h1 <- "ola"
 h2 <- "ola+edad"
@@ -346,10 +358,12 @@ df_study1 <- df_study1 %>%
   rowwise() %>%
   mutate(ola_num=as.numeric(ola),
          ola=as.factor(ola),
-         edad = case_when(edad <=30~"30 o menos",
-                          edad >30 & edad <=50 ~ "Entre 31 y 50",
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=34 ~ "Entre 29 y 34",
+                          edad >34 & edad <=50 ~ "Entre 35 y 50",
                           edad > 50 ~ "Más de 50")) 
-df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 31 y 50", "30 o menos"))
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 35 y 50", "Entre 29 y 34", "Entre 24 y 28", "Entre 18 y 23"))
 # Hipotesis
 h1 <- "ola"
 h2 <- "ola+edad"
@@ -397,10 +411,12 @@ df_study1 <-
   na.omit() %>% 
   mutate(ola_num=as.numeric(ola),
          ola=as.factor(ola),
-         edad = case_when(edad <=30~"30 o menos",
-                          edad >30 & edad <=50 ~ "Entre 31 y 50",
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=34 ~ "Entre 29 y 34",
+                          edad >34 & edad <=50 ~ "Entre 35 y 50",
                           edad > 50 ~ "Más de 50")) 
-df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 31 y 50", "30 o menos"))
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 35 y 50", "Entre 29 y 34", "Entre 24 y 28", "Entre 18 y 23"))
 # Hipotesis
 h1 <- "ola"
 h2 <- "ola+edad"
@@ -445,10 +461,12 @@ df_study1 <-
   na.omit() %>% 
   mutate(ola_num=as.numeric(ola),
          ola=as.factor(ola),
-         edad = case_when(edad <=30~"30 o menos",
-                          edad >30 & edad <=50 ~ "Entre 31 y 50",
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=34 ~ "Entre 29 y 34",
+                          edad >34 & edad <=50 ~ "Entre 35 y 50",
                           edad > 50 ~ "Más de 50")) 
-df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 31 y 50", "30 o menos"))
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 35 y 50", "Entre 29 y 34", "Entre 24 y 28", "Entre 18 y 23"))
 # Hipotesis
 h1 <- "ola"
 h2 <- "ola+edad"
@@ -494,10 +512,12 @@ df_study1 <-
   na.omit() %>% 
   mutate(ola_num=as.numeric(ola),
          ola=as.factor(ola),
-         edad = case_when(edad <=30~"30 o menos",
-                          edad >30 & edad <=50 ~ "Entre 31 y 50",
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=34 ~ "Entre 29 y 34",
+                          edad >34 & edad <=50 ~ "Entre 35 y 50",
                           edad > 50 ~ "Más de 50")) 
-df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 31 y 50", "30 o menos"))
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 35 y 50", "Entre 29 y 34", "Entre 24 y 28", "Entre 18 y 23"))
 # Hipotesis
 h1 <- "ola"
 h2 <- "ola+edad"
@@ -542,10 +562,12 @@ df_study1 <-
   na.omit() %>% 
   mutate(ola_num=as.numeric(ola),
          ola=as.factor(ola),
-         edad = case_when(edad <=30~"30 o menos",
-                          edad >30 & edad <=50 ~ "Entre 31 y 50",
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=34 ~ "Entre 29 y 34",
+                          edad >34 & edad <=50 ~ "Entre 35 y 50",
                           edad > 50 ~ "Más de 50")) 
-df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 31 y 50", "30 o menos"))
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 35 y 50", "Entre 29 y 34", "Entre 24 y 28", "Entre 18 y 23"))
 # Hipotesis
 h1 <- "ola"
 h2 <- "ola+edad"
@@ -590,10 +612,12 @@ df_study1 <-
   na.omit() %>% 
   mutate(ola_num=as.numeric(ola),
          ola=as.factor(ola),
-         edad = case_when(edad <=30~"30 o menos",
-                          edad >30 & edad <=50 ~ "Entre 31 y 50",
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=34 ~ "Entre 29 y 34",
+                          edad >34 & edad <=50 ~ "Entre 35 y 50",
                           edad > 50 ~ "Más de 50")) 
-df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 31 y 50", "30 o menos"))
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 35 y 50", "Entre 29 y 34", "Entre 24 y 28", "Entre 18 y 23"))
 # Hipotesis
 h1 <- "ola"
 h2 <- "ola+edad"
@@ -638,10 +662,12 @@ df_study1 <-
   na.omit() %>% 
   mutate(ola_num=as.numeric(ola),
          ola=as.factor(ola),
-         edad = case_when(edad <=30~"30 o menos",
-                          edad >30 & edad <=50 ~ "Entre 31 y 50",
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=34 ~ "Entre 29 y 34",
+                          edad >34 & edad <=50 ~ "Entre 35 y 50",
                           edad > 50 ~ "Más de 50")) 
-df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 31 y 50", "30 o menos"))
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 35 y 50", "Entre 29 y 34", "Entre 24 y 28", "Entre 18 y 23"))
 # Hipotesis
 h1 <- "ola"
 h2 <- "ola+edad"
@@ -692,10 +718,12 @@ df_study1 <-
   na.omit() %>% 
   mutate(ola_num=as.numeric(ola),
          ola=as.factor(ola),
-         edad = case_when(edad <=30~"30 o menos",
-                          edad >30 & edad <=50 ~ "Entre 31 y 50",
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=34 ~ "Entre 29 y 34",
+                          edad >34 & edad <=50 ~ "Entre 35 y 50",
                           edad > 50 ~ "Más de 50")) 
-df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 31 y 50", "30 o menos"))
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 50", "Entre 35 y 50", "Entre 29 y 34", "Entre 24 y 28", "Entre 18 y 23"))
 # Hipotesis
 h1 <- "ola"
 h2 <- "ola+edad"
