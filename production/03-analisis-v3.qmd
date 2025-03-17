@@ -1,0 +1,991 @@
+---
+title: "03-analisis-v3"
+format:
+  html:
+    toc: true
+editor: source
+---
+
+# Estimaciones con grupo etario mov estudiantil 2006
+
+Para esta estimación, se modifican los grupos etarios dando énfasis a que, además de los jóvenes, las personas mayores de 46 años participaron en el plebiscito del 88.
+
+## Participación en marchas
+
+```{r}
+#if (!require("pacman")) install.packages("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg,
+               interactions
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,part_marchas, edad, sexo, hijo, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=45 ~ "Entre 29 y 45",
+                          edad > 45 ~ "Más de 45")) 
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 45", "Entre 29 y 45", "Entre 24 y 28", "Entre 18 y 23"))
+
+sjmisc::frq(df_study1$edad)
+# Hipotesis
+h1 <- "ola"
+h2 <- "ola+edad"
+h3 <- "ola+edad+sexo"
+h4 <- "ola+edad+sexo+educ"
+h5 <- "ola+edad+sexo+educ+hijo"
+h6 <- "ola*edad+sexo+educ+hijo"
+h7 <- "ola*sexo+edad+sexo+educ+hijo"
+h8 <- "ola*educ+edad+sexo+educ+hijo"
+h9 <- "ola*hijo+edad+sexo+educ+hijo"
+h10 <- "ola*hijo*edad+sexo+educ+hijo"
+h11 <- "ola*educ*edad+sexo+educ+hijo"
+
+marchar.null <- lmer(formula(paste0("part_marchas~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar1 <- lmer(formula(paste0("part_marchas~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar2 <- lmer(formula(paste0("part_marchas~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar3 <- lmer(formula(paste0("part_marchas~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar4 <- lmer(formula(paste0("part_marchas~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("part_marchas~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("part_marchas~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("part_marchas~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("part_marchas~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("part_marchas~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("part_marchas~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("part_marchas~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+
+```
+
+```{r results='asis'}
+texreg::htmlreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
+                custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
+```
+
+### interacciones
+
+```{r}
+interact_plot(marchar6, pred = ola, modx = edad, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar7, pred = ola, modx = sexo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar8, pred = ola, modx = educ, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar9, pred = ola, modx = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar10, pred = ola, modx = edad, mod2 = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar11, pred = ola, modx = edad, mod2 = educ, interval = TRUE)
+```
+
+## Participación en redes sociales (en todas las olas)
+
+```{r}
+if (!require("pacman")) install.packages("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,part_rrss, edad, sexo, hijo, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=45 ~ "Entre 29 y 45",
+                          edad > 45 ~ "Más de 45")) 
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 45", "Entre 29 y 45", "Entre 24 y 28", "Entre 18 y 23"))
+
+marchar.null <- lmer(formula(paste0("part_rrss~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar1 <- lmer(formula(paste0("part_rrss~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar2 <- lmer(formula(paste0("part_rrss~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar3 <- lmer(formula(paste0("part_rrss~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar4 <- lmer(formula(paste0("part_rrss~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("part_rrss~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("part_rrss~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("part_rrss~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("part_rrss~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("part_rrss~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("part_rrss~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("part_rrss~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+```{r results='asis'}
+texreg::htmlreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
+                custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
+```
+
+### interacciones
+
+```{r}
+interact_plot(marchar6, pred = ola, modx = edad, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar7, pred = ola, modx = sexo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar8, pred = ola, modx = educ, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar9, pred = ola, modx = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar10, pred = ola, modx = edad, mod2 = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar11, pred = ola, modx = edad, mod2 = educ, interval = TRUE)
+```
+
+## Apoyo mov estudiantil (todas las olas)
+
+```{r}
+#if (!require("pacman")) install.packages("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,mov_estudiantil, edad, sexo, hijo, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=45 ~ "Entre 29 y 45",
+                          edad > 45 ~ "Más de 45")) 
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 45", "Entre 29 y 45", "Entre 24 y 28", "Entre 18 y 23"))
+
+marchar.null <- glmer(formula(paste0("mov_estudiantil~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = 'binomial')
+marchar1 <- glmer(formula(paste0("mov_estudiantil~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = 'binomial')
+marchar2 <- glmer(formula(paste0("mov_estudiantil~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = 'binomial')
+marchar3 <- glmer(formula(paste0("mov_estudiantil~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = 'binomial')
+marchar4 <- lmer(formula(paste0("mov_estudiantil~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("mov_estudiantil~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("mov_estudiantil~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("mov_estudiantil~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("mov_estudiantil~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("mov_estudiantil~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("mov_estudiantil~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("mov_estudiantil~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+```{r results='asis'}
+texreg::htmlreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
+                custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
+```
+
+### interacciones
+
+```{r}
+interact_plot(marchar6, pred = ola, modx = edad, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar7, pred = ola, modx = sexo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar8, pred = ola, modx = educ, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar9, pred = ola, modx = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar10, pred = ola, modx = edad, mod2 = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar11, pred = ola, modx = edad, mod2 = educ, interval = TRUE)
+```
+
+
+
+
+# Participación electoral
+
+Variables:
+- Participación elecciones 2013 (ola 1 y 2)
+- Participación elecciones 2017 (ola 3 y 4)
+- Participación en plebiscito nueva constitución (ola 5)
+- Participación elecciones 2021 primera vuelta (ola 6)
+- Participación elecciones 2021 segunda vuelta (ola 7)
+
+
+```{r}
+#if (!require("pacman")) install.packages("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,part_electoral, edad, sexo, hijo, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=45 ~ "Entre 29 y 45",
+                          edad > 45 ~ "Más de 45")) 
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 45", "Entre 29 y 45", "Entre 24 y 28", "Entre 18 y 23"))
+
+df_study1$part_electoral <- factor(df_study1$part_electoral, levels = c(1,2),
+         labels = c("Si", "No"))
+df_study1$part_electoral <- car::recode(df_study1$part_electoral, c("1=2; 2=1"))
+df_study1 <- df_study1 %>%
+  dplyr::mutate(part_electoral = ifelse(part_electoral == "Si", 1, 0))
+
+
+marchar.null <- glmer(formula(paste0("part_electoral~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = "binomial")
+marchar1 <- glmer(formula(paste0("part_electoral~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = "binomial")
+marchar2 <- glmer(formula(paste0("part_electoral~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = "binomial")
+marchar3 <- glmer(formula(paste0("part_electoral~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = "binomial")
+marchar4 <- lmer(formula(paste0("part_electoral~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("part_electoral~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("part_electoral~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("part_electoral~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("part_electoral~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("part_electoral~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("part_electoral~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("part_electoral~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+
+```
+
+```{r results='asis'}
+texreg::htmlreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
+                custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
+```
+
+### interacciones
+
+```{r}
+interact_plot(marchar6, pred = ola, modx = edad, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar7, pred = ola, modx = sexo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar8, pred = ola, modx = educ, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar9, pred = ola, modx = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar10, pred = ola, modx = edad, mod2 = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar11, pred = ola, modx = edad, mod2 = educ, interval = TRUE)
+```
+
+## Interés en  la política (todas las olas)
+
+```{r}
+#if (!require("pacman")) install.packages("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,interes_pol, edad, sexo, hijo, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=45 ~ "Entre 29 y 45",
+                          edad > 45 ~ "Más de 45")) 
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 45", "Entre 29 y 45", "Entre 24 y 28", "Entre 18 y 23"))
+
+marchar.null <- lmer(formula(paste0("interes_pol~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar1 <- lmer(formula(paste0("interes_pol~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar2 <- lmer(formula(paste0("interes_pol~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar3 <- lmer(formula(paste0("interes_pol~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar4 <- lmer(formula(paste0("interes_pol~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("interes_pol~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("interes_pol~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("interes_pol~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("interes_pol~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("interes_pol~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("interes_pol~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("interes_pol~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+```{r results='asis'}
+texreg::htmlreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
+                custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
+```
+
+### interacciones
+
+```{r}
+interact_plot(marchar6, pred = ola, modx = edad, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar7, pred = ola, modx = sexo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar8, pred = ola, modx = educ, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar9, pred = ola, modx = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar10, pred = ola, modx = edad, mod2 = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar11, pred = ola, modx = edad, mod2 = educ, interval = TRUE)
+```
+
+## Autoritarismo (casi todas las olas)
+
+```{r}
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+df_study1 <- df_study1_long_t7 %>% dplyr::select(idencuesta,ola, segmento, estrato, ponderador_long_total, sexo, hijo, educ, universitaria,
+                                                 autoritarismo1, autoritarismo2, autoritarismo3, autoritarismo4, autoritarismo5,
+                                                 edad) %>% na.omit()
+
+df_study1 <- df_study1 %>% 
+  rowwise() %>%
+  mutate(autoritarismo = mean(c(autoritarismo1:autoritarismo4, na.rm=TRUE))) %>% 
+  ungroup()
+```
+
+```{r}
+df_study1 <- df_study1 %>% 
+  rowwise() %>%
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=45 ~ "Entre 29 y 45",
+                          edad > 45 ~ "Más de 45")) 
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 45", "Entre 29 y 45", "Entre 24 y 28", "Entre 18 y 23"))
+
+marchar.null <- lmer(formula(paste0("autoritarismo~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar1 <- lmer(formula(paste0("autoritarismo~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar2 <- lmer(formula(paste0("autoritarismo~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar3 <- lmer(formula(paste0("autoritarismo~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar4 <- lmer(formula(paste0("autoritarismo~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("autoritarismo~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("autoritarismo~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("autoritarismo~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("autoritarismo~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("autoritarismo~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("autoritarismo~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("autoritarismo~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+```{r results='asis'}
+texreg::htmlreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
+                custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
+```
+
+### interacciones
+
+```{r}
+interact_plot(marchar6, pred = ola, modx = edad, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar7, pred = ola, modx = sexo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar8, pred = ola, modx = educ, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar9, pred = ola, modx = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar10, pred = ola, modx = edad, mod2 = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar11, pred = ola, modx = edad, mod2 = educ, interval = TRUE)
+```
+
+## Cambio social es posible
+
+
+### Regresión
+
+```{r}
+#if (!require("pacman")) install.packages("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,autoritarismo5, edad, sexo, hijo, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=45 ~ "Entre 29 y 45",
+                          edad > 45 ~ "Más de 45")) 
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 45", "Entre 29 y 45", "Entre 24 y 28", "Entre 18 y 23"))
+
+marchar.null <- lmer(formula(paste0("autoritarismo5~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar1 <- lmer(formula(paste0("autoritarismo5~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar2 <- lmer(formula(paste0("autoritarismo5~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar3 <- lmer(formula(paste0("autoritarismo5~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar4 <- lmer(formula(paste0("autoritarismo5~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("autoritarismo5~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("autoritarismo5~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("autoritarismo5~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("autoritarismo5~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("autoritarismo5~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("autoritarismo5~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("autoritarismo5~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+```{r results='asis'}
+texreg::htmlreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
+                custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
+```
+
+### interacciones
+
+```{r}
+interact_plot(marchar6, pred = ola, modx = edad, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar7, pred = ola, modx = sexo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar8, pred = ola, modx = educ, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar9, pred = ola, modx = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar10, pred = ola, modx = edad, mod2 = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar11, pred = ola, modx = edad, mod2 = educ, interval = TRUE)
+```
+
+# Adopción homoparental (olas 3 en adelante)
+
+```{r}
+#if (!require("pacman")) install.packages("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,adop_homo, edad, sexo, hijo, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=45 ~ "Entre 29 y 45",
+                          edad > 45 ~ "Más de 45")) 
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 45", "Entre 29 y 45", "Entre 24 y 28", "Entre 18 y 23"))
+
+marchar.null <- lmer(formula(paste0("adop_homo~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar1 <- lmer(formula(paste0("adop_homo~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar2 <- lmer(formula(paste0("adop_homo~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar3 <- lmer(formula(paste0("adop_homo~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar4 <- lmer(formula(paste0("adop_homo~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("adop_homo~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("adop_homo~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("adop_homo~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("adop_homo~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("adop_homo~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("adop_homo~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("adop_homo~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+```{r results='asis'}
+texreg::htmlreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
+                custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
+```
+
+### interacciones
+
+```{r}
+interact_plot(marchar6, pred = ola, modx = edad, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar7, pred = ola, modx = sexo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar8, pred = ola, modx = educ, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar9, pred = ola, modx = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar10, pred = ola, modx = edad, mod2 = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar11, pred = ola, modx = edad, mod2 = educ, interval = TRUE)
+```
+
+## Aborto (ola 3 en adelante)
+
+
+```{r}
+#if (!require("pacman")) install.packages("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,aborto, edad, sexo, hijo, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=45 ~ "Entre 29 y 45",
+                          edad > 45 ~ "Más de 45")) 
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 45", "Entre 29 y 45", "Entre 24 y 28", "Entre 18 y 23"))
+
+marchar.null <- lmer(formula(paste0("aborto~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar1 <- lmer(formula(paste0("aborto~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar2 <- lmer(formula(paste0("aborto~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar3 <- lmer(formula(paste0("aborto~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar4 <- lmer(formula(paste0("aborto~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("aborto~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("aborto~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("aborto~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("aborto~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("aborto~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("aborto~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("aborto~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+```{r results='asis'}
+texreg::htmlreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
+                custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
+```
+
+### interacciones
+
+```{r}
+interact_plot(marchar6, pred = ola, modx = edad, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar7, pred = ola, modx = sexo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar8, pred = ola, modx = educ, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar9, pred = ola, modx = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar10, pred = ola, modx = edad, mod2 = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar11, pred = ola, modx = edad, mod2 = educ, interval = TRUE)
+```
+
+## Cada persona debiera asegurarse por Si mismo su futura pensión para la tercera edad (ola 3 en adelante)
+
+```{r}
+#if (!require("pacman")) install.packages("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,pensiones, edad, sexo, hijo, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=45 ~ "Entre 29 y 45",
+                          edad > 45 ~ "Más de 45")) 
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 45", "Entre 29 y 45", "Entre 24 y 28", "Entre 18 y 23"))
+
+marchar.null <- lmer(formula(paste0("pensiones~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar1 <- lmer(formula(paste0("pensiones~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar2 <- lmer(formula(paste0("pensiones~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar3 <- lmer(formula(paste0("pensiones~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar4 <- lmer(formula(paste0("pensiones~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("pensiones~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("pensiones~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("pensiones~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("pensiones~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("pensiones~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("pensiones~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("pensiones~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+```{r results='asis'}
+texreg::htmlreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
+                custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
+```
+
+### interacciones
+
+```{r}
+interact_plot(marchar6, pred = ola, modx = edad, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar7, pred = ola, modx = sexo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar8, pred = ola, modx = educ, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar9, pred = ola, modx = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar10, pred = ola, modx = edad, mod2 = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar11, pred = ola, modx = edad, mod2 = educ, interval = TRUE)
+```
+
+## Chile debería tomar medidas más drásticas para impedir el ingreso de inmigrantes al países
+
+```{r}
+#if (!require("pacman")) install.packages("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,restriccion_migrantes, edad, sexo, hijo, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=45 ~ "Entre 29 y 45",
+                          edad > 45 ~ "Más de 45")) 
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 45", "Entre 29 y 45", "Entre 24 y 28", "Entre 18 y 23"))
+
+marchar.null <- lmer(formula(paste0("restriccion_migrantes~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar1 <- lmer(formula(paste0("restriccion_migrantes~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar2 <- lmer(formula(paste0("restriccion_migrantes~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar3 <- lmer(formula(paste0("restriccion_migrantes~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar4 <- lmer(formula(paste0("restriccion_migrantes~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("restriccion_migrantes~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("restriccion_migrantes~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("restriccion_migrantes~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("restriccion_migrantes~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("restriccion_migrantes~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("restriccion_migrantes~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("restriccion_migrantes~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+```{r results='asis'}
+texreg::htmlreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
+                custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
+```
+
+### interacciones
+
+```{r}
+interact_plot(marchar6, pred = ola, modx = edad, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar7, pred = ola, modx = sexo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar8, pred = ola, modx = educ, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar9, pred = ola, modx = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar10, pred = ola, modx = edad, mod2 = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar11, pred = ola, modx = edad, mod2 = educ, interval = TRUE)
+```
+
+## El Estado de Chile, más que los privados, debería ser el principal proveedor de educación
+
+```{r}
+#if (!require("pacman")) install.packages("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,rol_estado_educ, edad, sexo, hijo, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=45 ~ "Entre 29 y 45",
+                          edad > 45 ~ "Más de 45")) 
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 45", "Entre 29 y 45", "Entre 24 y 28", "Entre 18 y 23"))
+
+marchar.null <- lmer(formula(paste0("rol_estado_educ~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar1 <- lmer(formula(paste0("rol_estado_educ~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar2 <- lmer(formula(paste0("rol_estado_educ~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar3 <- lmer(formula(paste0("rol_estado_educ~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar4 <- lmer(formula(paste0("rol_estado_educ~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("rol_estado_educ~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("rol_estado_educ~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("rol_estado_educ~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("rol_estado_educ~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("rol_estado_educ~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("rol_estado_educ~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("rol_estado_educ~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+```{r results='asis'}
+texreg::htmlreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
+                custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
+```
+
+### interacciones
+
+```{r}
+interact_plot(marchar6, pred = ola, modx = edad, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar7, pred = ola, modx = sexo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar8, pred = ola, modx = educ, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar9, pred = ola, modx = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar10, pred = ola, modx = edad, mod2 = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar11, pred = ola, modx = edad, mod2 = educ, interval = TRUE)
+```
+
+## En Chile, las diferencias de ingreso son demasiado grandes
+
+```{r}
+#if (!require("pacman")) install.packages("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               ggplot2,
+               sjPlot,
+               tidyverse,
+               ggalluvial,
+               survey,
+               shadowtext,
+               srvyr,
+               interactions
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,perc_des, edad, sexo, hijo, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=45 ~ "Entre 29 y 45",
+                          edad > 45 ~ "Más de 45")) 
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 45", "Entre 29 y 45", "Entre 24 y 28", "Entre 18 y 23"))
+
+marchar.null <- lmer(formula(paste0("perc_des~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar1 <- lmer(formula(paste0("perc_des~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar2 <- lmer(formula(paste0("perc_des~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar3 <- lmer(formula(paste0("perc_des~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar4 <- lmer(formula(paste0("perc_des~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("perc_des~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("perc_des~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("perc_des~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("perc_des~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("perc_des~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("perc_des~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("perc_des~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+```{r results='asis'}
+texreg::htmlreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
+                custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
+```
+
+### interacciones
+
+```{r}
+interact_plot(marchar6, pred = ola, modx = edad, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar7, pred = ola, modx = sexo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar8, pred = ola, modx = educ, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar9, pred = ola, modx = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar10, pred = ola, modx = edad, mod2 = hijo, interval = TRUE)
+```
+
+```{r}
+interact_plot(marchar11, pred = ola, modx = edad, mod2 = educ, interval = TRUE)
+```

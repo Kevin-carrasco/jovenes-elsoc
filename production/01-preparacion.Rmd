@@ -81,10 +81,10 @@ elsoc_long_2016_2023 %>%
          pensiones=c37_04,
          perc_des=c18_11,
          rol_estado_educ=c37_03,
-         # sexo=m0_sexo,
+         sexo=m0_sexo,
          edad=m0_edad,
-         # educacion=m01,
-          ola
+         educacion=m01,
+         ola
          ) %>% 
   sjlabelled::drop_labels(., drop.na = FALSE)
   
@@ -97,20 +97,34 @@ sjlabelled::set_label(x = elsoc_long_2016_2023$marchar,
 # Socioeconomic_________________________________________________________________
 
 # Education_______________________________________
-# elsoc_long_2016_2023$educ <- 
-#   car::recode(elsoc_long_2016_2023$educacion,
-#               "c(1,2,3,4,5)=1;c(6,7)=2;c(8,9,10)=3; c(-888,-999)=NA")
-# elsoc_long_2016_2023$educ <-
-#   factor(elsoc_long_2016_2023$educ,
-#          labels = c("Media o menos","Técnica","Universitaria"))
+ elsoc_long_2016_2023$educ <- 
+   car::recode(elsoc_long_2016_2023$educacion,
+               "c(1,2,3,4,5)=1;c(6,7)=2;c(8,9,10)=3; c(-888,-999)=NA")
+ elsoc_long_2016_2023$educ <-
+   factor(elsoc_long_2016_2023$educ,
+          labels = c("Media o menos","Técnica","Universitaria"))
 
 #reverse education, reference level is the highest level
 #elsoc_long_2016_2023$educ <- forcats::fct_rev(elsoc_long_2016_2023$educ)
 
-# elsoc_long_2016_2023$educ <- 
-# sjlabelled::set_label(x = elsoc_long_2016_2023$educ,
-#                       label = "Educación")
-# sjmisc::frq(elsoc_long_2016_2023$educ)
+ elsoc_long_2016_2023$educ <- 
+ sjlabelled::set_label(x = elsoc_long_2016_2023$educ,
+                       label = "Educación")
+ sjmisc::frq(elsoc_long_2016_2023$educ)
+ 
+ 
+elsoc_long_2016_2023$universitaria <- 
+   car::recode(elsoc_long_2016_2023$educacion,
+               "c(1,2,3,4,5,6,7)=1;c(8,9,10)=2; c(-888,-999)=NA")
+ elsoc_long_2016_2023$universitaria <-
+   factor(elsoc_long_2016_2023$universitaria,
+          labels = c("Menos que universitaria","Universitaria"))
+
+#reverse education, reference level is the highest level
+#elsoc_long_2016_2023$educ <- forcats::fct_rev(elsoc_long_2016_2023$educ)
+
+ sjmisc::frq(elsoc_long_2016_2023$universitaria)
+ 
 
 # Household income_________________________________________
 
@@ -258,7 +272,9 @@ elsoc_long_2016_2023 %>%
   select(idencuesta,ola,
          muestra,
          ponderador_long_total, segmento, estrato,
-#         sexo,
+         sexo,
+         educ,
+         universitaria,
          # cuestion_mig,
          part_marchas,
          part_rrss,
@@ -297,7 +313,9 @@ elsoc_long_2016_2023 %>%
          # frien_inm_bi,
          # frien_inm_t1t4,
          #pos_id,
-         edad)
+         edad,
+         m37_01, m37_02,
+         m48)
 
 
 # Reshape long to wide
@@ -305,7 +323,7 @@ df_study1_wide <- df_study1 %>%
   tidyr::pivot_wider(id_cols = c("idencuesta","muestra"),
                      names_from = "ola",
                      # names_prefix = c("educ","educyear","ing_pc","quintil","quintil1"),
-                     values_from = names(select(df_study1,ponderador_long_total,segmento, estrato, part_marchas:edad)))
+                     values_from = names(select(df_study1,ponderador_long_total,segmento, estrato,sexo,educ,universitaria, part_marchas:m48)))
 ```
 
 
@@ -319,20 +337,28 @@ df_study1_wide$edad_5 <-df_study1_wide$edad_1
 df_study1_wide$edad_6 <-df_study1_wide$edad_1
 df_study1_wide$edad_7 <-df_study1_wide$edad_1
 
-# df_study1_wide$sexo_2 <-df_study1_wide$sexo_1 #sex
-# df_study1_wide$sexo_3 <-df_study1_wide$sexo_1
-# df_study1_wide$sexo_4 <-df_study1_wide$sexo_1
-# df_study1_wide$sexo_5 <-df_study1_wide$sexo_1
-# df_study1_wide$sexo_6 <-df_study1_wide$sexo_1
-# df_study1_wide$sexo_7 <-df_study1_wide$sexo_1
+df_study1_wide$sexo_2 <-df_study1_wide$sexo_1 #sex
+df_study1_wide$sexo_3 <-df_study1_wide$sexo_1
+df_study1_wide$sexo_4 <-df_study1_wide$sexo_1
+df_study1_wide$sexo_5 <-df_study1_wide$sexo_1
+df_study1_wide$sexo_6 <-df_study1_wide$sexo_1
+df_study1_wide$sexo_7 <-df_study1_wide$sexo_1
 # 
-# df_study1_wide$educ_2 <-df_study1_wide$educ_1 #education
-# df_study1_wide$educ_3 <-df_study1_wide$educ_1
-# df_study1_wide$educ_4 <-df_study1_wide$educ_1
-# df_study1_wide$educ_5 <-df_study1_wide$educ_1
-# df_study1_wide$educ_6 <-df_study1_wide$educ_1
-# df_study1_wide$educ_7 <-df_study1_wide$educ_1
+df_study1_wide$educ_2 <-df_study1_wide$educ_1 #education
+df_study1_wide$educ_3 <-df_study1_wide$educ_1
+df_study1_wide$educ_4 <-df_study1_wide$educ_1
+df_study1_wide$educ_5 <-df_study1_wide$educ_1
+df_study1_wide$educ_6 <-df_study1_wide$educ_1
+df_study1_wide$educ_7 <-df_study1_wide$educ_1
 # 
+df_study1_wide$universitaria_2 <-df_study1_wide$universitaria_1 #univeristaria
+df_study1_wide$universitaria_3 <-df_study1_wide$universitaria_1
+df_study1_wide$universitaria_4 <-df_study1_wide$universitaria_1
+df_study1_wide$universitaria_5 <-df_study1_wide$universitaria_1
+df_study1_wide$universitaria_6 <-df_study1_wide$universitaria_1
+df_study1_wide$universitaria_7 <-df_study1_wide$universitaria_1
+
+
 # df_study1_wide$quintil1_2 <-df_study1_wide$quintil1_1 #quintiles
 # df_study1_wide$quintil1_3 <-df_study1_wide$quintil1_1
 # df_study1_wide$quintil1_4 <-df_study1_wide$quintil1_1
@@ -365,6 +391,27 @@ df_study1_wide$adop_homo_5 <- df_study1_wide$adop_homo_6
 
 df_study1_wide$rol_estado_educ_5 <- df_study1_wide$rol_estado_educ_6
 
+df_study1_wide <- df_study1_wide %>%
+  mutate(
+    hijo = case_when(
+      m48_2 == 1 | m48_4 == 1 ~ 1,
+      m37_01_1 > 0 | m37_02_1 > 0 | m37_01_3 > 0 | m37_02_3 > 0 ~ 1,
+      is.na(m48_2) & is.na(m48_4) & 
+      is.na(m37_01_1) & is.na(m37_02_1) & 
+      is.na(m37_01_3) & is.na(m37_02_3) ~ NA_real_,
+      TRUE ~ 0
+    )
+  ) %>%
+  mutate(
+    hijo_1 = hijo,
+    hijo_2 = hijo,
+    hijo_3 = hijo,
+    hijo_4 = hijo,
+    hijo_5 = hijo,
+    hijo_6 = hijo,
+    hijo_7 = hijo
+  )
+
 names(df_study1_wide)
 dim(df_study1_wide)
 
@@ -387,10 +434,11 @@ df_study1_long <- data.table::melt.data.table(data.table::setDT(df_study1_wide),
                                  "^autoritarismo1_", "^autoritarismo2_", "^autoritarismo3_", "^autoritarismo4_", "^autoritarismo5_", 
                                  "^adop_homo_", "^aborto_", "^restriccion_migrantes_", "^pensiones_",
                                  "^perc_des_", "^rol_estado_educ_",
-                     #            "^educ_", "^quintil1_","^ess_",
+                                 "^educ_", "^universitaria_", 
+                     #"^quintil1_","^ess_",
                                  #"^pos_id_",
-                                 "^edad_"
-                     #"^sexo_"
+                                 "^edad_", "^hijo_",
+                     "^sexo_"
                                  ),
               value.name = c("ponderador_long_total", "segmento", "estrato",
                                  "part_marchas", "part_rrss",
@@ -400,10 +448,11 @@ df_study1_long <- data.table::melt.data.table(data.table::setDT(df_study1_wide),
                                  "autoritarismo1", "autoritarismo2", "autoritarismo3", "autoritarismo4", "autoritarismo5", 
                                  "adop_homo", "aborto", "restriccion_migrantes", "pensiones",
                                  "perc_des", "rol_estado_educ",
-                     #            "^educ_", "^quintil1_","^ess_",
+                                 "educ", "universitaria", 
+                     #"^quintil1_","^ess_",
                                  #"^pos_id_",
-                                 "edad"
-                     #"^sexo_"
+                                 "edad", "hijo",
+                     "sexo"
                      ),
               na.rm = F,value.factor = TRUE
               )
