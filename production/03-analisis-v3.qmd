@@ -1,7 +1,9 @@
 ---
 title: "03-analisis-v3"
-format:
-  html:
+format:  
+  html:  
+    fig-width: 10  
+    fig-height: 7  
     toc: true
 editor: source
 ---
