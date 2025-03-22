@@ -1566,7 +1566,7 @@ border-radius: 0px;
 
 
 <h1 class="title toc-ignore">Preparación de datos</h1>
-<h4 class="date">lunes 17 marzo 2025 12:15:13</h4>
+<h4 class="date">sábado 22 marzo 2025 4:35:41</h4>
 
 </div>
 
@@ -1807,24 +1807,34 @@ elsoc_long_2016_2023$edad_cat &lt;-
                         label = c(&quot;Rango etario&quot;)) 
 
 # Political position ____________________________
-# elsoc_long_2016_2023$pos_id &lt;-
-# factor(
-#   car::recode(
-#     elsoc_long_2016_2023$c15,
-#     &quot;c(11,12,-888,-999)=&#39;No se identifica&#39;;c(0,1,2,3,4)=&#39;Izquierda&#39;;
-#      c(5)=&#39;Centro&#39;;c(6,7,8,9,10)=&#39;Derecha&#39;&quot;
-#   ),
-#   levels = c(&#39;Izquierda&#39;, &#39;Centro&#39;, &#39;Derecha&#39;, &#39;No se identifica&#39;)
-# )
-# 
-# elsoc_long_2016_2023$pos_id &lt;- factor(elsoc_long_2016_2023$pos_id,
-#                                       levels = levels(elsoc_long_2016_2023$pos_id))
-# 
-# elsoc_long_2016_2023$pos_id &lt;- 
-# sjlabelled::set_label(x = elsoc_long_2016_2023$pos_id, 
-#                       label = &quot;Identificación política&quot;) 
-# 
-# sjmisc::frq(elsoc_long_2016_2023$pos_id)</code></pre>
+elsoc_long_2016_2023$pos_id &lt;-
+factor(
+  car::recode(
+    elsoc_long_2016_2023$c15,
+    &quot;c(11,12,-888,-999)=&#39;No se identifica&#39;;c(0,1,2,3,4)=&#39;Izquierda&#39;;
+     c(5)=&#39;Centro&#39;;c(6,7,8,9,10)=&#39;Derecha&#39;&quot;
+  ),
+  levels = c(&#39;Izquierda&#39;, &#39;Centro&#39;, &#39;Derecha&#39;, &#39;No se identifica&#39;)
+)
+
+elsoc_long_2016_2023$pos_id &lt;- factor(elsoc_long_2016_2023$pos_id,
+                                      levels = levels(elsoc_long_2016_2023$pos_id))
+
+elsoc_long_2016_2023$pos_id &lt;-
+sjlabelled::set_label(x = elsoc_long_2016_2023$pos_id,
+                      label = &quot;Identificación política&quot;)
+
+sjmisc::frq(elsoc_long_2016_2023$pos_id)</code></pre>
+<pre><code>## Identificación política (x) &lt;categorical&gt; 
+## # total N=20761 valid N=20443 mean=2.67 sd=1.17
+## 
+## Value            |    N | Raw % | Valid % | Cum. %
+## --------------------------------------------------
+## Izquierda        | 4357 | 20.99 |   21.31 |  21.31
+## Centro           | 5360 | 25.82 |   26.22 |  47.53
+## Derecha          | 3369 | 16.23 |   16.48 |  64.01
+## No se identifica | 7357 | 35.44 |   35.99 | 100.00
+## &lt;NA&gt;             |  318 |  1.53 |    &lt;NA&gt; |   &lt;NA&gt;</code></pre>
 <pre class="r"><code># Select variables______________________________________________________________
 
 df_study1 &lt;- 
@@ -1873,7 +1883,7 @@ elsoc_long_2016_2023 %&gt;%
          # frien_inm,
          # frien_inm_bi,
          # frien_inm_t1t4,
-         #pos_id,
+         pos_id,
          edad,
          m37_01, m37_02,
          m48)
@@ -1923,12 +1933,12 @@ df_study1_wide$universitaria_7 &lt;-df_study1_wide$universitaria_1
 # df_study1_wide$quintil1_6 &lt;-df_study1_wide$quintil1_1
 # df_study1_wide$quintil1_7 &lt;-df_study1_wide$quintil1_1
 
-# df_study1_wide$pos_id_2 &lt;-df_study1_wide$pos_id_1 # political position
-# df_study1_wide$pos_id_3 &lt;-df_study1_wide$pos_id_1
-# df_study1_wide$pos_id_4 &lt;-df_study1_wide$pos_id_1
-# df_study1_wide$pos_id_5 &lt;-df_study1_wide$pos_id_1
-# df_study1_wide$pos_id_6 &lt;-df_study1_wide$pos_id_1
-# df_study1_wide$pos_id_7 &lt;-df_study1_wide$pos_id_1
+df_study1_wide$pos_id_2 &lt;-df_study1_wide$pos_id_1 # political position
+df_study1_wide$pos_id_3 &lt;-df_study1_wide$pos_id_1
+df_study1_wide$pos_id_4 &lt;-df_study1_wide$pos_id_1
+df_study1_wide$pos_id_5 &lt;-df_study1_wide$pos_id_1
+df_study1_wide$pos_id_6 &lt;-df_study1_wide$pos_id_1
+df_study1_wide$pos_id_7 &lt;-df_study1_wide$pos_id_1
 
 # Las variables de disposición solo están en ola 1, 3 y 6
 
@@ -2069,33 +2079,36 @@ names(df_study1_wide)</code></pre>
 ## [193] &quot;rol_estado_educ_2&quot;       &quot;rol_estado_educ_3&quot;      
 ## [195] &quot;rol_estado_educ_4&quot;       &quot;rol_estado_educ_5&quot;      
 ## [197] &quot;rol_estado_educ_6&quot;       &quot;rol_estado_educ_7&quot;      
-## [199] &quot;edad_1&quot;                  &quot;edad_2&quot;                 
-## [201] &quot;edad_3&quot;                  &quot;edad_4&quot;                 
-## [203] &quot;edad_5&quot;                  &quot;edad_6&quot;                 
-## [205] &quot;edad_7&quot;                  &quot;m37_01_1&quot;               
-## [207] &quot;m37_01_2&quot;                &quot;m37_01_3&quot;               
-## [209] &quot;m37_01_4&quot;                &quot;m37_01_5&quot;               
-## [211] &quot;m37_01_6&quot;                &quot;m37_01_7&quot;               
-## [213] &quot;m37_02_1&quot;                &quot;m37_02_2&quot;               
-## [215] &quot;m37_02_3&quot;                &quot;m37_02_4&quot;               
-## [217] &quot;m37_02_5&quot;                &quot;m37_02_6&quot;               
-## [219] &quot;m37_02_7&quot;                &quot;m48_1&quot;                  
-## [221] &quot;m48_2&quot;                   &quot;m48_3&quot;                  
-## [223] &quot;m48_4&quot;                   &quot;m48_5&quot;                  
-## [225] &quot;m48_6&quot;                   &quot;m48_7&quot;                  
-## [227] &quot;part_electoral_1&quot;        &quot;part_electoral_2&quot;       
-## [229] &quot;part_electoral_3&quot;        &quot;part_electoral_4&quot;       
-## [231] &quot;part_electoral_5&quot;        &quot;part_electoral_6&quot;       
-## [233] &quot;part_electoral_7&quot;        &quot;hijo&quot;                   
-## [235] &quot;hijo_1&quot;                  &quot;hijo_2&quot;                 
-## [237] &quot;hijo_3&quot;                  &quot;hijo_4&quot;                 
-## [239] &quot;hijo_5&quot;                  &quot;hijo_6&quot;                 
-## [241] &quot;hijo_7&quot;</code></pre>
+## [199] &quot;pos_id_1&quot;                &quot;pos_id_2&quot;               
+## [201] &quot;pos_id_3&quot;                &quot;pos_id_4&quot;               
+## [203] &quot;pos_id_5&quot;                &quot;pos_id_6&quot;               
+## [205] &quot;pos_id_7&quot;                &quot;edad_1&quot;                 
+## [207] &quot;edad_2&quot;                  &quot;edad_3&quot;                 
+## [209] &quot;edad_4&quot;                  &quot;edad_5&quot;                 
+## [211] &quot;edad_6&quot;                  &quot;edad_7&quot;                 
+## [213] &quot;m37_01_1&quot;                &quot;m37_01_2&quot;               
+## [215] &quot;m37_01_3&quot;                &quot;m37_01_4&quot;               
+## [217] &quot;m37_01_5&quot;                &quot;m37_01_6&quot;               
+## [219] &quot;m37_01_7&quot;                &quot;m37_02_1&quot;               
+## [221] &quot;m37_02_2&quot;                &quot;m37_02_3&quot;               
+## [223] &quot;m37_02_4&quot;                &quot;m37_02_5&quot;               
+## [225] &quot;m37_02_6&quot;                &quot;m37_02_7&quot;               
+## [227] &quot;m48_1&quot;                   &quot;m48_2&quot;                  
+## [229] &quot;m48_3&quot;                   &quot;m48_4&quot;                  
+## [231] &quot;m48_5&quot;                   &quot;m48_6&quot;                  
+## [233] &quot;m48_7&quot;                   &quot;part_electoral_1&quot;       
+## [235] &quot;part_electoral_2&quot;        &quot;part_electoral_3&quot;       
+## [237] &quot;part_electoral_4&quot;        &quot;part_electoral_5&quot;       
+## [239] &quot;part_electoral_6&quot;        &quot;part_electoral_7&quot;       
+## [241] &quot;hijo&quot;                    &quot;hijo_1&quot;                 
+## [243] &quot;hijo_2&quot;                  &quot;hijo_3&quot;                 
+## [245] &quot;hijo_4&quot;                  &quot;hijo_5&quot;                 
+## [247] &quot;hijo_6&quot;                  &quot;hijo_7&quot;</code></pre>
 <pre class="r"><code>dim(df_study1_wide)</code></pre>
-<pre><code>## [1] 2928  241</code></pre>
+<pre><code>## [1] 2928  248</code></pre>
 <pre class="r"><code>sjPlot::view_df(df_study1_wide,
                  show.frq = T,show.values = T,show.na = T,show.prc = T, show.type = T)</code></pre>
-<pre><code>## disp_marchas_2 [60], disp_marchas_4 [62], disp_marchas_5 [63], disp_marchas_7 [65], disp_rrss_2 [67], disp_rrss_4 [69], disp_rrss_5 [70], disp_rrss_7 [72], part_electoral1_2 [81], part_electoral1_4 [83], part_electoral1_5 [84], part_electoral1_6 [85], part_electoral1_7 [86], part_electoral3_1 [87], part_electoral3_2 [88], part_electoral3_3 [89], part_electoral3_4 [90], part_electoral3_6 [92], part_electoral3_7 [93], part_electoral4_1 [94], part_electoral4_2 [95], part_electoral4_3 [96], part_electoral4_4 [97], part_electoral4_5 [98], part_electoral4_7 [100], part_electoral5_1 [101], part_electoral5_2 [102], part_electoral5_3 [103], part_electoral5_4 [104], part_electoral5_5 [105], part_electoral5_7 [107], adop_homo_1 [157], adop_homo_2 [158], aborto_1 [164], aborto_2 [165], restriccion_migrantes_1 [171], restriccion_migrantes_2 [172], pensiones_1 [178], pensiones_2 [179], rol_estado_educ_1 [192], rol_estado_educ_2 [193], m37_01_2 [207], m37_01_3 [208], m37_01_4 [209], m37_01_5 [210], m37_01_6 [211], m37_01_7 [212], m37_02_2 [214], m37_02_3 [215], m37_02_4 [216], m37_02_5 [217], m37_02_6 [218], m37_02_7 [219], m48_1 [220], m48_3 [222], m48_4 [223], m48_5 [224], m48_6 [225], m48_7 [226]</code></pre>
+<pre><code>## disp_marchas_2 [60], disp_marchas_4 [62], disp_marchas_5 [63], disp_marchas_7 [65], disp_rrss_2 [67], disp_rrss_4 [69], disp_rrss_5 [70], disp_rrss_7 [72], part_electoral1_2 [81], part_electoral1_4 [83], part_electoral1_5 [84], part_electoral1_6 [85], part_electoral1_7 [86], part_electoral3_1 [87], part_electoral3_2 [88], part_electoral3_3 [89], part_electoral3_4 [90], part_electoral3_6 [92], part_electoral3_7 [93], part_electoral4_1 [94], part_electoral4_2 [95], part_electoral4_3 [96], part_electoral4_4 [97], part_electoral4_5 [98], part_electoral4_7 [100], part_electoral5_1 [101], part_electoral5_2 [102], part_electoral5_3 [103], part_electoral5_4 [104], part_electoral5_5 [105], part_electoral5_7 [107], adop_homo_1 [157], adop_homo_2 [158], aborto_1 [164], aborto_2 [165], restriccion_migrantes_1 [171], restriccion_migrantes_2 [172], pensiones_1 [178], pensiones_2 [179], rol_estado_educ_1 [192], rol_estado_educ_2 [193], m37_01_2 [214], m37_01_3 [215], m37_01_4 [216], m37_01_5 [217], m37_01_6 [218], m37_01_7 [219], m37_02_2 [221], m37_02_3 [222], m37_02_4 [223], m37_02_5 [224], m37_02_6 [225], m37_02_7 [226], m48_1 [227], m48_3 [229], m48_4 [230], m48_5 [231], m48_6 [232], m48_7 [233]</code></pre>
 <table style="border-collapse:collapse; border:none;">
 <caption>
 Data frame: df_study1_wide
@@ -6768,22 +6781,27 @@ desacuerdo<br>De acuerdo<br>Totalmente de acuerdo
 199
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-edad_1
+pos_id_1
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-numeric
+categorical
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Identificación política
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1 (0.03%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee" colspan="2">
-<em>range: 18-88</em>
+67 (2.29%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Izquierda<br>Centro<br>Derecha<br>No se identifica
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+583<br>604<br>409<br>1265
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+20.38<br>21.11<br>14.30<br>44.22
 </td>
 </tr>
 <tr>
@@ -6791,22 +6809,27 @@ numeric
 200
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-edad_2
+pos_id_2
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-numeric
+categorical
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Identificación política
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1 (0.03%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;" colspan="2">
-<em>range: 18-88</em>
+67 (2.29%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Izquierda<br>Centro<br>Derecha<br>No se identifica
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+583<br>604<br>409<br>1265
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+20.38<br>21.11<br>14.30<br>44.22
 </td>
 </tr>
 <tr>
@@ -6814,22 +6837,27 @@ numeric
 201
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-edad_3
+pos_id_3
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-numeric
+categorical
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Identificación política
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1 (0.03%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee" colspan="2">
-<em>range: 18-88</em>
+67 (2.29%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Izquierda<br>Centro<br>Derecha<br>No se identifica
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+583<br>604<br>409<br>1265
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+20.38<br>21.11<br>14.30<br>44.22
 </td>
 </tr>
 <tr>
@@ -6837,22 +6865,27 @@ numeric
 202
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-edad_4
+pos_id_4
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-numeric
+categorical
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Identificación política
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1 (0.03%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;" colspan="2">
-<em>range: 18-88</em>
+67 (2.29%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Izquierda<br>Centro<br>Derecha<br>No se identifica
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+583<br>604<br>409<br>1265
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+20.38<br>21.11<br>14.30<br>44.22
 </td>
 </tr>
 <tr>
@@ -6860,22 +6893,27 @@ numeric
 203
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-edad_5
+pos_id_5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-numeric
+categorical
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Identificación política
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1 (0.03%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee" colspan="2">
-<em>range: 18-88</em>
+67 (2.29%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Izquierda<br>Centro<br>Derecha<br>No se identifica
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+583<br>604<br>409<br>1265
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+20.38<br>21.11<br>14.30<br>44.22
 </td>
 </tr>
 <tr>
@@ -6883,7 +6921,63 @@ numeric
 204
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-edad_6
+pos_id_6
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+categorical
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Identificación política
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+67 (2.29%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Izquierda<br>Centro<br>Derecha<br>No se identifica
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+583<br>604<br>409<br>1265
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+20.38<br>21.11<br>14.30<br>44.22
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+205
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+pos_id_7
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+categorical
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Identificación política
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+67 (2.29%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Izquierda<br>Centro<br>Derecha<br>No se identifica
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+583<br>604<br>409<br>1265
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+20.38<br>21.11<br>14.30<br>44.22
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+206
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+edad_1
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
@@ -6903,10 +6997,10 @@ numeric
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-205
+207
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-edad_7
+edad_2
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
@@ -6926,22 +7020,113 @@ numeric
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-206
+208
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-m37_01_1
+edad_3
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Numero de hijos hombres
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 1 (0.03%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;" colspan="2">
-<em>range: 0-9</em>
+<em>range: 18-88</em>
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+209
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+edad_4
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1 (0.03%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee" colspan="2">
+<em>range: 18-88</em>
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+210
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+edad_5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1 (0.03%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;" colspan="2">
+<em>range: 18-88</em>
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+211
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+edad_6
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1 (0.03%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee" colspan="2">
+<em>range: 18-88</em>
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+212
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+edad_7
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1 (0.03%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;" colspan="2">
+<em>range: 18-88</em>
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 </td>
@@ -6953,243 +7138,64 @@ Numero de hijos hombres
 213
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-m37_02_1
+m37_01_1
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Numero de hijas mujeres
+Numero de hijos hombres
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1 (0.03%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee" colspan="2">
+<em>range: 0-9</em>
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+220
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+m37_02_1
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Numero de hijas mujeres
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1 (0.03%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;" colspan="2">
 <em>range: 0-10</em>
 </td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-</td>
-</tr>
-<tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-221
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-m48_2
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Tiene hijos
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-455 (15.54%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1<br>2
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Si<br>No
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-2043<br>430
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-82.61<br>17.39
 </td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-227
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-part_electoral_1
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Participacion electoral retrospectiva
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-15 (0.51%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1<br>2<br>3
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Si<br>No<br>No tenia edad para hacerlo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1976<br>920<br>17
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-67.83<br>31.58<br>0.58
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
 228
 </td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-part_electoral_2
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Participacion electoral retrospectiva
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-15 (0.51%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1<br>2<br>3
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Si<br>No<br>No tenia edad para hacerlo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1976<br>920<br>17
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-67.83<br>31.58<br>0.58
-</td>
-</tr>
-<tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-229
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-part_electoral_3
+m48_2
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Participacion electoral retrospectiva
+Tiene hijos
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-717 (24.49%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1<br>2<br>3
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Si<br>No<br>No tenia edad para hacerlo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1524<br>687<br>0
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-68.93<br>31.07<br>0.00
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-230
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-part_electoral_4
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Participacion electoral retrospectiva
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-717 (24.49%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1<br>2<br>3
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Si<br>No<br>No tenia edad para hacerlo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1524<br>687<br>0
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-68.93<br>31.07<br>0.00
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-231
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-part_electoral_5
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Participacion electoral retrospectiva Plebiscito<br>Nueva Constitucion
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1194 (40.78%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1<br>2<br>3
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Si<br>No<br>No tenia edad para hacerlo
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1143<br>568<br>23
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-65.92<br>32.76<br>1.33
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-232
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-part_electoral_6
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Participacion en elecciones presidenciales 2021<br>primera vuelta
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1210 (41.33%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1<br>2
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-Si<br>No
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1334<br>384
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;">
-77.65<br>22.35
-</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-233
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-part_electoral_7
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Participacion en elecciones presidenciales 2021<br>segunda vuelta
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1231 (42.04%)
+455 (15.54%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 1<br>2
@@ -7198,10 +7204,10 @@ Participacion en elecciones presidenciales 2021<br>segunda vuelta
 Si<br>No
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1284<br>413
+2043<br>430
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-75.66<br>24.34
+82.61<br>17.39
 </td>
 </tr>
 <tr>
@@ -7209,22 +7215,28 @@ Si<br>No
 234
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-hijo
+part_electoral_1
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Participacion electoral retrospectiva
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1 (0.03%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;" colspan="2">
-<em>range: 0-1</em>
+15 (0.51%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Si<br>No<br>No tenia edad para hacerlo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1976<br>920<br>17
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+67.83<br>31.58<br>0.58
 </td>
 </tr>
 <tr>
@@ -7232,22 +7244,28 @@ numeric
 235
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-hijo_1
+part_electoral_2
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Participacion electoral retrospectiva
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1 (0.03%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee" colspan="2">
-<em>range: 0-1</em>
+15 (0.51%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Si<br>No<br>No tenia edad para hacerlo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1976<br>920<br>17
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+67.83<br>31.58<br>0.58
 </td>
 </tr>
 <tr>
@@ -7255,22 +7273,28 @@ numeric
 236
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-hijo_2
+part_electoral_3
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Participacion electoral retrospectiva
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1 (0.03%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;" colspan="2">
-<em>range: 0-1</em>
+717 (24.49%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Si<br>No<br>No tenia edad para hacerlo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1524<br>687<br>0
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+68.93<br>31.07<br>0.00
 </td>
 </tr>
 <tr>
@@ -7278,22 +7302,28 @@ numeric
 237
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-hijo_3
+part_electoral_4
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Participacion electoral retrospectiva
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1 (0.03%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee" colspan="2">
-<em>range: 0-1</em>
+717 (24.49%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2<br>3
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Si<br>No<br>No tenia edad para hacerlo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1524<br>687<br>0
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+68.93<br>31.07<br>0.00
 </td>
 </tr>
 <tr>
@@ -7301,22 +7331,28 @@ numeric
 238
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-hijo_4
+part_electoral_5
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Participacion electoral retrospectiva Plebiscito<br>Nueva Constitucion
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1 (0.03%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;" colspan="2">
-<em>range: 0-1</em>
+1194 (40.78%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2<br>3
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Si<br>No<br>No tenia edad para hacerlo
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1143<br>568<br>23
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+65.92<br>32.76<br>1.33
 </td>
 </tr>
 <tr>
@@ -7324,7 +7360,65 @@ numeric
 239
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-hijo_5
+part_electoral_6
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Participacion en elecciones presidenciales 2021<br>primera vuelta
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1210 (41.33%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1<br>2
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Si<br>No
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1334<br>384
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+77.65<br>22.35
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+240
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+part_electoral_7
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Participacion en elecciones presidenciales 2021<br>segunda vuelta
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1231 (42.04%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Si<br>No
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1284<br>413
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+75.66<br>24.34
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+241
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+hijo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
@@ -7344,10 +7438,10 @@ numeric
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-240
+242
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-hijo_6
+hijo_1
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
@@ -7367,10 +7461,10 @@ numeric
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-241
+243
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-hijo_7
+hijo_2
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
@@ -7386,6 +7480,121 @@ numeric
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+244
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+hijo_3
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1 (0.03%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;" colspan="2">
+<em>range: 0-1</em>
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+245
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+hijo_4
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1 (0.03%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee" colspan="2">
+<em>range: 0-1</em>
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+246
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+hijo_5
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1 (0.03%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;" colspan="2">
+<em>range: 0-1</em>
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+247
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+hijo_6
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+1 (0.03%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee" colspan="2">
+<em>range: 0-1</em>
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+248
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+hijo_7
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1 (0.03%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;" colspan="2">
+<em>range: 0-1</em>
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
 </td>
 </tr>
 </table>
@@ -7404,7 +7613,7 @@ df_study1_long &lt;- data.table::melt.data.table(data.table::setDT(df_study1_wid
                                  &quot;^perc_des_&quot;, &quot;^rol_estado_educ_&quot;,
                                  &quot;^educ_&quot;, &quot;^universitaria_&quot;, 
                      #&quot;^quintil1_&quot;,&quot;^ess_&quot;,
-                                 #&quot;^pos_id_&quot;,
+                                 &quot;^pos_id_&quot;,
                                  &quot;^edad_&quot;, &quot;^hijo_&quot;,
                      &quot;^sexo_&quot;
                                  ),
@@ -7418,7 +7627,7 @@ df_study1_long &lt;- data.table::melt.data.table(data.table::setDT(df_study1_wid
                                  &quot;perc_des&quot;, &quot;rol_estado_educ&quot;,
                                  &quot;educ&quot;, &quot;universitaria&quot;, 
                      #&quot;^quintil1_&quot;,&quot;^ess_&quot;,
-                                 #&quot;^pos_id_&quot;,
+                                 &quot;pos_id&quot;,
                                  &quot;edad&quot;, &quot;hijo&quot;,
                      &quot;sexo&quot;
                      ),
@@ -7437,11 +7646,11 @@ names(df_study1_long) #check names of long dataset</code></pre>
 ## [19] &quot;autoritarismo3&quot;        &quot;autoritarismo4&quot;        &quot;autoritarismo5&quot;       
 ## [22] &quot;adop_homo&quot;             &quot;aborto&quot;                &quot;restriccion_migrantes&quot;
 ## [25] &quot;pensiones&quot;             &quot;perc_des&quot;              &quot;rol_estado_educ&quot;      
-## [28] &quot;educ&quot;                  &quot;universitaria&quot;         &quot;edad&quot;                 
-## [31] &quot;hijo&quot;                  &quot;sexo&quot;                  &quot;mov_estudiantil&quot;      
-## [34] &quot;mov_feminista&quot;</code></pre>
+## [28] &quot;educ&quot;                  &quot;universitaria&quot;         &quot;pos_id&quot;               
+## [31] &quot;edad&quot;                  &quot;hijo&quot;                  &quot;sexo&quot;                 
+## [34] &quot;mov_estudiantil&quot;       &quot;mov_feminista&quot;</code></pre>
 <pre class="r"><code>dim(df_study1_long) #check dimensions of the dataframe</code></pre>
-<pre><code>## [1] 20496    34</code></pre>
+<pre><code>## [1] 20496    35</code></pre>
 <pre class="r"><code># Original dataset with 6 waves
 df_study2_long &lt;- df_study1_long
 
@@ -8343,22 +8552,26 @@ Menos que universitaria<br>Universitaria
 30
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-edad
+pos_id
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-numeric
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-7 (0.03%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee" colspan="2">
-<em>range: 18-88</em>
+categorical
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+469 (2.29%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Izquierda<br>Centro<br>Derecha<br>No se identifica
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+4081<br>4228<br>2863<br>8855
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+20.38<br>21.11<br>14.30<br>44.22
 </td>
 </tr>
 <tr>
@@ -8366,7 +8579,7 @@ numeric
 31
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-hijo
+edad
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
@@ -8377,7 +8590,7 @@ numeric
 7 (0.03%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;" colspan="2">
-<em>range: 0-1</em>
+<em>range: 18-88</em>
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 </td>
@@ -8389,28 +8602,22 @@ numeric
 32
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-sexo
+hijo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Sexo del entrevistado
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 7 (0.03%)
 </td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1<br>2
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee" colspan="2">
+<em>range: 0-1</em>
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Hombre<br>Mujer
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-8141<br>12348
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-39.73<br>60.27
 </td>
 </tr>
 <tr>
@@ -8418,22 +8625,28 @@ Hombre<br>Mujer
 33
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-mov_estudiantil
+sexo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 numeric
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Sexo del entrevistado
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-5709 (27.85%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;" colspan="2">
-<em>range: 0-1</em>
+7 (0.03%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Hombre<br>Mujer
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+8141<br>12348
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+39.73<br>60.27
 </td>
 </tr>
 <tr>
@@ -8441,7 +8654,7 @@ numeric
 34
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-mov_feminista
+mov_estudiantil
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 numeric
@@ -8457,6 +8670,29 @@ numeric
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+35
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+mov_feminista
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+numeric
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+5709 (27.85%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;" colspan="2">
+<em>range: 0-1</em>
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
 </td>
 </tr>
 </table>
@@ -8484,11 +8720,11 @@ names(df_study1_long_t7)</code></pre>
 ## [19] &quot;autoritarismo3&quot;        &quot;autoritarismo4&quot;        &quot;autoritarismo5&quot;       
 ## [22] &quot;adop_homo&quot;             &quot;aborto&quot;                &quot;restriccion_migrantes&quot;
 ## [25] &quot;pensiones&quot;             &quot;perc_des&quot;              &quot;rol_estado_educ&quot;      
-## [28] &quot;educ&quot;                  &quot;universitaria&quot;         &quot;edad&quot;                 
-## [31] &quot;hijo&quot;                  &quot;sexo&quot;                  &quot;mov_estudiantil&quot;      
-## [34] &quot;mov_feminista&quot;</code></pre>
+## [28] &quot;educ&quot;                  &quot;universitaria&quot;         &quot;pos_id&quot;               
+## [31] &quot;edad&quot;                  &quot;hijo&quot;                  &quot;sexo&quot;                 
+## [34] &quot;mov_estudiantil&quot;       &quot;mov_feminista&quot;</code></pre>
 <pre class="r"><code>dim(df_study1_long_t7)</code></pre>
-<pre><code>## [1] 12159    34</code></pre>
+<pre><code>## [1] 12159    35</code></pre>
 <pre class="r"><code>sjmisc::frq(df_study1_long_t7$ola)</code></pre>
 <pre><code>## x &lt;categorical&gt; 
 ## # total N=12159 valid N=12159 mean=4.00 sd=2.00
@@ -9306,19 +9542,23 @@ Menos que universitaria<br>Universitaria
 30
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-edad
+pos_id
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-7 (0.03%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee" colspan="2">
-<em>range: 18-88</em>
+469 (2.29%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Izquierda<br>Centro<br>Derecha<br>No se identifica
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+4081<br>4228<br>2863<br>8855
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+20.38<br>21.11<br>14.30<br>44.22
 </td>
 </tr>
 <tr>
@@ -9326,7 +9566,7 @@ edad
 31
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-hijo
+edad
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 </td>
@@ -9334,7 +9574,7 @@ hijo
 7 (0.03%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;" colspan="2">
-<em>range: 0-1</em>
+<em>range: 18-88</em>
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 </td>
@@ -9346,25 +9586,19 @@ hijo
 32
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-sexo
+hijo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Sexo del entrevistado
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 7 (0.03%)
 </td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1<br>2
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee" colspan="2">
+<em>range: 0-1</em>
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Hombre<br>Mujer
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-8141<br>12348
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-39.73<br>60.27
 </td>
 </tr>
 <tr>
@@ -9372,19 +9606,25 @@ Hombre<br>Mujer
 33
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-mov_estudiantil
+sexo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Sexo del entrevistado
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-5709 (27.85%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;" colspan="2">
-<em>range: 0-1</em>
+7 (0.03%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Hombre<br>Mujer
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+8141<br>12348
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+39.73<br>60.27
 </td>
 </tr>
 <tr>
@@ -9392,7 +9632,7 @@ mov_estudiantil
 34
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-mov_feminista
+mov_estudiantil
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 </td>
@@ -9405,6 +9645,26 @@ mov_feminista
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+35
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+mov_feminista
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+5709 (27.85%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;" colspan="2">
+<em>range: 0-1</em>
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
 </td>
 </tr>
 </table>
@@ -10206,19 +10466,23 @@ Menos que universitaria<br>Universitaria
 30
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-edad
+pos_id
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-0 (0.00%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee" colspan="2">
-<em>range: 18-81</em>
+217 (1.78%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+Izquierda<br>Centro<br>Derecha<br>No se identifica
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+2492<br>2485<br>1575<br>5390
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+20.87<br>20.81<br>13.19<br>45.13
 </td>
 </tr>
 <tr>
@@ -10226,7 +10490,7 @@ edad
 31
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-hijo
+edad
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 </td>
@@ -10234,7 +10498,7 @@ hijo
 0 (0.00%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;" colspan="2">
-<em>range: 0-1</em>
+<em>range: 18-81</em>
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
 </td>
@@ -10246,25 +10510,19 @@ hijo
 32
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-sexo
+hijo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Sexo del entrevistado
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 0 (0.00%)
 </td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-1<br>2
+<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee" colspan="2">
+<em>range: 0-1</em>
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-Hombre<br>Mujer
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-4326<br>7833
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-35.58<br>64.42
 </td>
 </tr>
 <tr>
@@ -10272,19 +10530,25 @@ Hombre<br>Mujer
 33
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-mov_estudiantil
+sexo
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Sexo del entrevistado
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
-1056 (8.68%)
-</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top;" colspan="2">
-<em>range: 0-1</em>
+0 (0.00%)
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1<br>2
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top;">
+Hombre<br>Mujer
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+4326<br>7833
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+35.58<br>64.42
 </td>
 </tr>
 <tr>
@@ -10292,7 +10556,7 @@ mov_estudiantil
 34
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
-mov_feminista
+mov_estudiantil
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 </td>
@@ -10305,6 +10569,26 @@ mov_feminista
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
 </td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; background-color:#eeeeee">
+</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+35
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+mov_feminista
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+1056 (8.68%)
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;" colspan="2">
+<em>range: 0-1</em>
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
+</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top;">
 </td>
 </tr>
 </table>
