@@ -1,0 +1,1165 @@
+---
+title: "Informe de resultados"
+format:  
+  html:
+    code-copy: true
+    code-tools: true
+    toc: true
+    toc-location: right
+    toc-depth: 4
+    toc-expand: 2
+    toc-title: Contents
+    number-sections: true
+    number-depth: 4 
+    fig-width: 10  
+    fig-height: 7
+editor_options: 
+  chunk_output_type: console
+editor: source
+lang: es
+fontsize: 12pt
+---
+
+```{r}
+#| label: set
+#| echo: false
+#| message: false
+#| warning: false
+
+library(knitr)
+knitr::opts_chunk$set(echo = FALSE, include = TRUE, warning = FALSE, message = FALSE)
+
+table_format <- if(is_html_output()) {
+  "html"
+} else if(is_latex_output()) {
+  "latex"
+}
+table_format2 <- if(is_html_output()) {
+  T
+} else if(is_latex_output()) {
+  F
+}
+
+options(kableExtra.html.bsTable = T)
+options(knitr.kable.NA = "")
+```
+
+# Participación en manifestaciones
+
+```{r}
+#if (!require("pacman")) install.packages("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg,
+               interactions,
+               ggplot2
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,part_marchas, edad, sexo, pos_id, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=45 ~ "Entre 29 y 45",
+                          edad > 45 ~ "Más de 45")) 
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 45", "Entre 29 y 45", "Entre 24 y 28", "Entre 18 y 23"))
+df_study1$sexo <- factor(df_study1$sexo, levels = c(1, 2), labels = c("Hombre", "Mujer"))
+
+# Hipotesis
+h1 <- "ola"
+h2 <- "ola+edad"
+h3 <- "ola+edad+sexo"
+h4 <- "ola+edad+sexo+educ"
+h5 <- "ola+edad+sexo+educ+pos_id"
+h6 <- "ola*edad+sexo+educ+pos_id"
+h7 <- "ola*sexo+edad+sexo+educ+pos_id"
+h8 <- "ola*educ+edad+sexo+educ+pos_id"
+h9 <- "ola*pos_id+edad+sexo+educ+pos_id"
+h10 <- "ola*pos_id*edad+sexo+educ+pos_id"
+h11 <- "ola*educ*edad+sexo+educ+pos_id"
+h12 <- "ola*sexo*edad+sexo+educ+pos_id"
+
+marchar.null <- lmer(formula(paste0("part_marchas~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar1 <- lmer(formula(paste0("part_marchas~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar2 <- lmer(formula(paste0("part_marchas~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar3 <- lmer(formula(paste0("part_marchas~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar4 <- lmer(formula(paste0("part_marchas~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("part_marchas~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("part_marchas~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("part_marchas~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("part_marchas~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("part_marchas~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("part_marchas~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("part_marchas~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar12 <- lmer(formula(paste0("part_marchas~",h12,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+La participación en manifestaciones presenta un patrón estable entre 2016 y 2023, excepto por el año 2019 en que se evidencia un aumento considerable en la participación.
+
+```{r}
+waves <- c("16", "17", "18", "19", "21", "22", "23")
+interact_plot(marchar6, pred = ola, modx = edad, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Participación en marchas", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+Al desagregar por edad, se observa de forma consistente que las personas más jóvenes (18-23 años) tienen una mayor participación en manifestaciones en comparación con el resto de los grupos etarios, siendo también los que más aumentan su participación en 2019. En las olas 2022 y 2023, aunque la participación juvenil sigue siendo superior, las diferencias con los grupos de mayor edad se reducen significativamente, lo que podría sugerir un proceso de desmovilización generalizada más acentuado entre los jóvenes. Es notable que el siguiente grupo etario (24-28 años) también aumentan su participación de forma considerable en 2019, pero su desmovilización en los años siguientes es mayor, llegando a ser el grupo con menos participación en 2023.
+
+- Participación y sexo
+
+```{r}
+interact_plot(marchar7, pred = ola, modx = sexo, interval = TRUE,
+              modx.labels = c("Hombre", "Mujer")) +
+  ylim(1,5) +
+  labs(y = "Participación en marchas", x = "Año") +
+  scale_x_discrete(labels = waves)
+```
+
+No se observan diferencias significativas en la participación en manifestaciones entre hombres y mujeres
+
+- Participación, edad y sexo
+
+```{r}
+interact_plot(marchar12, pred = ola, modx = edad, mod2 = sexo, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Participación en marchas", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+No se observan diferencias significativas al desagregar por sexo y edad. Solo es notorio que, para el grupo de 18-23 años, el aumento de la participación en el año 2019 es mayor entre los hombres que en las mujeres.
+
+- Participación y educación
+
+```{r}
+interact_plot(marchar8, pred = ola, modx = educ, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Participación en marchas", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+Al observar las diferencias por nivel educativo, son las personas con educación universitaria o más las que participan en mayor medida en todos los años, observando un aumento significativo en el año 2019.
+
+- Participación, edad y educación
+
+```{r}
+interact_plot(marchar11, pred = ola, modx = edad, mod2 = educ, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Participación en marchas", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+En promedio, se observa que la participación es mayor entre las personas con educación técnica y universitaria o más. Sin embargo, al desagregar por edad, se observa un mayor aumento en el año 2019 entre las personas más jóvenes y con educación técnica o universitaria. Para las personas con educación media este efecto solo sucede con las personas entre 18 y 23 años. 
+
+Similar a los gráficos anteriores, también se debe destacar que para el grupo de entre 24 y 28 años, la desmovilización de las últimas olas se observa de manera más notoria en el grupo de educación universitaria, ya que es la más baja si se compara con los otros grupos etarios.
+
+- Participación y posición política
+
+```{r}
+interact_plot(marchar9, pred = ola, modx = pos_id, interval = TRUE)+
+  ylim(0,5)+
+  labs(y="Participación en marchas", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+En todos los años las personas de izquierda son quienes más participan en manifestaciones, mientras que las de derecha participan menos. Resulta interesante que el patrón de participación de las personas de centro y que no se identifican con ninguna ideología es similar en todos los años, manteniendose en un nivel intermedio entre las personas de derecha e izquierda.
+
+- Participación, edad y posición política
+
+```{r}
+library(ggeffects)
+
+preds <- ggpredict(marchar10, terms = c("ola", "edad", "pos_id"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Año",
+    y = "Participación en marchas",
+    color = "Edad"
+  ) +
+  ylim(0, 5) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+```
+
+El patrón observado en los gráficos anteriores se mantiene estable al desagregar por edad y posición política. Por ejemplo, en el grupo de edad más joven (18-23 años), el aumento de la participación en 2019 sigue siendo mayor independiente de la posición política. Se debe destacar también que el siguiente grupo etario (24-28 años) es el que más se desmoviliza incluso entre el grupo de izquierda.
+
+# Participación en redes sociales
+
+```{r}
+if (!require("pacman")) install.packages("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,part_rrss, edad, sexo, pos_id, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=45 ~ "Entre 29 y 45",
+                          edad > 45 ~ "Más de 45")) 
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 45", "Entre 29 y 45", "Entre 24 y 28", "Entre 18 y 23"))
+df_study1$sexo <- factor(df_study1$sexo, levels = c(1, 2), labels = c("Hombre", "Mujer"))
+
+marchar.null <- lmer(formula(paste0("part_rrss~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar1 <- lmer(formula(paste0("part_rrss~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar2 <- lmer(formula(paste0("part_rrss~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar3 <- lmer(formula(paste0("part_rrss~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar4 <- lmer(formula(paste0("part_rrss~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("part_rrss~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("part_rrss~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("part_rrss~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("part_rrss~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("part_rrss~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("part_rrss~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("part_rrss~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar12 <- lmer(formula(paste0("part_rrss~",h12,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+En términos generales, existe una clara tendencia que muestra una mayor participación en redes sociales en las personas más jóvenes que en mayores. Asimismo, existe una tendencia similar entre las personas de 18 y 45 años en las primeras dos olas, luego entre 2018 y 2019 esta tendencia al alza se mantiene solo para las personas entre 18 y 28. Finalmente, todos los grupos bajan su participación, pero la de los grupos entre 18 y 23 se mantiene como la más alta.
+
+```{r}
+interact_plot(marchar6, pred = ola, modx = edad, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Participación en redes sociales", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+- RRSS y sexo
+
+```{r}
+interact_plot(marchar7, pred = ola, modx = sexo, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Participación en redes sociales", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+No se observan diferencias significativas entre hombres y mujeres en la participación en redes sociales.
+
+- RRSS, edad y sexo
+
+```{r}
+interact_plot(marchar12, pred = ola, modx = edad, mod2 = sexo, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Participación en redes sociales", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+Al observar las diferencias por edad y sexo, se puede identificar que los hombres entre 18 y 23 son los que más participan, mientras que las mujeres entre 18 y 28 son las que más participan. Comparativamente, existe un claro aumento en la participación de las mujeres de 24 y 28 durante el 2019 que no se presenta entre los hombres de la misma edad.
+
+- RRSS y educación
+
+```{r}
+interact_plot(marchar8, pred = ola, modx = educ, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Participación en redes sociales", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+Hay una mayor participación en redes sociales entre las personas con mayor nivel educacional. Esta tendencia se mantiene en todos los años.
+
+- RRSS, edad y educación
+
+```{r}
+interact_plot(marchar11, pred = ola, modx = edad, mod2 = educ, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Participación en redes sociales", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+No existe un patrón claro en los cambios que existen entre 2016 y 2023 en la participación en redes sociales al desagregar por edad y educación. Solo es destacable que los dos grupos más jóvenes participan en mayor medida, independiente del nivel educacional, siendo también los que más descienden en su participación en el año 2023.
+
+- RRSS y posición política
+
+```{r}
+interact_plot(marchar9, pred = ola, modx = pos_id, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Participación en redes sociales", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+La participación en redes sociales es mayor entre las personas de izquierda en la mayoría de los años, sin embargo, en las últimas dos olas la participación de las personas de derecha es mayor. De todas formas, las difirencias no son estadísticamente significativas.
+
+- RRSS, edad y posición política
+
+```{r}
+preds <- ggpredict(marchar10, terms = c("ola", "edad", "pos_id"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Año",
+    y = "Participación en redes sociales",
+    color = "Edad"
+  ) +
+  ylim(0, 5) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+Al desagregar por edad y posición política, es más notorio aún la participación en redes sociales de jóvenes de izquierda entre 18 y 23 años. Asimismo, existe un notorio aumento en el año 2019 entre las personas de centro de entre 24 y 28 años.
+
+
+# Apoyo al movimiento estudiantil
+
+```{r}
+#if (!require("pacman")) install.packages("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,mov_estudiantil, edad, sexo, pos_id, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=45 ~ "Entre 29 y 45",
+                          edad > 45 ~ "Más de 45")) 
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 45", "Entre 29 y 45", "Entre 24 y 28", "Entre 18 y 23"))
+df_study1$sexo <- factor(df_study1$sexo, levels = c(1, 2), labels = c("Hombre", "Mujer"))
+
+marchar.null <- glmer(formula(paste0("mov_estudiantil~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = 'binomial')
+marchar1 <- glmer(formula(paste0("mov_estudiantil~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = 'binomial')
+marchar2 <- glmer(formula(paste0("mov_estudiantil~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = 'binomial')
+marchar3 <- glmer(formula(paste0("mov_estudiantil~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = 'binomial')
+marchar4 <- lmer(formula(paste0("mov_estudiantil~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("mov_estudiantil~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("mov_estudiantil~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("mov_estudiantil~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("mov_estudiantil~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("mov_estudiantil~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("mov_estudiantil~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("mov_estudiantil~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar12 <- lmer(formula(paste0("mov_estudiantil~",h12,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+El patrón general muestra que en las primeras olas (2016-2017) las personas más jóvenes apoyaban en mayor medida al movimiento estudiantil. Luego existe una disminución en el apoyo al movimiento estudiantil entre todos los grupos etarios.
+
+```{r}
+interact_plot(marchar6, pred = ola, modx = edad, interval = TRUE)+
+  ylim(0,1)+
+  labs(y="Apoyo movimiento estudiantil", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+- Apoyo y sexo
+
+```{r}
+interact_plot(marchar7, pred = ola, modx = sexo, interval = TRUE)+
+  ylim(0,1)+
+  labs(y="Apoyo movimiento estudiantil", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+No existen diferencias significativas en el apoyo al movimiento estudiantil según sexo.
+
+```{r}
+interact_plot(marchar12, pred = ola, modx = edad, mod2 = sexo, interval = TRUE)+
+  ylim(0,1)+
+  labs(y="Apoyo movimiento estudiantil", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+No se observan diferencias significativas al desagregar por edad y sexo.
+
+- Apoyo y educación
+
+```{r}
+interact_plot(marchar8, pred = ola, modx = educ, interval = TRUE)+
+  ylim(0,1)+
+  labs(y="Apoyo movimiento estudiantil", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+Al menos desde 2019 en adelante, las personas que más apoyan el movimiento estudiantil son las personas con educación media o menos.
+
+- Apoyo, edad y educación
+
+```{r}
+interact_plot(marchar11, pred = ola, modx = edad, mod2 = educ, interval = TRUE)+
+  ylim(0,1)+
+  labs(y="Apoyo movimiento estudiantil", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+No se observan diferencias significativas al desagregar por edad y nivel educacional.
+
+- Apoyo y posición política
+
+```{r}
+interact_plot(marchar9, pred = ola, modx = pos_id, interval = TRUE)+
+  ylim(0,1)+
+  labs(y="Apoyo movimiento estudiantil", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+En las primeras dos olas, las personas de izquierda apoyaban en mayor medida al movimiento estudiantil. Luego no se observan diferencias significativas según posición política.
+
+- Apoyo, edad y posición política
+
+```{r}
+preds <- ggpredict(marchar10, terms = c("ola", "edad", "pos_id"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Año",
+    y = "Apoyo movimiento estudiantil",
+    color = "Edad"
+  ) +
+  ylim(-0.3, 1) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+En las primeras olas, lass personas más jóvenes y de centro son quienes más apoyan al movimiento estudiantil. En el resto de las posiciones políticas la tendencia en el cambio al apoyo al movimiento estudiantil es similar independiente de la edad.
+
+# Participación electoral
+
+Variables:
+
+- Participación elecciones 2013 (ola 1 y 2)
+
+- Participación elecciones 2017 (ola 3 y 4)
+
+- Participación en plebiscito nueva constitución (ola 5)
+
+- Participación elecciones 2021 primera vuelta (ola 6)
+
+- Participación elecciones 2021 segunda vuelta (ola 7)
+
+
+```{r}
+#if (!require("pacman")) install.packages("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,part_electoral, edad, sexo, pos_id, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=45 ~ "Entre 29 y 45",
+                          edad > 45 ~ "Más de 45")) 
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 45", "Entre 29 y 45", "Entre 24 y 28", "Entre 18 y 23"))
+df_study1$sexo <- factor(df_study1$sexo, levels = c(1, 2), labels = c("Hombre", "Mujer"))
+
+df_study1$part_electoral <- factor(df_study1$part_electoral, levels = c(1,2),
+         labels = c("Si", "No"))
+df_study1$part_electoral <- car::recode(df_study1$part_electoral, c("1=2; 2=1"))
+df_study1 <- df_study1 %>%
+  dplyr::mutate(part_electoral = ifelse(part_electoral == "Si", 1, 0))
+
+
+marchar.null <- glmer(formula(paste0("part_electoral~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = "binomial")
+marchar1 <- glmer(formula(paste0("part_electoral~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = "binomial")
+marchar2 <- glmer(formula(paste0("part_electoral~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = "binomial")
+marchar3 <- glmer(formula(paste0("part_electoral~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = "binomial")
+marchar4 <- lmer(formula(paste0("part_electoral~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("part_electoral~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("part_electoral~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("part_electoral~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("part_electoral~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("part_electoral~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("part_electoral~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("part_electoral~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar12 <- lmer(formula(paste0("part_electoral~",h12,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+
+```
+
+En términos generales, en las primeras elecciones las personas de más de 45 años son las que más participaban. Luego, en el plebiscito de nueva constitución son las personas más jóvenes las que más participan. Finalmente, en la primera y segunda vuelta de elecciones presidenciales de 2021 no se observan diferencias en términos de edad.
+
+```{r}
+elecciones<- c("Presidenciales
+2013", "Presidenciales
+2013", "Presidenciales
+2017", "Presidenciales
+2017", "Plebiscito 
+nueva constitución","Primera vuelta
+2021", "Segunda vuelta
+2021")
+
+interact_plot(marchar6, pred = ola, modx = edad, interval = TRUE)+
+  ylim(0,1)+
+  labs(y="Participación electoral", x="Año")+
+  scale_x_discrete(labels = elecciones)
+```
+
+- Participación electoral y sexo
+
+```{r}
+interact_plot(marchar7, pred = ola, modx = sexo, interval = TRUE)+
+  ylim(0,1)+
+  labs(y="Participación electoral", x="Año")+
+  scale_x_discrete(labels = elecciones)
+```
+
+No se observan diferencias por sexo en la participación electoral.
+
+- Participación electoral, edad y sexo
+
+```{r}
+preds <- ggpredict(marchar12, terms = c("ola", "edad", "sexo"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Año",
+    y = "Participación electoral",
+    color = "Edad"
+  ) +
+  ylim(0, 1) +
+  scale_x_discrete(labels = elecciones) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+No se observan diferencias al desagregar por edad y sexo.
+
+- Participación electoral y educación
+
+```{r}
+interact_plot(marchar8, pred = ola, modx = educ, interval = TRUE)+
+  ylim(0,1.2)+
+  labs(y="Participación electoral", x="Año")+
+  scale_x_discrete(labels = elecciones)
+```
+
+Las personas con educación universitaria o más son las que más participan electoralmente en todas las elecciones.
+
+- Participación electoral, edad y educación
+
+```{r}
+preds <- ggpredict(marchar11, terms = c("ola", "edad", "educ"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Año",
+    y = "Participación electoral",
+    color = "Edad"
+  ) +
+  ylim(0, 1.2) +
+  scale_x_discrete(labels = elecciones) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+Al observar las primeras elecciones, existe una participación mayor entre las personas más jóvenes con educación universitaria que en los otros grupos educacionales. Desde el plebiscito por nueva constitución en adelante no se observan dierencias por nivel educacional.
+
+- Participación electoral y posición política
+
+```{r}
+interact_plot(marchar9, pred = ola, modx = pos_id, interval = TRUE)+
+  ylim(0,1)+
+  labs(y="Participación electoral", x="Año")+
+  scale_x_discrete(labels = elecciones)
+```
+
+Las personas de izquierda y derecha son las que más participan en las primeras elecciones. Luego, se observa un claro aumento en la participación de aquellas personas que no se identifican con ninguna posición política desde el plebiscito por nueva constitución en adelante.
+
+- Participación electoral, edad y posición política
+
+```{r}
+preds <- ggpredict(marchar10, terms = c("ola", "edad", "pos_id"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Año",
+    y = "Participación electoral",
+    color = "Edad"
+  ) +
+  ylim(0, 1) +
+  scale_x_discrete(labels = elecciones) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+Las personas mayores son las que más participan, independiente de su posición política. Luego no se observan diferencias en los cambios de participación según posición política, lo que da cuenta que los patrones suceden por los grupos etarios.
+
+# Autoritarismo
+
+```{r}
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+df_study1 <- df_study1_long_t7 %>% dplyr::select(idencuesta,ola, segmento, estrato, ponderador_long_total, sexo, pos_id, educ, universitaria,
+                                                 autoritarismo1, autoritarismo2, autoritarismo3, autoritarismo4, autoritarismo5,
+                                                 edad) %>% na.omit()
+
+df_study1 <- df_study1 %>% 
+  rowwise() %>%
+  mutate(autoritarismo = mean(c(autoritarismo1:autoritarismo4, na.rm=TRUE))) %>% 
+  ungroup()
+```
+
+```{r}
+df_study1 <- df_study1 %>% 
+  rowwise() %>%
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=45 ~ "Entre 29 y 45",
+                          edad > 45 ~ "Más de 45")) 
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 45", "Entre 29 y 45", "Entre 24 y 28", "Entre 18 y 23"))
+df_study1$sexo <- factor(df_study1$sexo, levels = c(1, 2), labels = c("Hombre", "Mujer"))
+
+marchar.null <- lmer(formula(paste0("autoritarismo~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar1 <- lmer(formula(paste0("autoritarismo~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar2 <- lmer(formula(paste0("autoritarismo~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar3 <- lmer(formula(paste0("autoritarismo~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar4 <- lmer(formula(paste0("autoritarismo~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("autoritarismo~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("autoritarismo~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("autoritarismo~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("autoritarismo~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("autoritarismo~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("autoritarismo~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("autoritarismo~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar12 <- lmer(formula(paste0("autoritarismo~",h12,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+En términos generales, existe un aumento en el apoyo al autoritarismo en la última ola, pero no se observan diferencias significativas en términos de edad.
+
+```{r}
+interact_plot(marchar6, pred = ola, modx = edad, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Autoritarismo", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+- Autoritarismo y sexo
+
+```{r}
+interact_plot(marchar7, pred = ola, modx = sexo, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Autoritarismo", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+No se observan diferencias significativas por sexo.
+
+- Autoritarismo, edad y sexo
+
+```{r}
+interact_plot(marchar12, pred = ola, modx = edad, mod2 = sexo, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Autoritarismo", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+No se observan diferencias significativas al desagregar por sexo y edad.
+
+- Autoritarismo y educación
+
+```{r}
+interact_plot(marchar8, pred = ola, modx = educ, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Autoritarismo", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+Las personas con un menor nivel educacional apoyan más las medidas autoritarias, en todos los años.
+
+- Autoritarismo, edad y educación
+
+```{r}
+interact_plot(marchar11, pred = ola, modx = edad, mod2 = educ, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Autoritarismo", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+Las personas más jóvenes y de menor educación apoyan en menor medida el autoritarismo, en todos los años. 
+
+- Autoritarismo y posición política
+
+```{r}
+interact_plot(marchar9, pred = ola, modx = pos_id, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Autoritarismo", x="Año")+
+  scale_x_discrete(labels = waves)
+```
+
+Las personas de derecha apoyan más las medidas autoritarias, las de izquierda apoyan menos estas medidas. Las personas de centro y que no se identifican con ninguna posición se mantienen en niveles intermedios.
+
+- Autoritarismo, edad y posición política
+
+```{r}
+preds <- ggpredict(marchar10, terms = c("ola", "edad", "pos_id"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Año",
+    y = "Autoritarismo",
+    color = "Edad"
+  ) +
+  ylim(1, 5) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+Al desagregar por edad y posición política no se observan diferencias significativas.
+
+# Adopción homoparental
+
+```{r}
+#if (!require("pacman")) install.packages("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,adop_homo, edad, sexo, pos_id, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=45 ~ "Entre 29 y 45",
+                          edad > 45 ~ "Más de 45")) 
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 45", "Entre 29 y 45", "Entre 24 y 28", "Entre 18 y 23"))
+df_study1$sexo <- factor(df_study1$sexo, levels = c(1, 2), labels = c("Hombre", "Mujer"))
+
+marchar.null <- lmer(formula(paste0("adop_homo~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar1 <- lmer(formula(paste0("adop_homo~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar2 <- lmer(formula(paste0("adop_homo~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar3 <- lmer(formula(paste0("adop_homo~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar4 <- lmer(formula(paste0("adop_homo~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("adop_homo~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("adop_homo~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("adop_homo~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("adop_homo~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("adop_homo~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("adop_homo~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("adop_homo~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar12 <- lmer(formula(paste0("adop_homo~",h12,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+En términos generales existe un aumento en el apoyo a la adopción homoparental, pero las personas mayores se mantienen en niveles más bajos que los jóvenes.
+
+```{r}
+waves3 <- c("2018", "2019", "2021", "2022", "2023")
+interact_plot(marchar6, pred = ola, modx = edad, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Adopción homoparental", x="Año")+
+  scale_x_discrete(labels = waves3)
+```
+
+- Apoyo a la adopción homoparental y sexo
+
+```{r}
+interact_plot(marchar7, pred = ola, modx = sexo, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Adopción homoparental", x="Año")+
+  scale_x_discrete(labels = waves3)
+```
+
+Solo en el año 2023 se observa una diferencia estadísticamente significativa en que las mujeres apoyan en mayor medida que los hombres la adopción homoparental. Mientras las mujeres aumentan su apoyo en comparación con los años anteriores, los hombres lo disminuyen, aunque no alcanzan un nivel tan bajo como en el 2018.
+
+- Apoyo a la adopción homoparental, edad y sexo
+
+```{r}
+interact_plot(marchar12, pred = ola, modx = edad, mod2 = sexo, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Adopción homoparental", x="Año")+
+  scale_x_discrete(labels = waves3)
+```
+
+Las mujeres han aumentado el apoyo a la adopción homoparental independiente de su edad, sin embargo, los hombres más jóvenes (18-28 años) han disminuido su apoyo en el último periodo.
+
+- Apoyo a la adopción homoparental y educación
+
+```{r}
+interact_plot(marchar8, pred = ola, modx = educ, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Adopción homoparental", x="Año")+
+  scale_x_discrete(labels = waves3)
+```
+
+No se observan diferencias significativas entre tener educación media o técnica, pero sí es significativamente mayor el apoyo a la adopción homoparental entre quienes tienen educación universitaria.
+
+- Apoyo a la adopción homoparental, edad y educación
+
+```{r}
+interact_plot(marchar11, pred = ola, modx = edad, mod2 = educ, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Adopción homoparental", x="Año")+
+  scale_x_discrete(labels = waves3)
+```
+
+Entre las personas de educación media o menos el apoyo a la adopción homoparental ha ido aumentando en el tiempo, pero sigue estando en niveles más bajos que los otros niveles educacionales. Destaca que las personas jóvenes con educación universitaria han disminuido su apoyo, aunque siguen siendo quienes tienen el apoyo más alto.
+
+- Apoyo a la adopción homoparental y posición política
+
+```{r}
+interact_plot(marchar9, pred = ola, modx = pos_id, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Adopción homoparental", x="Año")+
+  scale_x_discrete(labels = waves3)
+```
+
+No se observan diferencias significativas entre los grupos, pero el apoyo entre las personas de izquierda es mayor que el de los de derecha. Las personas de centro y que no se identifican se mantienen en niveles intermedios.
+
+- Apoyo a la adopción homoparental, edad y posición política
+
+```{r}
+preds <- ggpredict(marchar10, terms = c("ola", "edad", "pos_id"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Año",
+    y = "Apoyo adopción homoparental",
+    color = "Edad"
+  ) +
+  ylim(1, 5) +
+  scale_x_discrete(labels = waves3) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+En las primeras olas el apoyo de las personas jóvenes de izquierda era mayor, sin embargo, este apoyo se reduje en el tiempo y se volvió similar al de los otros grupos etarios y posiciones políticas.
+
+# Apoyo al aborto
+
+
+```{r}
+#if (!require("pacman")) install.packages("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,aborto, edad, sexo, pos_id, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=45 ~ "Entre 29 y 45",
+                          edad > 45 ~ "Más de 45")) 
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 45", "Entre 29 y 45", "Entre 24 y 28", "Entre 18 y 23"))
+df_study1$sexo <- factor(df_study1$sexo, levels = c(1, 2), labels = c("Hombre", "Mujer"))
+
+marchar.null <- lmer(formula(paste0("aborto~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar1 <- lmer(formula(paste0("aborto~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar2 <- lmer(formula(paste0("aborto~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar3 <- lmer(formula(paste0("aborto~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar4 <- lmer(formula(paste0("aborto~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("aborto~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("aborto~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("aborto~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("aborto~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("aborto~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("aborto~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("aborto~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar12 <- lmer(formula(paste0("aborto~",h12,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+El apoyo a la despenalización del aborto se ha mantenido estable durante el tiempo, siendo las personas más jóvenes las que más apoyan esta medida.
+
+```{r}
+interact_plot(marchar6, pred = ola, modx = edad, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Apoyo legalización aborto", x="Año")+
+  scale_x_discrete(labels = waves3)
+```
+
+- Apoyo al aborto y sexo
+
+```{r}
+interact_plot(marchar7, pred = ola, modx = sexo, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Apoyo legalización aborto", x="Año")+
+  scale_x_discrete(labels = waves3)
+```
+
+No se observan diferencias significativas entre hombres y mujeres
+
+- Apoyo al aborto, edad y sexo
+
+```{r}
+interact_plot(marchar12, pred = ola, modx = edad, mod2 = sexo, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Apoyo legalización aborto", x="Año")+
+  scale_x_discrete(labels = waves3)
+```
+
+Las mujeres jóvenes son quienes más apoyan la despenalización del aborto.
+
+- Apoyo al aborto y educación
+
+```{r}
+interact_plot(marchar8, pred = ola, modx = educ, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Apoyo legalización aborto", x="Año")+
+  scale_x_discrete(labels = waves3)
+```
+
+Las personas con educación universitaria apoyan más la despenalización del aborto que las personas con menor nivel educacional.
+
+- Apoyo al aborto, edad y educación
+
+```{r}
+interact_plot(marchar11, pred = ola, modx = edad, mod2 = educ, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Apoyo legalización aborto", x="Año")+
+  scale_x_discrete(labels = waves3)
+```
+
+No se observa un patrón claro en cuanto a los cambios en el apoyo al aborto por nivel educacional y grupos etarios.
+
+- Apoyo al aborto y posición política
+
+```{r}
+interact_plot(marchar9, pred = ola, modx = pos_id, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Apoyo legalización aborto", x="Año")+
+  scale_x_discrete(labels = waves3)
+```
+
+Las personas de izquierda apoyan más la despenalización del aborto que las de derecha, pero no se observan diferencias significativas con las personas de centro o que no se identifican con ninguna posición política.
+
+- Apoyo al aborto, edad y posición política
+
+```{r}
+preds <- ggpredict(marchar10, terms = c("ola", "edad", "pos_id"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Año",
+    y = "Apoyo legalización aborto",
+    color = "Edad"
+  ) +
+  ylim(1, 5) +
+  scale_x_discrete(labels = waves3) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+Destaca que entre las personas de derecha, quienes tienen entre 24 y 28 años son quienes más apoyan el aborto, mientras que entre las personas de izquierda este grupo etario es el que menos lo apoya.
+
+# Chile debería tomar medidas más drásticas para impedir el ingreso de inmigrantes al país 
+
+```{r}
+#if (!require("pacman")) install.packages("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,restriccion_migrantes, edad, sexo, pos_id, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Entre 18 y 23",
+                          edad >23 & edad <=28 ~ "Entre 24 y 28",
+                          edad >28 & edad <=45 ~ "Entre 29 y 45",
+                          edad > 45 ~ "Más de 45")) 
+df_study1$edad <- factor(df_study1$edad, levels = c("Más de 45", "Entre 29 y 45", "Entre 24 y 28", "Entre 18 y 23"))
+df_study1$sexo <- factor(df_study1$sexo, levels = c(1, 2), labels = c("Hombre", "Mujer"))
+
+marchar.null <- lmer(formula(paste0("restriccion_migrantes~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar1 <- lmer(formula(paste0("restriccion_migrantes~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar2 <- lmer(formula(paste0("restriccion_migrantes~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar3 <- lmer(formula(paste0("restriccion_migrantes~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar4 <- lmer(formula(paste0("restriccion_migrantes~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("restriccion_migrantes~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("restriccion_migrantes~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("restriccion_migrantes~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("restriccion_migrantes~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("restriccion_migrantes~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("restriccion_migrantes~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("restriccion_migrantes~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar12 <- lmer(formula(paste0("restriccion_migrantes~",h12,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+Existe un aumento sostenido en el tiempo en el apoyo a medidas más drásticas para impedir la inmigración en todos los grupos etarios.
+
+```{r}
+interact_plot(marchar6, pred = ola, modx = edad, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Fortalecer restricciones inmigrantes", x="Año")+
+  scale_x_discrete(labels = waves3)
+```
+
+- Restricciones inmigración y sexo
+
+```{r}
+interact_plot(marchar7, pred = ola, modx = sexo, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Fortalecer restricciones inmigrantes", x="Año")+
+  scale_x_discrete(labels = waves3)
+```
+
+No se observan diferencias significativas por sexo
+
+- Restricciones inmigración, edad y sexo
+
+```{r}
+interact_plot(marchar12, pred = ola, modx = edad, mod2 = sexo, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Fortalecer restricciones inmigrantes", x="Año")+
+  scale_x_discrete(labels = waves3)
+```
+
+No se observan diferencias significativas según edad y sexo
+
+
+- Restricciones inmigración y educación
+
+```{r}
+interact_plot(marchar8, pred = ola, modx = educ, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Fortalecer restricciones inmigrantes", x="Año")+
+  scale_x_discrete(labels = waves3)
+```
+
+En las primeras olas las personas con educación universitaria eran quienes menos apoyaban fortalecer las medidas anti inmigración, sin embargo, en los últimos tres años estas diferencias ya no son significativas.
+
+- Restricciones inmigración, edad y educación
+
+```{r}
+interact_plot(marchar11, pred = ola, modx = edad, mod2 = educ, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Fortalecer restricciones inmigrantes", x="Año")+
+  scale_x_discrete(labels = waves3)
+```
+
+No se observan diferencias significativas según edad y educación
+
+- Restricciones inmigración y posición política
+
+```{r}
+interact_plot(marchar9, pred = ola, modx = pos_id, interval = TRUE)+
+  ylim(1,5)+
+  labs(y="Fortalecer restricciones inmigrantes", x="Año")+
+  scale_x_discrete(labels = waves3)
+```
+
+Las personas de derecha son quienes más apoyan fortalecer estas medidas, mientras que los de izquierda las apoyan menos. Entre las personas de centro y que no se identifican con ninguna ideología el apoyo se mantiene en niveles intermedios.
+
+- Restricciones inmigración, edad y posición política
+
+```{r}
+preds <- ggpredict(marchar10, terms = c("ola", "edad", "pos_id"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Año",
+    y = "Fortalecer restricciones inmigrantes",
+    color = "Edad"
+  ) +
+  ylim(1, 5) +
+  scale_x_discrete(labels = waves3) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+Las personas jóvenes de izquierda son el único grupo que no aumenta su nivel de apoyo a las medidas anti inmigración.
