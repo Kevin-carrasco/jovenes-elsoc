@@ -1,5 +1,5 @@
 ---
-title: "Informe de resultados"
+title: "Appendix"
 format:  
   html:
     code-copy: true
@@ -16,7 +16,6 @@ format:
 editor_options: 
   chunk_output_type: console
 editor: source
-lang: es
 fontsize: 12pt
 ---
 
