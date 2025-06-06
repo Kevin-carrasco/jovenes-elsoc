@@ -1,10 +1,6 @@
 ---
 title: "03-analisis-v3"
-format:  
-  html:  
-    fig-width: 10  
-    fig-height: 7  
-    toc: true
+format: docx
 editor: source
 ---
 
@@ -73,7 +69,7 @@ marchar12 <- lmer(formula(paste0("part_marchas~",h12,"+(1|idencuesta)")),data = 
 ```
 
 ```{r results='asis'}
-texreg::htmlreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
+texreg::knitreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
                 custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
 ```
 
@@ -190,7 +186,7 @@ marchar12 <- lmer(formula(paste0("part_rrss~",h12,"+(1|idencuesta)")),data = df_
 ```
 
 ```{r results='asis'}
-texreg::htmlreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
+texreg::knitreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
                 custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
 ```
 
@@ -301,7 +297,7 @@ marchar12 <- lmer(formula(paste0("mov_estudiantil~",h12,"+(1|idencuesta)")),data
 ```
 
 ```{r results='asis'}
-texreg::htmlreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
+texreg::knitreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
                 custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
 ```
 
@@ -429,7 +425,7 @@ marchar12 <- lmer(formula(paste0("part_electoral~",h12,"+(1|idencuesta)")),data 
 ```
 
 ```{r results='asis'}
-texreg::htmlreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
+texreg::knitreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
                 custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
 ```
 
@@ -572,7 +568,7 @@ marchar12 <- lmer(formula(paste0("autoritarismo~",h12,"+(1|idencuesta)")),data =
 ```
 
 ```{r results='asis'}
-texreg::htmlreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
+texreg::knitreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
                 custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
 ```
 
@@ -683,7 +679,7 @@ marchar12 <- lmer(formula(paste0("adop_homo~",h12,"+(1|idencuesta)")),data = df_
 ```
 
 ```{r results='asis'}
-texreg::htmlreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
+texreg::knitreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
                 custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
 ```
 
@@ -796,7 +792,7 @@ marchar12 <- lmer(formula(paste0("aborto~",h12,"+(1|idencuesta)")),data = df_stu
 ```
 
 ```{r results='asis'}
-texreg::htmlreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
+texreg::knitreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
                 custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
 ```
 
@@ -909,7 +905,7 @@ marchar12 <- lmer(formula(paste0("restriccion_migrantes~",h12,"+(1|idencuesta)")
 ```
 
 ```{r results='asis'}
-texreg::htmlreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
+texreg::knitreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
                 custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
 ```
 
@@ -980,7 +976,7 @@ interact_plot(marchar12, pred = ola, modx = edad, mod2 = sexo, interval = TRUE)+
 
 - Todas las olas
 
-```{r}
+```{r eval=FALSE}
 #if (!require("pacman")) install.packages("pacman") # instalar pacman
                             # cargar librerias
 pacman::p_load(dplyr,       # Manipulacion de datos
@@ -1027,28 +1023,28 @@ marchar11 <- lmer(formula(paste0("perc_des~",h11,"+(1|idencuesta)")),data = df_s
 marchar12 <- lmer(formula(paste0("perc_des~",h12,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
 ```
 
-```{r results='asis'}
-texreg::htmlreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
+```{r results='asis', eval=FALSE}
+texreg::knitreg(list(marchar1, marchar2, marchar3, marchar4, marchar5, marchar6, marchar7, marchar8, marchar9, marchar10, marchar11),
                 custom.note = "*** p < 0.001; ** p < 0.01; * p < 0.05")
 ```
 
 ### interacciones
 
-```{r}
+```{r eval=FALSE}
 interact_plot(marchar6, pred = ola, modx = edad, interval = TRUE)+
   ylim(1,5)+
   labs(y="Percepción desigualdad", x="Año")+
   scale_x_discrete(labels = waves)
 ```
 
-```{r}
+```{r eval=FALSE}
 interact_plot(marchar7, pred = ola, modx = sexo, interval = TRUE)+
   ylim(1,5)+
   labs(y="Percepción desigualdad", x="Año")+
   scale_x_discrete(labels = waves)
 ```
 
-```{r}
+```{r eval=FALSE}
 interact_plot(marchar8, pred = ola, modx = educ, interval = TRUE)+
   ylim(1,5)+
   labs(y="Percepción desigualdad", x="Año")+
@@ -1062,7 +1058,7 @@ interact_plot(marchar9, pred = ola, modx = pos_id, interval = TRUE)+
   scale_x_discrete(labels = waves)
 ```
 
-```{r}
+```{r eval=FALSE}
 preds <- ggpredict(marchar10, terms = c("ola", "edad", "pos_id"))
 
 ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
@@ -1081,7 +1077,7 @@ ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
   theme(legend.position = "bottom")
 ```
 
-```{r}
+```{r eval=FALSE}
 interact_plot(marchar11, pred = ola, modx = edad, mod2 = educ, interval = TRUE)+
   ylim(1,5.2)+
   labs(y="Percepción desigualdad", x="Año")+

@@ -1,0 +1,3373 @@
+---
+title: "Informe de resultados"
+format:  
+  html:
+    code-copy: true
+    code-tools: true
+    toc: true
+    toc-location: right
+    toc-depth: 4
+    toc-expand: 2
+    toc-title: Contents
+    number-sections: true
+    number-depth: 4 
+    fig-width: 10  
+    fig-height: 7
+editor_options: 
+  chunk_output_type: console
+editor: source
+lang: es
+fontsize: 12pt
+---
+
+```{r}
+#| label: set
+#| echo: false
+#| messedad: false
+#| warning: false
+
+library(knitr)
+knitr::opts_chunk$set(echo = FALSE, include = TRUE, warning = FALSE, messedad = FALSE)
+
+table_format <- if(is_html_output()) {
+  "html"
+} else if(is_latex_output()) {
+  "latex"
+}
+table_format2 <- if(is_html_output()) {
+  T
+} else if(is_latex_output()) {
+  F
+}
+
+options(kableExtra.html.bsTable = T)
+options(knitr.kable.NA = "")
+```
+
+# Voting
+
+Variables:
+
+- Participation in the 2013 elections (ola 1 y 2)
+
+- Participation in the 2017 elections (ola 3 y 4)
+
+- Participation in the constitutional plebiscite (ola 5)
+
+- Participation in the 2021 election - First round (ola 6)
+
+- Participation in the 2021 election - Runoff (ola 7)
+
+
+```{r}
+#if (!require("pacman")) install.packedads("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg,
+               interactions,
+               ggplot2,
+               ggeffects
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,part_electoral, edad, sexo, pos_id, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Between 18 and 23",
+                          edad >23 & edad <=28 ~ "Between 24 and 28",
+                          edad >28 & edad <=45 ~ "Between 29 and 45",
+                          edad > 45 ~ "More than 45")) 
+
+df_study1$edad <- factor(df_study1$edad, levels = c("More than 45", "Between 29 and 45", "Between 24 and 28", "Between 18 and 23"))
+df_study1$sexo <- factor(df_study1$sexo, levels = c(1, 2), labels = c("Man", "Woman"))
+df_study1$educ <- factor(df_study1$educ,
+                         levels = c("Media o menos", "Técnica", "Universitaria"),
+                         labels = c("Secondary or less", "Technical", "University or more"))
+df_study1$pos_id <- factor(df_study1$pos_id,
+                         levels = c("Izquierda", "Centro", "Derecha", "No se identifica"),
+                         labels = c("Left", "Center", "Right", "Doesn't identify"))
+
+df_study1$part_electoral <- factor(df_study1$part_electoral, levels = c(1,2),
+         labels = c("Yes", "No"))
+df_study1$part_electoral <- car::recode(df_study1$part_electoral, c("1=2; 2=1"))
+df_study1 <- df_study1 %>%
+  dplyr::mutate(part_electoral = ifelse(part_electoral == "Yes", 1, 0))
+
+# Hipotesis
+h1 <- "ola"
+h2 <- "ola+edad"
+h3 <- "ola+edad+sexo"
+h4 <- "ola+edad+sexo+educ"
+h5 <- "ola+edad+sexo+educ+pos_id"
+h6 <- "ola*edad+sexo+educ+pos_id"
+h7 <- "ola*sexo+edad+sexo+educ+pos_id"
+h8 <- "ola*educ+edad+sexo+educ+pos_id"
+h9 <- "ola*pos_id+edad+sexo+educ+pos_id"
+h10 <- "ola*pos_id*edad+sexo+educ+pos_id"
+h11 <- "ola*educ*edad+sexo+educ+pos_id"
+h12 <- "ola*sexo*edad+sexo+educ+pos_id"
+
+marchar.null <- glmer(formula(paste0("part_electoral~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = "binomial")
+marchar1 <- glmer(formula(paste0("part_electoral~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = "binomial")
+marchar2 <- glmer(formula(paste0("part_electoral~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = "binomial")
+marchar3 <- glmer(formula(paste0("part_electoral~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = "binomial")
+marchar4 <- lmer(formula(paste0("part_electoral~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("part_electoral~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("part_electoral~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("part_electoral~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("part_electoral~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("part_electoral~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("part_electoral~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("part_electoral~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar12 <- lmer(formula(paste0("part_electoral~",h12,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+
+```
+
+## Main effects
+
+```{r results='asis'}
+ccoef <- list(
+  "(Intercept)" = "Intercept",
+  "ola2" = "2017",
+  "ola3" = "2018",
+  "ola4" = "2019",
+  "ola5" = "2021",
+  "ola6" = "2022",
+  "ola7" = "2023",
+  "edadBetween 29 and 45" = "Between 29 and 45",
+  "edadBetween 24 and 28" = "Between 24 and 28",
+  "edadBetween 18 and 23" = "Between 18 and 23",
+  "sexoWoman" = "Woman (Ref.= Man)",
+  "educTechnical" = "Technical",
+  "educUniversity or more" = "University or more",
+  "pos_idCenter" = "Center",
+  "pos_idRight" = "Right",
+  "pos_idDoesn't identify" = "Doesn't identify"
+  )
+
+texreg::knitreg(list(marchar1, marchar2, marchar3, marchar4, marchar5),
+               custom.model.names = c(paste0("Model ", seq(1:5))),
+               caption.above = T,
+               caption = NULL,
+               stars = c(0.05, 0.01, 0.001),
+               custom.coef.map = ccoef,
+               digits = 2,
+               groups = list("Wave (Ref.= 2016)" = 2:7,
+                             "Age (Ref.= More than 45)" = 8:10,
+                             "Education (Ref.= Secondary)" = 12:13,
+                             "Political position (Ref.= Left)" = 14:16),
+               custom.note = "Note: Cells contain regression coefficients with standard errors in parentheses. \n %stars.",
+               leading.zero = T,
+               use.packages = F,
+               booktabs = F,
+               scalebox = 0.80,
+               include.loglik = FALSE,
+               include.aic = FALSE,
+               center = T,
+               custom.gof.names = c("BIC", "Numb. obs.", "Num. groups: individuals", "Var: individuals (Intercept)", "Var: Residual")
+               )
+```
+
+## Interactions effects 
+
+```{r results='asis'}
+ccoef2 <- list(
+  "(Intercept)" = "Intercept",
+  "ola2:edadBetween 29 and 45" = "2017*Age 29-45",
+  "ola3:edadBetween 29 and 45" = "2018*Age 29-45",
+  "ola4:edadBetween 29 and 45" = "2019*Age 29-45",
+  "ola5:edadBetween 29 and 45" = "2021*Age 29-45",
+  "ola6:edadBetween 29 and 45" = "2022*Age 29-45",
+  "ola7:edadBetween 29 and 45" = "2023*Age 29-45",
+  "ola2:edadBetween 24 and 28" = "2017*Age 24-28",
+  "ola3:edadBetween 24 and 28" = "2018*Age 24-28",
+  "ola4:edadBetween 24 and 28" = "2019*Age 24-28",
+  "ola5:edadBetween 24 and 28" = "2021*Age 24-28",
+  "ola6:edadBetween 24 and 28" = "2022*Age 24-28",
+  "ola7:edadBetween 24 and 28" = "2023*Age 24-28",
+  "ola2:edadBetween 18 and 23" = "2017*Age 18-23",
+  "ola3:edadBetween 18 and 23" = "2018*Age 18-23",
+  "ola4:edadBetween 18 and 23" = "2019*Age 18-23",
+  "ola5:edadBetween 18 and 23" = "2021*Age 18-23",
+  "ola6:edadBetween 18 and 23" = "2022*Age 18-23",
+  "ola7:edadBetween 18 and 23" = "2023*Age 18-23",
+  "ola2:sexoWoman" = "2017*Woman",
+  "ola3:sexoWoman" = "2018*Woman",
+  "ola4:sexoWoman" = "2019*Woman",
+  "ola5:sexoWoman" = "2021*Woman",
+  "ola6:sexoWoman" = "2022*Woman",
+  "ola7:sexoWoman" = "2023*Woman",
+  "ola2:educTechnical" = "2017*Technical",
+  "ola3:educTechnical" = "2018*Technical",
+  "ola4:educTechnical" = "2019*Technical",
+  "ola5:educTechnical" = "2021*Technical",
+  "ola6:educTechnical" = "2022*Technical",
+  "ola7:educTechnical" = "2023*Technical",
+  "ola2:educUniversity or more" = "2017*University",
+  "ola3:educUniversity or more" = "2018*University",
+  "ola4:educUniversity or more" = "2019*University",
+  "ola5:educUniversity or more" = "2021*University",
+  "ola6:educUniversity or more" = "2022*University",
+  "ola7:educUniversity or more" = "2023*University",
+  "ola2:pos_idCenter" = "2017*Center",
+  "ola3:pos_idCenter" = "2018*Center",
+  "ola4:pos_idCenter" = "2019*Center",
+  "ola5:pos_idCenter" = "2021*Center",
+  "ola6:pos_idCenter" = "2022*Center",
+  "ola7:pos_idCenter" = "2023*Center",
+  "ola2:pos_idRight" = "2017*Right",
+  "ola3:pos_idRight" = "2018*Right",
+  "ola4:pos_idRight" = "2019*Right",
+  "ola5:pos_idRight" = "2021*Right",
+  "ola6:pos_idRight" = "2022*Right",
+  "ola7:pos_idRight" = "2023*Right",
+  "ola2:pos_idDoesn't identify" = "2017*Doesn't identify",
+  "ola3:pos_idDoesn't identify" = "2018*Doesn't identify",
+  "ola4:pos_idDoesn't identify" = "2019*Doesn't identify",
+  "ola5:pos_idDoesn't identify" = "2021*Doesn't identify",
+  "ola6:pos_idDoesn't identify" = "2022*Doesn't identify",
+  "ola7:pos_idDoesn't identify" = "2023*Doesn't identify",
+  "pos_idCenter:edadBetween 29 and 45" = "Center*Age 29-45",
+  "pos_idRight:edadBetween 29 and 45" = "Right*Age 29-45",
+  "pos_idDoesn't identify:edadBetween 29 and 45" = "Doesn't identify * Age 29-45",
+  "pos_idCenter:edadBetween 29 and 45" = "Center*Age 24-28",
+  "pos_idRight:edadBetween 29 and 45" = "Right*Age 24-28",
+  "pos_idDoesn't identify:edadBetween 29 and 45" = "Doesn't identify * Age 24-28",
+  "pos_idCenter:edadBetween 29 and 45" = "Center*Age 18-23",
+  "pos_idRight:edadBetween 29 and 45" = "Right*Age 18-23",
+  "pos_idDoesn't identify:edadBetween 29 and 45" = "Doesn't identify * Age 18-23",
+  "ola2:pos_idCenter:edadBetween 29 and 45" = "2017 * Center * Age 29-45",
+  "ola3:pos_idCenter:edadBetween 29 and 45" = "2018 * Center * Age 29-45",
+  "ola4:pos_idCenter:edadBetween 29 and 45" = "2019 * Center * Age 29-45",
+  "ola5:pos_idCenter:edadBetween 29 and 45" = "2021 * Center * Age 29-45",
+  "ola6:pos_idCenter:edadBetween 29 and 45" = "2022 * Center * Age 29-45",
+  "ola7:pos_idCenter:edadBetween 29 and 45" = "2023 * Center * Age 29-45",
+  "ola2:pos_idRight:edadBetween 29 and 45" = "2017 * Right * Age 29-45",
+  "ola3:pos_idRight:edadBetween 29 and 45" = "2018 * Right * Age 29-45",
+  "ola4:pos_idRight:edadBetween 29 and 45" = "2019 * Right * Age 29-45",
+  "ola5:pos_idRight:edadBetween 29 and 45" = "2021 * Right * Age 29-45",
+  "ola6:pos_idRight:edadBetween 29 and 45" = "2022 * Right * Age 29-45",
+  "ola7:pos_idRight:edadBetween 29 and 45" = "2023 * Right * Age 29-45",
+  "ola2:pos_idDoesn't identify:edadBetween 29 and 45" = "2017 * Doesn't identify * Age 29-45",
+  "ola3:pos_idDoesn't identify:edadBetween 29 and 45" = "2018 * Doesn't identify * Age 29-45",
+  "ola4:pos_idDoesn't identify:edadBetween 29 and 45" = "2019 * Doesn't identify * Age 29-45",
+  "ola5:pos_idDoesn't identify:edadBetween 29 and 45" = "2021 * Doesn't identify * Age 29-45",
+  "ola6:pos_idDoesn't identify:edadBetween 29 and 45" = "2022 * Doesn't identify * Age 29-45",
+  "ola7:pos_idDoesn't identify:edadBetween 29 and 45" = "2023 * Doesn't identify * Age 29-45",
+  "ola2:pos_idCenter:edadBetween 24 and 28" = "2017 * Center * Age 24-28",
+  "ola3:pos_idCenter:edadBetween 24 and 28" = "2018 * Center * Age 24-28",
+  "ola4:pos_idCenter:edadBetween 24 and 28" = "2019 * Center * Age 24-28",
+  "ola5:pos_idCenter:edadBetween 24 and 28" = "2021 * Center * Age 24-28",
+  "ola6:pos_idCenter:edadBetween 24 and 28" = "2022 * Center * Age 24-28",
+  "ola7:pos_idCenter:edadBetween 24 and 28" = "2023 * Center * Age 24-28",
+  "ola2:pos_idRight:edadBetween 24 and 28" = "2017 * Right * Age 24-28",
+  "ola3:pos_idRight:edadBetween 24 and 28" = "2018 * Right * Age 24-28",
+  "ola4:pos_idRight:edadBetween 24 and 28" = "2019 * Right * Age 24-28",
+  "ola5:pos_idRight:edadBetween 24 and 28" = "2021 * Right * Age 24-28",
+  "ola6:pos_idRight:edadBetween 24 and 28" = "2022 * Right * Age 24-28",
+  "ola7:pos_idRight:edadBetween 24 and 28" = "2023 * Right * Age 24-28",
+  "ola2:pos_idDoesn't identify:edadBetween 24 and 28" = "2017 * Doesn't identify * Age 24-28",
+  "ola3:pos_idDoesn't identify:edadBetween 24 and 28" = "2018 * Doesn't identify * Age 24-28",
+  "ola4:pos_idDoesn't identify:edadBetween 24 and 28" = "2019 * Doesn't identify * Age 24-28",
+  "ola5:pos_idDoesn't identify:edadBetween 24 and 28" = "2021 * Doesn't identify * Age 24-28",
+  "ola6:pos_idDoesn't identify:edadBetween 24 and 28" = "2022 * Doesn't identify * Age 24-28",
+  "ola7:pos_idDoesn't identify:edadBetween 24 and 28" = "2023 * Doesn't identify * Age 24-28",
+  "ola2:pos_idCenter:edadBetween 18 and 23" = "2017 * Center * Age 18-23",
+  "ola3:pos_idCenter:edadBetween 18 and 23" = "2018 * Center * Age 18-23",
+  "ola4:pos_idCenter:edadBetween 18 and 23" = "2019 * Center * Age 18-23",
+  "ola5:pos_idCenter:edadBetween 18 and 23" = "2021 * Center * Age 18-23",
+  "ola6:pos_idCenter:edadBetween 18 and 23" = "2022 * Center * Age 18-23",
+  "ola7:pos_idCenter:edadBetween 18 and 23" = "2023 * Center * Age 18-23",
+  "ola2:pos_idRight:edadBetween 18 and 23" = "2017 * Right * Age 18-23",
+  "ola3:pos_idRight:edadBetween 18 and 23" = "2018 * Right * Age 18-23",
+  "ola4:pos_idRight:edadBetween 18 and 23" = "2019 * Right * Age 18-23",
+  "ola5:pos_idRight:edadBetween 18 and 23" = "2021 * Right * Age 18-23",
+  "ola6:pos_idRight:edadBetween 18 and 23" = "2022 * Right * Age 18-23",
+  "ola7:pos_idRight:edadBetween 18 and 23" = "2023 * Right * Age 18-23",
+  "ola2:pos_idDoesn't identify:edadBetween 18 and 23" = "2017 * Doesn't identify * Age 18-23",
+  "ola3:pos_idDoesn't identify:edadBetween 18 and 23" = "2018 * Doesn't identify * Age 18-23",
+  "ola4:pos_idDoesn't identify:edadBetween 18 and 23" = "2019 * Doesn't identify * Age 18-23",
+  "ola5:pos_idDoesn't identify:edadBetween 18 and 23" = "2021 * Doesn't identify * Age 18-23",
+  "ola6:pos_idDoesn't identify:edadBetween 18 and 23" = "2022 * Doesn't identify * Age 18-23",
+  "ola7:pos_idDoesn't identify:edadBetween 18 and 23" = "2023 * Doesn't identify * Age 18-23",
+  "educTechnical:edadBetween 29 and 45" = "Technical * Age 29-45",
+  "educUniversity or more:edadBetween 29 and 45" = "University * Age 29-45",
+  "educTechnical:edadBetween 24 and 28" = "Technical * Age 24-28",
+  "educUniversity or more:edadBetween 24 and 28" = "University * Age 24-28",
+  "educTechnical:edadBetween 18 and 23" = "Technical * Age 18-23",
+  "educUniversity or more:edadBetween 18 and 23" = "University * Age 18-23",
+  "ola2:educTechnical:edadBetween 29 and 45" = "2017 * Technical * Age 29-45",
+  "ola3:educTechnical:edadBetween 29 and 45" = "2018 * Technical * Age 29-45",
+  "ola4:educTechnical:edadBetween 29 and 45" = "2019 * Technical * Age 29-45",
+  "ola5:educTechnical:edadBetween 29 and 45" = "2021 * Technical * Age 29-45",
+  "ola6:educTechnical:edadBetween 29 and 45" = "2022 * Technical * Age 29-45",
+  "ola7:educTechnical:edadBetween 29 and 45" = "2023 * Technical * Age 29-45",
+  "ola2:educUniversity or more:edadBetween 29 and 45" = "2017 * University * Age 29-45",
+  "ola3:educUniversity or more:edadBetween 29 and 45" = "2018 * University * Age 29-45",
+  "ola4:educUniversity or more:edadBetween 29 and 45" = "2019 * University * Age 29-45",
+  "ola5:educUniversity or more:edadBetween 29 and 45" = "2021 * University * Age 29-45",
+  "ola6:educUniversity or more:edadBetween 29 and 45" = "2022 * University * Age 29-45",
+  "ola7:educUniversity or more:edadBetween 29 and 45" = "2023 * University * Age 29-45",
+  "ola2:educTechnical:edadBetween 24 and 28" = "2017 * Technical * Age 24-28",
+  "ola3:educTechnical:edadBetween 24 and 28" = "2018 * Technical * Age 24-28",
+  "ola4:educTechnical:edadBetween 24 and 28" = "2019 * Technical * Age 24-28",
+  "ola5:educTechnical:edadBetween 24 and 28" = "2021 * Technical * Age 24-28",
+  "ola6:educTechnical:edadBetween 24 and 28" = "2022 * Technical * Age 24-28",
+  "ola7:educTechnical:edadBetween 24 and 28" = "2023 * Technical * Age 24-28",
+  "ola2:educUniversity or more:edadBetween 24 and 28" = "2017 * University * Age 24-28",
+  "ola3:educUniversity or more:edadBetween 24 and 28" = "2018 * University * Age 24-28",
+  "ola4:educUniversity or more:edadBetween 24 and 28" = "2019 * University * Age 24-28",
+  "ola5:educUniversity or more:edadBetween 24 and 28" = "2021 * University * Age 24-28",
+  "ola6:educUniversity or more:edadBetween 24 and 28" = "2022 * University * Age 24-28",
+  "ola7:educUniversity or more:edadBetween 24 and 28" = "2023 * University * Age 24-28",
+  "ola2:educTechnical:edadBetween 18 and 23" = "2017 * Technical * Age 18-23",
+  "ola3:educTechnical:edadBetween 18 and 23" = "2018 * Technical * Age 18-23",
+  "ola4:educTechnical:edadBetween 18 and 23" = "2019 * Technical * Age 18-23",
+  "ola5:educTechnical:edadBetween 18 and 23" = "2021 * Technical * Age 18-23",
+  "ola6:educTechnical:edadBetween 18 and 23" = "2022 * Technical * Age 18-23",
+  "ola7:educTechnical:edadBetween 18 and 23" = "2023 * Technical * Age 18-23",
+  "ola2:educUniversity or more:edadBetween 18 and 23" = "2017 * University * Age 18-23",
+  "ola3:educUniversity or more:edadBetween 18 and 23" = "2018 * University * Age 18-23",
+  "ola4:educUniversity or more:edadBetween 18 and 23" = "2019 * University * Age 18-23",
+  "ola5:educUniversity or more:edadBetween 18 and 23" = "2021 * University * Age 18-23",
+  "ola6:educUniversity or more:edadBetween 18 and 23" = "2022 * University * Age 18-23",
+  "ola7:educUniversity or more:edadBetween 18 and 23" = "2023 * University * Age 18-23",
+  "sexoWoman:edadBetween 29 and 45" = "Woman * Age 29-45",
+  "sexoWoman:edadBetween 29 and 45" = "Woman * Age 24-28",
+  "sexoWoman:edadBetween 29 and 45" = "Woman * Age 18-23",
+  "ola2:sexoWoman:edadBetween 29 and 45" = "2017 * Woman * Age 29-45",
+  "ola3:sexoWoman:edadBetween 29 and 45" = "2018 * Woman * Age 29-45",
+  "ola4:sexoWoman:edadBetween 29 and 45" = "2019 * Woman * Age 29-45",
+  "ola5:sexoWoman:edadBetween 29 and 45" = "2021 * Woman * Age 29-45",
+  "ola6:sexoWoman:edadBetween 29 and 45" = "2022 * Woman * Age 29-45",
+  "ola7:sexoWoman:edadBetween 29 and 45" = "2023 * Woman * Age 29-45",
+  "ola2:sexoWoman:edadBetween 24 and 28" = "2017 * Woman * Age 24-28",
+  "ola3:sexoWoman:edadBetween 24 and 28" = "2018 * Woman * Age 24-28",
+  "ola4:sexoWoman:edadBetween 24 and 28" = "2019 * Woman * Age 24-28",
+  "ola5:sexoWoman:edadBetween 24 and 28" = "2021 * Woman * Age 24-28",
+  "ola6:sexoWoman:edadBetween 24 and 28" = "2022 * Woman * Age 24-28",
+  "ola7:sexoWoman:edadBetween 24 and 28" = "2023 * Woman * Age 24-28",
+  "ola2:sexoWoman:edadBetween 18 and 23" = "2017 * Woman * Age 18-23",
+  "ola3:sexoWoman:edadBetween 18 and 23" = "2018 * Woman * Age 18-23",
+  "ola4:sexoWoman:edadBetween 18 and 23" = "2019 * Woman * Age 18-23",
+  "ola5:sexoWoman:edadBetween 18 and 23" = "2021 * Woman * Age 18-23",
+  "ola6:sexoWoman:edadBetween 18 and 23" = "2022 * Woman * Age 18-23",
+  "ola7:sexoWoman:edadBetween 18 and 23" = "2023 * Woman * Age 18-23"
+  )
+
+texreg::knitreg(list(marchar6, marchar7, marchar8, marchar9, marchar10, marchar11,marchar12),
+               custom.model.names = c(paste0("Model ", seq(6:12))),
+               caption.above = T,
+               caption = NULL,
+               stars = c(0.05, 0.01, 0.001),
+               custom.coef.map = ccoef2,
+               digits = 2,
+               custom.note = "Note: Cells contain regression coefficients with standard errors in parentheses. \n %stars.",
+               leading.zero = T,
+               use.packages = F,
+               booktabs = F,
+               scalebox = 0.80,
+               include.loglik = FALSE,
+               include.aic = FALSE,
+               center = T,
+               custom.gof.names = c("BIC", "Numb. obs.", "Num. groups: individuals", "Var: individuals (Intercept)", "Var: Residual"))
+```
+
+### Resume table
+
+```{r}
+betas <- marchar12@beta                           # Coeficientes
+vcov_mat <- as.matrix(vcov(marchar12))              # Matriz de varianzas-covarianzas
+ses <- sqrt(diag(vcov_mat))                         # Errores estándar
+tvals <- betas / ses                              # Valores t
+
+ses <- ses[44:61]
+betas <- betas[44:61]
+tvals <- tvals[44:61]
+
+pvals <- 2 * pnorm(-abs(tvals))  # Aproximación tipo Wald (z-score)
+
+signif_stars <- ifelse(pvals <= 0.001, "***",
+                 ifelse(pvals <= 0.01, "**",
+                 ifelse(pvals <= 0.05, "*", "")))
+
+olasexoedad<-data.frame(
+  Estimate = betas,
+  Signif = signif_stars
+)
+
+
+betas <- marchar11@beta                          # Coeficientes
+vcov_mat <- as.matrix(vcov(marchar11))              # Matriz de varianzas-covarianzas
+ses <- sqrt(diag(vcov_mat))                         # Errores estándar
+tvals <- betas / ses                              # Valores t
+
+ses <- ses[53:88]
+betas <- betas[53:88]
+tvals <- tvals[53:88]
+
+pvals <- 2 * pnorm(-abs(tvals))  # Aproximación tipo Wald (z-score)
+
+signif_stars <- ifelse(pvals <= 0.001, "***",
+                 ifelse(pvals <= 0.01, "**",
+                 ifelse(pvals <= 0.05, "*", "")))
+
+olaeducedad<-data.frame(
+  Estimate = betas,
+  Signif = signif_stars
+)
+
+
+betas <- marchar10@beta                          # Coeficientes
+vcov_mat <- as.matrix(vcov(marchar10))              # Matriz de varianzas-covarianzas
+ses <- sqrt(diag(vcov_mat))                         # Errores estándar
+tvals <- betas / ses                              # Valores t
+
+ses <- ses[62:115]
+betas <- betas[62:115]
+tvals <- tvals[62:115]
+
+pvals <- 2 * pnorm(-abs(tvals))  # Aproximación tipo Wald (z-score)
+
+signif_stars <- ifelse(pvals <= 0.001, "***",
+                 ifelse(pvals <= 0.01, "**",
+                 ifelse(pvals <= 0.05, "*", "")))
+
+olapospoledad<-data.frame(
+  Estimate = betas,
+  Signif = signif_stars
+)
+
+# Woman (olasexoedad)
+woman_idx <- c(1, 7, 13, 2, 8, 14, 3, 9, 15, 4, 10, 16, 5, 11, 17, 6, 12, 18)
+
+# Technical (olaeducedad)
+technical_idx <- c(1, 13, 25, 2, 14, 26, 3, 15, 27, 4, 16, 28, 5, 17, 29, 6, 18, 30)
+
+# University (olaeducedad)
+university_idx <- c(7, 19, 31, 8, 20, 32, 9, 21, 33, 10, 22, 34, 11, 23, 35, 12, 24, 36)
+
+# Edad 29–45 → posiciones: 1, 19, 37, 2, 20, 38, 3, 21, 39, ...
+center_idx <- c(1, 19, 37, 2, 20, 38, 3, 21, 39, 4, 22, 40, 5, 23, 41, 6, 24, 42)
+right_idx  <- c(7, 25, 43, 8, 26, 44, 9, 27, 45,10, 28, 46,11, 29, 47,12, 30, 48)
+dni_idx    <- c(13, 31, 49,14, 32, 50,15, 33, 51,16, 34, 52,17, 35, 53,18, 36, 54)
+
+
+
+
+tabla <- cbind(
+  Year = c("2017", "2017", "2017", 
+          "2018", "2018", "2018",
+          "2019", "2019", "2019",
+          "2021", "2021", "2021", 
+          "2022", "2022", "2022", 
+          "2023", "2023", "2023"),
+  Age = rep(c("29–45", "24–28", "18–23"), times = 6),
+  Woman = paste0(round(olasexoedad$Estimate[woman_idx], 2), olasexoedad$Signif[woman_idx]),
+  Technical = paste0(round(olaeducedad$Estimate[technical_idx], 2), olaeducedad$Signif[technical_idx]),
+  University = paste0(round(olaeducedad$Estimate[university_idx], 2), olaeducedad$Signif[university_idx]),
+  Center = paste0(round(olapospoledad$Estimate[center_idx], 2), olapospoledad$Signif[center_idx]),
+  Right = paste0(round(olapospoledad$Estimate[right_idx], 2), olapospoledad$Signif[right_idx]),
+  `Doesnt Identify` = paste0(round(olapospoledad$Estimate[dni_idx], 2), olapospoledad$Signif[dni_idx])
+)
+```
+
+```{r}
+kbl(tabla, 
+    align = "c") %>% 
+    add_header_above(c(" " = 3,
+                     "Education"=2, 
+                     "Political position"=3),
+                   bold = T)%>%  
+  kable_paper("hover",full_width = F) %>%
+     column_spec(1, bold = T) %>%
+     collapse_rows(columns = 1, valign = "middle") %>% 
+  footnote("***p < 0.001; **p < 0.01; *p < 0.05.")
+```
+
+## Interaction effects graphs
+
+- Voting and age
+
+```{r}
+elecciones<- c("Elections
+2013", "Elections
+2013", "Elections
+2017", "Elections
+2017", "Constitutional 
+plebiscite","Election first
+round 2021", "Election runoff
+2021")
+
+preds <- ggpredict(marchar6, terms = c("ola", "edad"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+ # facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Electoral participation",
+    color = "Age"
+  ) +
+  ylim(0, 1) +
+  scale_x_discrete(labels = elecciones) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Voting and sex
+
+```{r}
+preds <- ggpredict(marchar7, terms = c("ola", "sexo"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+ # facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Electoral participation",
+    color = "Sex"
+  ) +
+  ylim(0, 1) +
+  scale_x_discrete(labels = elecciones) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Voting, age and sex
+
+```{r}
+preds <- ggpredict(marchar12, terms = c("ola", "edad", "sexo"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Electoral participation",
+    color = "Age"
+  ) +
+  ylim(0, 1) +
+  scale_x_discrete(labels = elecciones) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Voting and Education
+
+```{r}
+preds <- ggpredict(marchar8, terms = c("ola", "educ"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+#  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Electoral participation",
+    color = "Education"
+  ) +
+  ylim(0,1) +
+  scale_x_discrete(labels = elecciones) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Voting, age and education
+
+```{r}
+preds <- ggpredict(marchar11, terms = c("ola", "edad", "educ"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Electoral participation",
+    color = "edad"
+  ) +
+  ylim(0, 1.2) +
+  scale_x_discrete(labels = elecciones) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Voting and political position
+
+```{r}
+preds <- ggpredict(marchar9, terms = c("ola", "pos_id"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+#  facet_wrap(~ facet, ncol = 3) +
+  labs(
+    x = "Year",
+    y = "Electoral participation",
+    color = "Political position"
+  ) +
+  ylim(0, 1) +
+  scale_x_discrete(labels = elecciones) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Voting, age and political position
+
+```{r}
+preds <- ggpredict(marchar10, terms = c("ola", "edad", "pos_id"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Electoral participation",
+    color = "edad"
+  ) +
+  ylim(0, 1) +
+  scale_x_discrete(labels = elecciones) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+# Participation online
+
+```{r}
+if (!require("pacman")) install.packedads("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,part_rrss, edad, sexo, pos_id, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Between 18 and 23",
+                          edad >23 & edad <=28 ~ "Between 24 and 28",
+                          edad >28 & edad <=45 ~ "Between 29 and 45",
+                          edad > 45 ~ "More than 45")) 
+
+df_study1$edad <- factor(df_study1$edad, levels = c("More than 45", "Between 29 and 45", "Between 24 and 28", "Between 18 and 23"))
+df_study1$sexo <- factor(df_study1$sexo, levels = c(1, 2), labels = c("Man", "Woman"))
+df_study1$educ <- factor(df_study1$educ,
+                         levels = c("Media o menos", "Técnica", "Universitaria"),
+                         labels = c("Secondary or less", "Technical", "University or more"))
+df_study1$pos_id <- factor(df_study1$pos_id,
+                         levels = c("Izquierda", "Centro", "Derecha", "No se identifica"),
+                         labels = c("Left", "Center", "Right", "Doesn't identify"))
+
+marchar.null <- lmer(formula(paste0("part_rrss~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar1 <- lmer(formula(paste0("part_rrss~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar2 <- lmer(formula(paste0("part_rrss~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar3 <- lmer(formula(paste0("part_rrss~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar4 <- lmer(formula(paste0("part_rrss~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("part_rrss~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("part_rrss~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("part_rrss~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("part_rrss~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("part_rrss~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("part_rrss~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("part_rrss~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar12 <- lmer(formula(paste0("part_rrss~",h12,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+## Main effects
+
+```{r results='asis'}
+ccoef <- list(
+  "(Intercept)" = "Intercept",
+  "ola2" = "2017",
+  "ola3" = "2018",
+  "ola4" = "2019",
+  "ola5" = "2021",
+  "ola6" = "2022",
+  "ola7" = "2023",
+  "edadBetween 29 and 45" = "Between 29 and 45",
+  "edadBetween 24 and 28" = "Between 24 and 28",
+  "edadBetween 18 and 23" = "Between 18 and 23",
+  "sexoWoman" = "Woman (Ref.= Man)",
+  "educTechnical" = "Technical",
+  "educUniversity or more" = "University or more",
+  "pos_idCenter" = "Center",
+  "pos_idRight" = "Right",
+  "pos_idDoesn't identify" = "Doesn't identify"
+  )
+
+texreg::knitreg(list(marchar1, marchar2, marchar3, marchar4, marchar5),
+               custom.model.names = c(paste0("Model ", seq(1:5))),
+               caption.above = T,
+               caption = NULL,
+               stars = c(0.05, 0.01, 0.001),
+               custom.coef.map = ccoef,
+               digits = 2,
+               groups = list("Wave (Ref.= 2016)" = 2:7,
+                             "Age (Ref.= More than 45)" = 8:10,
+                             "Education (Ref.= Secondary)" = 12:13,
+                             "Political position (Ref.= Left)" = 14:16),
+               custom.note = "Note: Cells contain regression coefficients with standard errors in parentheses. \n %stars.",
+               leading.zero = T,
+               use.packages = F,
+               booktabs = F,
+               scalebox = 0.80,
+               include.loglik = FALSE,
+               include.aic = FALSE,
+               center = T,
+               custom.gof.names = c("BIC", "Numb. obs.", "Num. groups: individuals", "Var: individuals (Intercept)", "Var: Residual")
+               )
+```
+
+## Interaction effects
+
+```{r results='asis'}
+ccoef2 <- list(
+  "(Intercept)" = "Intercept",
+  "ola2:edadBetween 29 and 45" = "2017*Age 29-45",
+  "ola3:edadBetween 29 and 45" = "2018*Age 29-45",
+  "ola4:edadBetween 29 and 45" = "2019*Age 29-45",
+  "ola5:edadBetween 29 and 45" = "2021*Age 29-45",
+  "ola6:edadBetween 29 and 45" = "2022*Age 29-45",
+  "ola7:edadBetween 29 and 45" = "2023*Age 29-45",
+  "ola2:edadBetween 24 and 28" = "2017*Age 24-28",
+  "ola3:edadBetween 24 and 28" = "2018*Age 24-28",
+  "ola4:edadBetween 24 and 28" = "2019*Age 24-28",
+  "ola5:edadBetween 24 and 28" = "2021*Age 24-28",
+  "ola6:edadBetween 24 and 28" = "2022*Age 24-28",
+  "ola7:edadBetween 24 and 28" = "2023*Age 24-28",
+  "ola2:edadBetween 18 and 23" = "2017*Age 18-23",
+  "ola3:edadBetween 18 and 23" = "2018*Age 18-23",
+  "ola4:edadBetween 18 and 23" = "2019*Age 18-23",
+  "ola5:edadBetween 18 and 23" = "2021*Age 18-23",
+  "ola6:edadBetween 18 and 23" = "2022*Age 18-23",
+  "ola7:edadBetween 18 and 23" = "2023*Age 18-23",
+  "ola2:sexoWoman" = "2017*Woman",
+  "ola3:sexoWoman" = "2018*Woman",
+  "ola4:sexoWoman" = "2019*Woman",
+  "ola5:sexoWoman" = "2021*Woman",
+  "ola6:sexoWoman" = "2022*Woman",
+  "ola7:sexoWoman" = "2023*Woman",
+  "ola2:educTechnical" = "2017*Technical",
+  "ola3:educTechnical" = "2018*Technical",
+  "ola4:educTechnical" = "2019*Technical",
+  "ola5:educTechnical" = "2021*Technical",
+  "ola6:educTechnical" = "2022*Technical",
+  "ola7:educTechnical" = "2023*Technical",
+  "ola2:educUniversity or more" = "2017*University",
+  "ola3:educUniversity or more" = "2018*University",
+  "ola4:educUniversity or more" = "2019*University",
+  "ola5:educUniversity or more" = "2021*University",
+  "ola6:educUniversity or more" = "2022*University",
+  "ola7:educUniversity or more" = "2023*University",
+  "ola2:pos_idCenter" = "2017*Center",
+  "ola3:pos_idCenter" = "2018*Center",
+  "ola4:pos_idCenter" = "2019*Center",
+  "ola5:pos_idCenter" = "2021*Center",
+  "ola6:pos_idCenter" = "2022*Center",
+  "ola7:pos_idCenter" = "2023*Center",
+  "ola2:pos_idRight" = "2017*Right",
+  "ola3:pos_idRight" = "2018*Right",
+  "ola4:pos_idRight" = "2019*Right",
+  "ola5:pos_idRight" = "2021*Right",
+  "ola6:pos_idRight" = "2022*Right",
+  "ola7:pos_idRight" = "2023*Right",
+  "ola2:pos_idDoesn't identify" = "2017*Doesn't identify",
+  "ola3:pos_idDoesn't identify" = "2018*Doesn't identify",
+  "ola4:pos_idDoesn't identify" = "2019*Doesn't identify",
+  "ola5:pos_idDoesn't identify" = "2021*Doesn't identify",
+  "ola6:pos_idDoesn't identify" = "2022*Doesn't identify",
+  "ola7:pos_idDoesn't identify" = "2023*Doesn't identify",
+  "pos_idCenter:edadBetween 29 and 45" = "Center*Age 29-45",
+  "pos_idRight:edadBetween 29 and 45" = "Right*Age 29-45",
+  "pos_idDoesn't identify:edadBetween 29 and 45" = "Doesn't identify * Age 29-45",
+  "pos_idCenter:edadBetween 29 and 45" = "Center*Age 24-28",
+  "pos_idRight:edadBetween 29 and 45" = "Right*Age 24-28",
+  "pos_idDoesn't identify:edadBetween 29 and 45" = "Doesn't identify * Age 24-28",
+  "pos_idCenter:edadBetween 29 and 45" = "Center*Age 18-23",
+  "pos_idRight:edadBetween 29 and 45" = "Right*Age 18-23",
+  "pos_idDoesn't identify:edadBetween 29 and 45" = "Doesn't identify * Age 18-23",
+  "ola2:pos_idCenter:edadBetween 29 and 45" = "2017 * Center * Age 29-45",
+  "ola3:pos_idCenter:edadBetween 29 and 45" = "2018 * Center * Age 29-45",
+  "ola4:pos_idCenter:edadBetween 29 and 45" = "2019 * Center * Age 29-45",
+  "ola5:pos_idCenter:edadBetween 29 and 45" = "2021 * Center * Age 29-45",
+  "ola6:pos_idCenter:edadBetween 29 and 45" = "2022 * Center * Age 29-45",
+  "ola7:pos_idCenter:edadBetween 29 and 45" = "2023 * Center * Age 29-45",
+  "ola2:pos_idRight:edadBetween 29 and 45" = "2017 * Right * Age 29-45",
+  "ola3:pos_idRight:edadBetween 29 and 45" = "2018 * Right * Age 29-45",
+  "ola4:pos_idRight:edadBetween 29 and 45" = "2019 * Right * Age 29-45",
+  "ola5:pos_idRight:edadBetween 29 and 45" = "2021 * Right * Age 29-45",
+  "ola6:pos_idRight:edadBetween 29 and 45" = "2022 * Right * Age 29-45",
+  "ola7:pos_idRight:edadBetween 29 and 45" = "2023 * Right * Age 29-45",
+  "ola2:pos_idDoesn't identify:edadBetween 29 and 45" = "2017 * Doesn't identify * Age 29-45",
+  "ola3:pos_idDoesn't identify:edadBetween 29 and 45" = "2018 * Doesn't identify * Age 29-45",
+  "ola4:pos_idDoesn't identify:edadBetween 29 and 45" = "2019 * Doesn't identify * Age 29-45",
+  "ola5:pos_idDoesn't identify:edadBetween 29 and 45" = "2021 * Doesn't identify * Age 29-45",
+  "ola6:pos_idDoesn't identify:edadBetween 29 and 45" = "2022 * Doesn't identify * Age 29-45",
+  "ola7:pos_idDoesn't identify:edadBetween 29 and 45" = "2023 * Doesn't identify * Age 29-45",
+  "ola2:pos_idCenter:edadBetween 24 and 28" = "2017 * Center * Age 24-28",
+  "ola3:pos_idCenter:edadBetween 24 and 28" = "2018 * Center * Age 24-28",
+  "ola4:pos_idCenter:edadBetween 24 and 28" = "2019 * Center * Age 24-28",
+  "ola5:pos_idCenter:edadBetween 24 and 28" = "2021 * Center * Age 24-28",
+  "ola6:pos_idCenter:edadBetween 24 and 28" = "2022 * Center * Age 24-28",
+  "ola7:pos_idCenter:edadBetween 24 and 28" = "2023 * Center * Age 24-28",
+  "ola2:pos_idRight:edadBetween 24 and 28" = "2017 * Right * Age 24-28",
+  "ola3:pos_idRight:edadBetween 24 and 28" = "2018 * Right * Age 24-28",
+  "ola4:pos_idRight:edadBetween 24 and 28" = "2019 * Right * Age 24-28",
+  "ola5:pos_idRight:edadBetween 24 and 28" = "2021 * Right * Age 24-28",
+  "ola6:pos_idRight:edadBetween 24 and 28" = "2022 * Right * Age 24-28",
+  "ola7:pos_idRight:edadBetween 24 and 28" = "2023 * Right * Age 24-28",
+  "ola2:pos_idDoesn't identify:edadBetween 24 and 28" = "2017 * Doesn't identify * Age 24-28",
+  "ola3:pos_idDoesn't identify:edadBetween 24 and 28" = "2018 * Doesn't identify * Age 24-28",
+  "ola4:pos_idDoesn't identify:edadBetween 24 and 28" = "2019 * Doesn't identify * Age 24-28",
+  "ola5:pos_idDoesn't identify:edadBetween 24 and 28" = "2021 * Doesn't identify * Age 24-28",
+  "ola6:pos_idDoesn't identify:edadBetween 24 and 28" = "2022 * Doesn't identify * Age 24-28",
+  "ola7:pos_idDoesn't identify:edadBetween 24 and 28" = "2023 * Doesn't identify * Age 24-28",
+  "ola2:pos_idCenter:edadBetween 18 and 23" = "2017 * Center * Age 18-23",
+  "ola3:pos_idCenter:edadBetween 18 and 23" = "2018 * Center * Age 18-23",
+  "ola4:pos_idCenter:edadBetween 18 and 23" = "2019 * Center * Age 18-23",
+  "ola5:pos_idCenter:edadBetween 18 and 23" = "2021 * Center * Age 18-23",
+  "ola6:pos_idCenter:edadBetween 18 and 23" = "2022 * Center * Age 18-23",
+  "ola7:pos_idCenter:edadBetween 18 and 23" = "2023 * Center * Age 18-23",
+  "ola2:pos_idRight:edadBetween 18 and 23" = "2017 * Right * Age 18-23",
+  "ola3:pos_idRight:edadBetween 18 and 23" = "2018 * Right * Age 18-23",
+  "ola4:pos_idRight:edadBetween 18 and 23" = "2019 * Right * Age 18-23",
+  "ola5:pos_idRight:edadBetween 18 and 23" = "2021 * Right * Age 18-23",
+  "ola6:pos_idRight:edadBetween 18 and 23" = "2022 * Right * Age 18-23",
+  "ola7:pos_idRight:edadBetween 18 and 23" = "2023 * Right * Age 18-23",
+  "ola2:pos_idDoesn't identify:edadBetween 18 and 23" = "2017 * Doesn't identify * Age 18-23",
+  "ola3:pos_idDoesn't identify:edadBetween 18 and 23" = "2018 * Doesn't identify * Age 18-23",
+  "ola4:pos_idDoesn't identify:edadBetween 18 and 23" = "2019 * Doesn't identify * Age 18-23",
+  "ola5:pos_idDoesn't identify:edadBetween 18 and 23" = "2021 * Doesn't identify * Age 18-23",
+  "ola6:pos_idDoesn't identify:edadBetween 18 and 23" = "2022 * Doesn't identify * Age 18-23",
+  "ola7:pos_idDoesn't identify:edadBetween 18 and 23" = "2023 * Doesn't identify * Age 18-23",
+  "educTechnical:edadBetween 29 and 45" = "Technical * Age 29-45",
+  "educUniversity or more:edadBetween 29 and 45" = "University * Age 29-45",
+  "educTechnical:edadBetween 24 and 28" = "Technical * Age 24-28",
+  "educUniversity or more:edadBetween 24 and 28" = "University * Age 24-28",
+  "educTechnical:edadBetween 18 and 23" = "Technical * Age 18-23",
+  "educUniversity or more:edadBetween 18 and 23" = "University * Age 18-23",
+  "ola2:educTechnical:edadBetween 29 and 45" = "2017 * Technical * Age 29-45",
+  "ola3:educTechnical:edadBetween 29 and 45" = "2018 * Technical * Age 29-45",
+  "ola4:educTechnical:edadBetween 29 and 45" = "2019 * Technical * Age 29-45",
+  "ola5:educTechnical:edadBetween 29 and 45" = "2021 * Technical * Age 29-45",
+  "ola6:educTechnical:edadBetween 29 and 45" = "2022 * Technical * Age 29-45",
+  "ola7:educTechnical:edadBetween 29 and 45" = "2023 * Technical * Age 29-45",
+  "ola2:educUniversity or more:edadBetween 29 and 45" = "2017 * University * Age 29-45",
+  "ola3:educUniversity or more:edadBetween 29 and 45" = "2018 * University * Age 29-45",
+  "ola4:educUniversity or more:edadBetween 29 and 45" = "2019 * University * Age 29-45",
+  "ola5:educUniversity or more:edadBetween 29 and 45" = "2021 * University * Age 29-45",
+  "ola6:educUniversity or more:edadBetween 29 and 45" = "2022 * University * Age 29-45",
+  "ola7:educUniversity or more:edadBetween 29 and 45" = "2023 * University * Age 29-45",
+  "ola2:educTechnical:edadBetween 24 and 28" = "2017 * Technical * Age 24-28",
+  "ola3:educTechnical:edadBetween 24 and 28" = "2018 * Technical * Age 24-28",
+  "ola4:educTechnical:edadBetween 24 and 28" = "2019 * Technical * Age 24-28",
+  "ola5:educTechnical:edadBetween 24 and 28" = "2021 * Technical * Age 24-28",
+  "ola6:educTechnical:edadBetween 24 and 28" = "2022 * Technical * Age 24-28",
+  "ola7:educTechnical:edadBetween 24 and 28" = "2023 * Technical * Age 24-28",
+  "ola2:educUniversity or more:edadBetween 24 and 28" = "2017 * University * Age 24-28",
+  "ola3:educUniversity or more:edadBetween 24 and 28" = "2018 * University * Age 24-28",
+  "ola4:educUniversity or more:edadBetween 24 and 28" = "2019 * University * Age 24-28",
+  "ola5:educUniversity or more:edadBetween 24 and 28" = "2021 * University * Age 24-28",
+  "ola6:educUniversity or more:edadBetween 24 and 28" = "2022 * University * Age 24-28",
+  "ola7:educUniversity or more:edadBetween 24 and 28" = "2023 * University * Age 24-28",
+  "ola2:educTechnical:edadBetween 18 and 23" = "2017 * Technical * Age 18-23",
+  "ola3:educTechnical:edadBetween 18 and 23" = "2018 * Technical * Age 18-23",
+  "ola4:educTechnical:edadBetween 18 and 23" = "2019 * Technical * Age 18-23",
+  "ola5:educTechnical:edadBetween 18 and 23" = "2021 * Technical * Age 18-23",
+  "ola6:educTechnical:edadBetween 18 and 23" = "2022 * Technical * Age 18-23",
+  "ola7:educTechnical:edadBetween 18 and 23" = "2023 * Technical * Age 18-23",
+  "ola2:educUniversity or more:edadBetween 18 and 23" = "2017 * University * Age 18-23",
+  "ola3:educUniversity or more:edadBetween 18 and 23" = "2018 * University * Age 18-23",
+  "ola4:educUniversity or more:edadBetween 18 and 23" = "2019 * University * Age 18-23",
+  "ola5:educUniversity or more:edadBetween 18 and 23" = "2021 * University * Age 18-23",
+  "ola6:educUniversity or more:edadBetween 18 and 23" = "2022 * University * Age 18-23",
+  "ola7:educUniversity or more:edadBetween 18 and 23" = "2023 * University * Age 18-23",
+  "sexoWoman:edadBetween 29 and 45" = "Woman * Age 29-45",
+  "sexoWoman:edadBetween 29 and 45" = "Woman * Age 24-28",
+  "sexoWoman:edadBetween 29 and 45" = "Woman * Age 18-23",
+  "ola2:sexoWoman:edadBetween 29 and 45" = "2017 * Woman * Age 29-45",
+  "ola3:sexoWoman:edadBetween 29 and 45" = "2018 * Woman * Age 29-45",
+  "ola4:sexoWoman:edadBetween 29 and 45" = "2019 * Woman * Age 29-45",
+  "ola5:sexoWoman:edadBetween 29 and 45" = "2021 * Woman * Age 29-45",
+  "ola6:sexoWoman:edadBetween 29 and 45" = "2022 * Woman * Age 29-45",
+  "ola7:sexoWoman:edadBetween 29 and 45" = "2023 * Woman * Age 29-45",
+  "ola2:sexoWoman:edadBetween 24 and 28" = "2017 * Woman * Age 24-28",
+  "ola3:sexoWoman:edadBetween 24 and 28" = "2018 * Woman * Age 24-28",
+  "ola4:sexoWoman:edadBetween 24 and 28" = "2019 * Woman * Age 24-28",
+  "ola5:sexoWoman:edadBetween 24 and 28" = "2021 * Woman * Age 24-28",
+  "ola6:sexoWoman:edadBetween 24 and 28" = "2022 * Woman * Age 24-28",
+  "ola7:sexoWoman:edadBetween 24 and 28" = "2023 * Woman * Age 24-28",
+  "ola2:sexoWoman:edadBetween 18 and 23" = "2017 * Woman * Age 18-23",
+  "ola3:sexoWoman:edadBetween 18 and 23" = "2018 * Woman * Age 18-23",
+  "ola4:sexoWoman:edadBetween 18 and 23" = "2019 * Woman * Age 18-23",
+  "ola5:sexoWoman:edadBetween 18 and 23" = "2021 * Woman * Age 18-23",
+  "ola6:sexoWoman:edadBetween 18 and 23" = "2022 * Woman * Age 18-23",
+  "ola7:sexoWoman:edadBetween 18 and 23" = "2023 * Woman * Age 18-23"
+  )
+
+texreg::knitreg(list(marchar6, marchar7, marchar8, marchar9, marchar10, marchar11,marchar12),
+               custom.model.names = c(paste0("Model ", seq(6:12))),
+               caption.above = T,
+               caption = NULL,
+               stars = c(0.05, 0.01, 0.001),
+               custom.coef.map = ccoef2,
+               digits = 2,
+               custom.note = "Note: Cells contain regression coefficients with standard errors in parentheses. \n %stars.",
+               leading.zero = T,
+               use.packages = F,
+               booktabs = F,
+               scalebox = 0.80,
+               include.loglik = FALSE,
+               include.aic = FALSE,
+               center = T,
+               custom.gof.names = c("BIC", "Numb. obs.", "Num. groups: individuals", "Var: individuals (Intercept)", "Var: Residual"))
+```
+
+### Resume table
+
+```{r}
+betas <- marchar12@beta                           # Coeficientes
+vcov_mat <- as.matrix(vcov(marchar12))              # Matriz de varianzas-covarianzas
+ses <- sqrt(diag(vcov_mat))                         # Errores estándar
+tvals <- betas / ses                              # Valores t
+
+ses <- ses[44:61]
+betas <- betas[44:61]
+tvals <- tvals[44:61]
+
+pvals <- 2 * pnorm(-abs(tvals))  # Aproximación tipo Wald (z-score)
+
+signif_stars <- ifelse(pvals <= 0.001, "***",
+                 ifelse(pvals <= 0.01, "**",
+                 ifelse(pvals <= 0.05, "*", "")))
+
+olasexoedad<-data.frame(
+  Estimate = betas,
+  Signif = signif_stars
+)
+
+betas <- marchar11@beta                          # Coeficientes
+vcov_mat <- as.matrix(vcov(marchar11))              # Matriz de varianzas-covarianzas
+ses <- sqrt(diag(vcov_mat))                         # Errores estándar
+tvals <- betas / ses                              # Valores t
+
+ses <- ses[53:88]
+betas <- betas[53:88]
+tvals <- tvals[53:88]
+
+pvals <- 2 * pnorm(-abs(tvals))  # Aproximación tipo Wald (z-score)
+
+signif_stars <- ifelse(pvals <= 0.001, "***",
+                 ifelse(pvals <= 0.01, "**",
+                 ifelse(pvals <= 0.05, "*", "")))
+
+olaeducedad<-data.frame(
+  Estimate = betas,
+  Signif = signif_stars
+)
+
+betas <- marchar10@beta                          # Coeficientes
+vcov_mat <- as.matrix(vcov(marchar10))              # Matriz de varianzas-covarianzas
+ses <- sqrt(diag(vcov_mat))                         # Errores estándar
+tvals <- betas / ses                              # Valores t
+
+ses <- ses[62:115]
+betas <- betas[62:115]
+tvals <- tvals[62:115]
+
+pvals <- 2 * pnorm(-abs(tvals))  # Aproximación tipo Wald (z-score)
+
+signif_stars <- ifelse(pvals <= 0.001, "***",
+                 ifelse(pvals <= 0.01, "**",
+                 ifelse(pvals <= 0.05, "*", "")))
+
+olapospoledad<-data.frame(
+  Estimate = betas,
+  Signif = signif_stars
+)
+
+# Woman (olasexoedad)
+woman_idx <- c(1, 7, 13, 2, 8, 14, 3, 9, 15, 4, 10, 16, 5, 11, 17, 6, 12, 18)
+
+# Technical (olaeducedad)
+technical_idx <- c(1, 13, 25, 2, 14, 26, 3, 15, 27, 4, 16, 28, 5, 17, 29, 6, 18, 30)
+
+# University (olaeducedad)
+university_idx <- c(7, 19, 31, 8, 20, 32, 9, 21, 33, 10, 22, 34, 11, 23, 35, 12, 24, 36)
+
+# Edad 29–45 → posiciones: 1, 19, 37, 2, 20, 38, 3, 21, 39, ...
+center_idx <- c(1, 19, 37, 2, 20, 38, 3, 21, 39, 4, 22, 40, 5, 23, 41, 6, 24, 42)
+right_idx  <- c(7, 25, 43, 8, 26, 44, 9, 27, 45,10, 28, 46,11, 29, 47,12, 30, 48)
+dni_idx    <- c(13, 31, 49,14, 32, 50,15, 33, 51,16, 34, 52,17, 35, 53,18, 36, 54)
+
+tabla <- cbind(
+  Year = c("2017", "2017", "2017", 
+          "2018", "2018", "2018",
+          "2019", "2019", "2019",
+          "2021", "2021", "2021", 
+          "2022", "2022", "2022", 
+          "2023", "2023", "2023"),
+  Age = rep(c("29–45", "24–28", "18–23"), times = 6),
+  Woman = paste0(round(olasexoedad$Estimate[woman_idx], 2), olasexoedad$Signif[woman_idx]),
+  Technical = paste0(round(olaeducedad$Estimate[technical_idx], 2), olaeducedad$Signif[technical_idx]),
+  University = paste0(round(olaeducedad$Estimate[university_idx], 2), olaeducedad$Signif[university_idx]),
+  Center = paste0(round(olapospoledad$Estimate[center_idx], 2), olapospoledad$Signif[center_idx]),
+  Right = paste0(round(olapospoledad$Estimate[right_idx], 2), olapospoledad$Signif[right_idx]),
+  `Doesnt Identify` = paste0(round(olapospoledad$Estimate[dni_idx], 2), olapospoledad$Signif[dni_idx])
+)
+```
+
+```{r}
+kbl(tabla, 
+    align = "c") %>% 
+    add_header_above(c(" " = 3,
+                     "Education"=2, 
+                     "Political position"=3),
+                   bold = T)%>%  
+  kable_paper("hover",full_width = F) %>%
+     column_spec(1, bold = T) %>%
+     collapse_rows(columns = 1, valign = "middle") %>% 
+  footnote("***p < 0.001; **p < 0.01; *p < 0.05.")
+```
+
+## Interaction effects graphs
+
+```{r}
+waves <- c("2016", "2017", "2018", "2019", "2021", "2022", "2023")
+```
+
+- Participation online and age
+
+```{r}
+preds <- ggpredict(marchar6, terms = c("ola", "edad"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+ # facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Online participation",
+    color = "Age"
+  ) +
+  ylim(0, 5) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Participation online and sex
+
+```{r}
+preds <- ggpredict(marchar7, terms = c("ola", "sexo"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+ # facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Online participation",
+    color = "Sex"
+  ) +
+  ylim(0, 5) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Participation online, age and sex
+
+```{r}
+preds <- ggpredict(marchar12, terms = c("ola", "edad", "sexo"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Online participation",
+    color = "Age"
+  ) +
+  ylim(0, 5) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Participation online and education
+
+```{r}
+preds <- ggpredict(marchar8, terms = c("ola", "educ"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+#  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Online participation",
+    color = "Education"
+  ) +
+  ylim(0, 5) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Participation online, age and education
+
+```{r}
+preds <- ggpredict(marchar11, terms = c("ola", "edad", "educ"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 3) +
+  labs(
+    x = "Year",
+    y = "Online participation",
+    color = "Age"
+  ) +
+  ylim(0, 5) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Participation online and political position
+
+```{r}
+preds <- ggpredict(marchar9, terms = c("ola", "pos_id"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+#  facet_wrap(~ facet, ncol = 3) +
+  labs(
+    x = "Year",
+    y = "Online participation",
+    color = "Political position"
+  ) +
+  ylim(0, 5) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Participation online. age and political position
+
+```{r}
+preds <- ggpredict(marchar10, terms = c("ola", "edad", "pos_id"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Online participation",
+    color = "edad"
+  ) +
+  ylim(0, 5) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+
+# Participation in demonstrations
+
+```{r}
+#if (!require("pacman")) install.packedads("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg,
+               interactions,
+               ggplot2,
+               ggeffects
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,part_marchas, edad, sexo, pos_id, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Between 18 and 23",
+                          edad >23 & edad <=28 ~ "Between 24 and 28",
+                          edad >28 & edad <=45 ~ "Between 29 and 45",
+                          edad > 45 ~ "More than 45")) 
+
+df_study1$edad <- factor(df_study1$edad, levels = c("More than 45", "Between 29 and 45", "Between 24 and 28", "Between 18 and 23"))
+df_study1$sexo <- factor(df_study1$sexo, levels = c(1, 2), labels = c("Man", "Woman"))
+df_study1$educ <- factor(df_study1$educ,
+                         levels = c("Media o menos", "Técnica", "Universitaria"),
+                         labels = c("Secondary or less", "Technical", "University or more"))
+df_study1$pos_id <- factor(df_study1$pos_id,
+                         levels = c("Izquierda", "Centro", "Derecha", "No se identifica"),
+                         labels = c("Left", "Center", "Right", "Doesn't identify"))
+
+
+marchar.null <- lmer(formula(paste0("part_marchas~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar1 <- lmer(formula(paste0("part_marchas~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar2 <- lmer(formula(paste0("part_marchas~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar3 <- lmer(formula(paste0("part_marchas~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar4 <- lmer(formula(paste0("part_marchas~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("part_marchas~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("part_marchas~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("part_marchas~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("part_marchas~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("part_marchas~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("part_marchas~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("part_marchas~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar12 <- lmer(formula(paste0("part_marchas~",h12,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+## Main effects
+
+```{r results='asis'}
+ccoef <- list(
+  "(Intercept)" = "Intercept",
+  "ola2" = "2017",
+  "ola3" = "2018",
+  "ola4" = "2019",
+  "ola5" = "2021",
+  "ola6" = "2022",
+  "ola7" = "2023",
+  "edadBetween 29 and 45" = "Between 29 and 45",
+  "edadBetween 24 and 28" = "Between 24 and 28",
+  "edadBetween 18 and 23" = "Between 18 and 23",
+  "sexoWoman" = "Woman (Ref.= Man)",
+  "educTechnical" = "Technical",
+  "educUniversity or more" = "University or more",
+  "pos_idCenter" = "Center",
+  "pos_idRight" = "Right",
+  "pos_idDoesn't identify" = "Doesn't identify"
+  )
+
+texreg::knitreg(list(marchar1, marchar2, marchar3, marchar4, marchar5),
+               custom.model.names = c(paste0("Model ", seq(1:5))),
+               caption.above = T,
+               caption = NULL,
+               stars = c(0.05, 0.01, 0.001),
+               custom.coef.map = ccoef,
+               digits = 2,
+               groups = list("Wave (Ref.= 2016)" = 2:7,
+                             "Age (Ref.= More than 45)" = 8:10,
+                             "Education (Ref.= Secondary)" = 12:13,
+                             "Political position (Ref.= Left)" = 14:16),
+               custom.note = "Note: Cells contain regression coefficients with standard errors in parentheses. \n %stars.",
+               leading.zero = T,
+               use.packages = F,
+               booktabs = F,
+               scalebox = 0.80,
+               include.loglik = FALSE,
+               include.aic = FALSE,
+               center = T,
+               custom.gof.names = c("BIC", "Numb. obs.", "Num. groups: individuals", "Var: individuals (Intercept)", "Var: Residual")
+               )
+```
+
+## Interaction effects
+
+```{r results='asis'}
+ccoef2 <- list(
+  "(Intercept)" = "Intercept",
+  "ola2:edadBetween 29 and 45" = "2017*Age 29-45",
+  "ola3:edadBetween 29 and 45" = "2018*Age 29-45",
+  "ola4:edadBetween 29 and 45" = "2019*Age 29-45",
+  "ola5:edadBetween 29 and 45" = "2021*Age 29-45",
+  "ola6:edadBetween 29 and 45" = "2022*Age 29-45",
+  "ola7:edadBetween 29 and 45" = "2023*Age 29-45",
+  "ola2:edadBetween 24 and 28" = "2017*Age 24-28",
+  "ola3:edadBetween 24 and 28" = "2018*Age 24-28",
+  "ola4:edadBetween 24 and 28" = "2019*Age 24-28",
+  "ola5:edadBetween 24 and 28" = "2021*Age 24-28",
+  "ola6:edadBetween 24 and 28" = "2022*Age 24-28",
+  "ola7:edadBetween 24 and 28" = "2023*Age 24-28",
+  "ola2:edadBetween 18 and 23" = "2017*Age 18-23",
+  "ola3:edadBetween 18 and 23" = "2018*Age 18-23",
+  "ola4:edadBetween 18 and 23" = "2019*Age 18-23",
+  "ola5:edadBetween 18 and 23" = "2021*Age 18-23",
+  "ola6:edadBetween 18 and 23" = "2022*Age 18-23",
+  "ola7:edadBetween 18 and 23" = "2023*Age 18-23",
+  "ola2:sexoWoman" = "2017*Woman",
+  "ola3:sexoWoman" = "2018*Woman",
+  "ola4:sexoWoman" = "2019*Woman",
+  "ola5:sexoWoman" = "2021*Woman",
+  "ola6:sexoWoman" = "2022*Woman",
+  "ola7:sexoWoman" = "2023*Woman",
+  "ola2:educTechnical" = "2017*Technical",
+  "ola3:educTechnical" = "2018*Technical",
+  "ola4:educTechnical" = "2019*Technical",
+  "ola5:educTechnical" = "2021*Technical",
+  "ola6:educTechnical" = "2022*Technical",
+  "ola7:educTechnical" = "2023*Technical",
+  "ola2:educUniversity or more" = "2017*University",
+  "ola3:educUniversity or more" = "2018*University",
+  "ola4:educUniversity or more" = "2019*University",
+  "ola5:educUniversity or more" = "2021*University",
+  "ola6:educUniversity or more" = "2022*University",
+  "ola7:educUniversity or more" = "2023*University",
+  "ola2:pos_idCenter" = "2017*Center",
+  "ola3:pos_idCenter" = "2018*Center",
+  "ola4:pos_idCenter" = "2019*Center",
+  "ola5:pos_idCenter" = "2021*Center",
+  "ola6:pos_idCenter" = "2022*Center",
+  "ola7:pos_idCenter" = "2023*Center",
+  "ola2:pos_idRight" = "2017*Right",
+  "ola3:pos_idRight" = "2018*Right",
+  "ola4:pos_idRight" = "2019*Right",
+  "ola5:pos_idRight" = "2021*Right",
+  "ola6:pos_idRight" = "2022*Right",
+  "ola7:pos_idRight" = "2023*Right",
+  "ola2:pos_idDoesn't identify" = "2017*Doesn't identify",
+  "ola3:pos_idDoesn't identify" = "2018*Doesn't identify",
+  "ola4:pos_idDoesn't identify" = "2019*Doesn't identify",
+  "ola5:pos_idDoesn't identify" = "2021*Doesn't identify",
+  "ola6:pos_idDoesn't identify" = "2022*Doesn't identify",
+  "ola7:pos_idDoesn't identify" = "2023*Doesn't identify",
+  "pos_idCenter:edadBetween 29 and 45" = "Center*Age 29-45",
+  "pos_idRight:edadBetween 29 and 45" = "Right*Age 29-45",
+  "pos_idDoesn't identify:edadBetween 29 and 45" = "Doesn't identify * Age 29-45",
+  "pos_idCenter:edadBetween 29 and 45" = "Center*Age 24-28",
+  "pos_idRight:edadBetween 29 and 45" = "Right*Age 24-28",
+  "pos_idDoesn't identify:edadBetween 29 and 45" = "Doesn't identify * Age 24-28",
+  "pos_idCenter:edadBetween 29 and 45" = "Center*Age 18-23",
+  "pos_idRight:edadBetween 29 and 45" = "Right*Age 18-23",
+  "pos_idDoesn't identify:edadBetween 29 and 45" = "Doesn't identify * Age 18-23",
+  "ola2:pos_idCenter:edadBetween 29 and 45" = "2017 * Center * Age 29-45",
+  "ola3:pos_idCenter:edadBetween 29 and 45" = "2018 * Center * Age 29-45",
+  "ola4:pos_idCenter:edadBetween 29 and 45" = "2019 * Center * Age 29-45",
+  "ola5:pos_idCenter:edadBetween 29 and 45" = "2021 * Center * Age 29-45",
+  "ola6:pos_idCenter:edadBetween 29 and 45" = "2022 * Center * Age 29-45",
+  "ola7:pos_idCenter:edadBetween 29 and 45" = "2023 * Center * Age 29-45",
+  "ola2:pos_idRight:edadBetween 29 and 45" = "2017 * Right * Age 29-45",
+  "ola3:pos_idRight:edadBetween 29 and 45" = "2018 * Right * Age 29-45",
+  "ola4:pos_idRight:edadBetween 29 and 45" = "2019 * Right * Age 29-45",
+  "ola5:pos_idRight:edadBetween 29 and 45" = "2021 * Right * Age 29-45",
+  "ola6:pos_idRight:edadBetween 29 and 45" = "2022 * Right * Age 29-45",
+  "ola7:pos_idRight:edadBetween 29 and 45" = "2023 * Right * Age 29-45",
+  "ola2:pos_idDoesn't identify:edadBetween 29 and 45" = "2017 * Doesn't identify * Age 29-45",
+  "ola3:pos_idDoesn't identify:edadBetween 29 and 45" = "2018 * Doesn't identify * Age 29-45",
+  "ola4:pos_idDoesn't identify:edadBetween 29 and 45" = "2019 * Doesn't identify * Age 29-45",
+  "ola5:pos_idDoesn't identify:edadBetween 29 and 45" = "2021 * Doesn't identify * Age 29-45",
+  "ola6:pos_idDoesn't identify:edadBetween 29 and 45" = "2022 * Doesn't identify * Age 29-45",
+  "ola7:pos_idDoesn't identify:edadBetween 29 and 45" = "2023 * Doesn't identify * Age 29-45",
+  "ola2:pos_idCenter:edadBetween 24 and 28" = "2017 * Center * Age 24-28",
+  "ola3:pos_idCenter:edadBetween 24 and 28" = "2018 * Center * Age 24-28",
+  "ola4:pos_idCenter:edadBetween 24 and 28" = "2019 * Center * Age 24-28",
+  "ola5:pos_idCenter:edadBetween 24 and 28" = "2021 * Center * Age 24-28",
+  "ola6:pos_idCenter:edadBetween 24 and 28" = "2022 * Center * Age 24-28",
+  "ola7:pos_idCenter:edadBetween 24 and 28" = "2023 * Center * Age 24-28",
+  "ola2:pos_idRight:edadBetween 24 and 28" = "2017 * Right * Age 24-28",
+  "ola3:pos_idRight:edadBetween 24 and 28" = "2018 * Right * Age 24-28",
+  "ola4:pos_idRight:edadBetween 24 and 28" = "2019 * Right * Age 24-28",
+  "ola5:pos_idRight:edadBetween 24 and 28" = "2021 * Right * Age 24-28",
+  "ola6:pos_idRight:edadBetween 24 and 28" = "2022 * Right * Age 24-28",
+  "ola7:pos_idRight:edadBetween 24 and 28" = "2023 * Right * Age 24-28",
+  "ola2:pos_idDoesn't identify:edadBetween 24 and 28" = "2017 * Doesn't identify * Age 24-28",
+  "ola3:pos_idDoesn't identify:edadBetween 24 and 28" = "2018 * Doesn't identify * Age 24-28",
+  "ola4:pos_idDoesn't identify:edadBetween 24 and 28" = "2019 * Doesn't identify * Age 24-28",
+  "ola5:pos_idDoesn't identify:edadBetween 24 and 28" = "2021 * Doesn't identify * Age 24-28",
+  "ola6:pos_idDoesn't identify:edadBetween 24 and 28" = "2022 * Doesn't identify * Age 24-28",
+  "ola7:pos_idDoesn't identify:edadBetween 24 and 28" = "2023 * Doesn't identify * Age 24-28",
+  "ola2:pos_idCenter:edadBetween 18 and 23" = "2017 * Center * Age 18-23",
+  "ola3:pos_idCenter:edadBetween 18 and 23" = "2018 * Center * Age 18-23",
+  "ola4:pos_idCenter:edadBetween 18 and 23" = "2019 * Center * Age 18-23",
+  "ola5:pos_idCenter:edadBetween 18 and 23" = "2021 * Center * Age 18-23",
+  "ola6:pos_idCenter:edadBetween 18 and 23" = "2022 * Center * Age 18-23",
+  "ola7:pos_idCenter:edadBetween 18 and 23" = "2023 * Center * Age 18-23",
+  "ola2:pos_idRight:edadBetween 18 and 23" = "2017 * Right * Age 18-23",
+  "ola3:pos_idRight:edadBetween 18 and 23" = "2018 * Right * Age 18-23",
+  "ola4:pos_idRight:edadBetween 18 and 23" = "2019 * Right * Age 18-23",
+  "ola5:pos_idRight:edadBetween 18 and 23" = "2021 * Right * Age 18-23",
+  "ola6:pos_idRight:edadBetween 18 and 23" = "2022 * Right * Age 18-23",
+  "ola7:pos_idRight:edadBetween 18 and 23" = "2023 * Right * Age 18-23",
+  "ola2:pos_idDoesn't identify:edadBetween 18 and 23" = "2017 * Doesn't identify * Age 18-23",
+  "ola3:pos_idDoesn't identify:edadBetween 18 and 23" = "2018 * Doesn't identify * Age 18-23",
+  "ola4:pos_idDoesn't identify:edadBetween 18 and 23" = "2019 * Doesn't identify * Age 18-23",
+  "ola5:pos_idDoesn't identify:edadBetween 18 and 23" = "2021 * Doesn't identify * Age 18-23",
+  "ola6:pos_idDoesn't identify:edadBetween 18 and 23" = "2022 * Doesn't identify * Age 18-23",
+  "ola7:pos_idDoesn't identify:edadBetween 18 and 23" = "2023 * Doesn't identify * Age 18-23",
+  "educTechnical:edadBetween 29 and 45" = "Technical * Age 29-45",
+  "educUniversity or more:edadBetween 29 and 45" = "University * Age 29-45",
+  "educTechnical:edadBetween 24 and 28" = "Technical * Age 24-28",
+  "educUniversity or more:edadBetween 24 and 28" = "University * Age 24-28",
+  "educTechnical:edadBetween 18 and 23" = "Technical * Age 18-23",
+  "educUniversity or more:edadBetween 18 and 23" = "University * Age 18-23",
+  "ola2:educTechnical:edadBetween 29 and 45" = "2017 * Technical * Age 29-45",
+  "ola3:educTechnical:edadBetween 29 and 45" = "2018 * Technical * Age 29-45",
+  "ola4:educTechnical:edadBetween 29 and 45" = "2019 * Technical * Age 29-45",
+  "ola5:educTechnical:edadBetween 29 and 45" = "2021 * Technical * Age 29-45",
+  "ola6:educTechnical:edadBetween 29 and 45" = "2022 * Technical * Age 29-45",
+  "ola7:educTechnical:edadBetween 29 and 45" = "2023 * Technical * Age 29-45",
+  "ola2:educUniversity or more:edadBetween 29 and 45" = "2017 * University * Age 29-45",
+  "ola3:educUniversity or more:edadBetween 29 and 45" = "2018 * University * Age 29-45",
+  "ola4:educUniversity or more:edadBetween 29 and 45" = "2019 * University * Age 29-45",
+  "ola5:educUniversity or more:edadBetween 29 and 45" = "2021 * University * Age 29-45",
+  "ola6:educUniversity or more:edadBetween 29 and 45" = "2022 * University * Age 29-45",
+  "ola7:educUniversity or more:edadBetween 29 and 45" = "2023 * University * Age 29-45",
+  "ola2:educTechnical:edadBetween 24 and 28" = "2017 * Technical * Age 24-28",
+  "ola3:educTechnical:edadBetween 24 and 28" = "2018 * Technical * Age 24-28",
+  "ola4:educTechnical:edadBetween 24 and 28" = "2019 * Technical * Age 24-28",
+  "ola5:educTechnical:edadBetween 24 and 28" = "2021 * Technical * Age 24-28",
+  "ola6:educTechnical:edadBetween 24 and 28" = "2022 * Technical * Age 24-28",
+  "ola7:educTechnical:edadBetween 24 and 28" = "2023 * Technical * Age 24-28",
+  "ola2:educUniversity or more:edadBetween 24 and 28" = "2017 * University * Age 24-28",
+  "ola3:educUniversity or more:edadBetween 24 and 28" = "2018 * University * Age 24-28",
+  "ola4:educUniversity or more:edadBetween 24 and 28" = "2019 * University * Age 24-28",
+  "ola5:educUniversity or more:edadBetween 24 and 28" = "2021 * University * Age 24-28",
+  "ola6:educUniversity or more:edadBetween 24 and 28" = "2022 * University * Age 24-28",
+  "ola7:educUniversity or more:edadBetween 24 and 28" = "2023 * University * Age 24-28",
+  "ola2:educTechnical:edadBetween 18 and 23" = "2017 * Technical * Age 18-23",
+  "ola3:educTechnical:edadBetween 18 and 23" = "2018 * Technical * Age 18-23",
+  "ola4:educTechnical:edadBetween 18 and 23" = "2019 * Technical * Age 18-23",
+  "ola5:educTechnical:edadBetween 18 and 23" = "2021 * Technical * Age 18-23",
+  "ola6:educTechnical:edadBetween 18 and 23" = "2022 * Technical * Age 18-23",
+  "ola7:educTechnical:edadBetween 18 and 23" = "2023 * Technical * Age 18-23",
+  "ola2:educUniversity or more:edadBetween 18 and 23" = "2017 * University * Age 18-23",
+  "ola3:educUniversity or more:edadBetween 18 and 23" = "2018 * University * Age 18-23",
+  "ola4:educUniversity or more:edadBetween 18 and 23" = "2019 * University * Age 18-23",
+  "ola5:educUniversity or more:edadBetween 18 and 23" = "2021 * University * Age 18-23",
+  "ola6:educUniversity or more:edadBetween 18 and 23" = "2022 * University * Age 18-23",
+  "ola7:educUniversity or more:edadBetween 18 and 23" = "2023 * University * Age 18-23",
+  "sexoWoman:edadBetween 29 and 45" = "Woman * Age 29-45",
+  "sexoWoman:edadBetween 24 and 28" = "Woman * Age 24-28",
+  "sexoWoman:edadBetween 18 and 23" = "Woman * Age 18-23",
+  "ola2:sexoWoman:edadBetween 29 and 45" = "2017 * Woman * Age 29-45",
+  "ola3:sexoWoman:edadBetween 29 and 45" = "2018 * Woman * Age 29-45",
+  "ola4:sexoWoman:edadBetween 29 and 45" = "2019 * Woman * Age 29-45",
+  "ola5:sexoWoman:edadBetween 29 and 45" = "2021 * Woman * Age 29-45",
+  "ola6:sexoWoman:edadBetween 29 and 45" = "2022 * Woman * Age 29-45",
+  "ola7:sexoWoman:edadBetween 29 and 45" = "2023 * Woman * Age 29-45",
+  "ola2:sexoWoman:edadBetween 24 and 28" = "2017 * Woman * Age 24-28",
+  "ola3:sexoWoman:edadBetween 24 and 28" = "2018 * Woman * Age 24-28",
+  "ola4:sexoWoman:edadBetween 24 and 28" = "2019 * Woman * Age 24-28",
+  "ola5:sexoWoman:edadBetween 24 and 28" = "2021 * Woman * Age 24-28",
+  "ola6:sexoWoman:edadBetween 24 and 28" = "2022 * Woman * Age 24-28",
+  "ola7:sexoWoman:edadBetween 24 and 28" = "2023 * Woman * Age 24-28",
+  "ola2:sexoWoman:edadBetween 18 and 23" = "2017 * Woman * Age 18-23",
+  "ola3:sexoWoman:edadBetween 18 and 23" = "2018 * Woman * Age 18-23",
+  "ola4:sexoWoman:edadBetween 18 and 23" = "2019 * Woman * Age 18-23",
+  "ola5:sexoWoman:edadBetween 18 and 23" = "2021 * Woman * Age 18-23",
+  "ola6:sexoWoman:edadBetween 18 and 23" = "2022 * Woman * Age 18-23",
+  "ola7:sexoWoman:edadBetween 18 and 23" = "2023 * Woman * Age 18-23"
+  )
+
+texreg::knitreg(list(marchar6, marchar7, marchar8, marchar9, marchar10, marchar11,marchar12),
+               custom.model.names = c(paste0("Model ", seq(6:12))),
+               caption.above = T,
+               caption = NULL,
+               stars = c(0.05, 0.01, 0.001),
+               custom.coef.map = ccoef2,
+               digits = 2,
+               custom.note = "Note: Cells contain regression coefficients with standard errors in parentheses. \n %stars.",
+               leading.zero = T,
+               use.packages = F,
+               booktabs = F,
+               scalebox = 0.80,
+               include.loglik = FALSE,
+               include.aic = FALSE,
+               center = T,
+               custom.gof.names = c("BIC", "Numb. obs.", "Num. groups: individuals", "Var: individuals (Intercept)", "Var: Residual"))
+```
+
+### Resume table
+
+```{r}
+betas <- marchar12@beta                           # Coeficientes
+vcov_mat <- as.matrix(vcov(marchar12))              # Matriz de varianzas-covarianzas
+ses <- sqrt(diag(vcov_mat))                         # Errores estándar
+tvals <- betas / ses                              # Valores t
+
+ses <- ses[44:61]
+betas <- betas[44:61]
+tvals <- tvals[44:61]
+
+pvals <- 2 * pnorm(-abs(tvals))  # Aproximación tipo Wald (z-score)
+
+signif_stars <- ifelse(pvals <= 0.001, "***",
+                 ifelse(pvals <= 0.01, "**",
+                 ifelse(pvals <= 0.05, "*", "")))
+
+olasexoedad<-data.frame(
+  Estimate = betas,
+  Signif = signif_stars
+)
+
+
+betas <- marchar11@beta                          # Coeficientes
+vcov_mat <- as.matrix(vcov(marchar11))              # Matriz de varianzas-covarianzas
+ses <- sqrt(diag(vcov_mat))                         # Errores estándar
+tvals <- betas / ses                              # Valores t
+
+ses <- ses[53:88]
+betas <- betas[53:88]
+tvals <- tvals[53:88]
+
+pvals <- 2 * pnorm(-abs(tvals))  # Aproximación tipo Wald (z-score)
+
+signif_stars <- ifelse(pvals <= 0.001, "***",
+                 ifelse(pvals <= 0.01, "**",
+                 ifelse(pvals <= 0.05, "*", "")))
+
+olaeducedad<-data.frame(
+  Estimate = betas,
+  Signif = signif_stars
+)
+
+
+betas <- marchar10@beta                          # Coeficientes
+vcov_mat <- as.matrix(vcov(marchar10))              # Matriz de varianzas-covarianzas
+ses <- sqrt(diag(vcov_mat))                         # Errores estándar
+tvals <- betas / ses                              # Valores t
+
+ses <- ses[62:115]
+betas <- betas[62:115]
+tvals <- tvals[62:115]
+
+pvals <- 2 * pnorm(-abs(tvals))  # Aproximación tipo Wald (z-score)
+
+signif_stars <- ifelse(pvals <= 0.001, "***",
+                 ifelse(pvals <= 0.01, "**",
+                 ifelse(pvals <= 0.05, "*", "")))
+
+olapospoledad<-data.frame(
+  Estimate = betas,
+  Signif = signif_stars
+)
+
+# Woman (olasexoedad)
+woman_idx <- c(1, 7, 13, 2, 8, 14, 3, 9, 15, 4, 10, 16, 5, 11, 17, 6, 12, 18)
+
+# Technical (olaeducedad)
+technical_idx <- c(1, 13, 25, 2, 14, 26, 3, 15, 27, 4, 16, 28, 5, 17, 29, 6, 18, 30)
+
+# University (olaeducedad)
+university_idx <- c(7, 19, 31, 8, 20, 32, 9, 21, 33, 10, 22, 34, 11, 23, 35, 12, 24, 36)
+
+# Edad 29–45 → posiciones: 1, 19, 37, 2, 20, 38, 3, 21, 39, ...
+center_idx <- c(1, 19, 37, 2, 20, 38, 3, 21, 39, 4, 22, 40, 5, 23, 41, 6, 24, 42)
+right_idx  <- c(7, 25, 43, 8, 26, 44, 9, 27, 45,10, 28, 46,11, 29, 47,12, 30, 48)
+dni_idx    <- c(13, 31, 49,14, 32, 50,15, 33, 51,16, 34, 52,17, 35, 53,18, 36, 54)
+
+tabla <- cbind(
+  Year = c("2017", "2017", "2017", 
+          "2018", "2018", "2018",
+          "2019", "2019", "2019",
+          "2021", "2021", "2021", 
+          "2022", "2022", "2022", 
+          "2023", "2023", "2023"),
+  Age = rep(c("29–45", "24–28", "18–23"), times = 6),
+  Woman = paste0(round(olasexoedad$Estimate[woman_idx], 2), olasexoedad$Signif[woman_idx]),
+  Technical = paste0(round(olaeducedad$Estimate[technical_idx], 2), olaeducedad$Signif[technical_idx]),
+  University = paste0(round(olaeducedad$Estimate[university_idx], 2), olaeducedad$Signif[university_idx]),
+  Center = paste0(round(olapospoledad$Estimate[center_idx], 2), olapospoledad$Signif[center_idx]),
+  Right = paste0(round(olapospoledad$Estimate[right_idx], 2), olapospoledad$Signif[right_idx]),
+  `Doesnt Identify` = paste0(round(olapospoledad$Estimate[dni_idx], 2), olapospoledad$Signif[dni_idx])
+)
+```
+
+```{r}
+kbl(tabla, 
+    align = "c") %>% 
+    add_header_above(c(" " = 3,
+                     "Education"=2, 
+                     "Political position"=3),
+                   bold = T)%>%  
+  kable_paper("hover",full_width = F) %>%
+     column_spec(1, bold = T) %>%
+     collapse_rows(columns = 1, valign = "middle") %>% 
+  footnote("***p < 0.001; **p < 0.01; *p < 0.05.")
+```
+
+## Interaction effects graphs
+
+```{r}
+waves <- c("2016", "2017", "2018", "2019", "2021", "2022", "2023")
+```
+
+- Participation in demonstrations and age
+
+```{r}
+preds <- ggpredict(marchar6, terms = c("ola", "edad"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+ # facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Attending marches-demonstrations",
+    color = "Age"
+  ) +
+  ylim(0, 5) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Participation in demonstrations and sex
+
+```{r}
+preds <- ggpredict(marchar7, terms = c("ola", "sexo"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+ # facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Attending marches-demonstrations",
+    color = "Sex"
+  ) +
+  ylim(0, 5) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Participation in demonstrations, age and sex
+
+```{r}
+preds <- ggpredict(marchar12, terms = c("ola", "edad", "sexo"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Attending marches-demonstrations",
+    color = "Age"
+  ) +
+  ylim(0, 5) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Participation in demonstrations and education
+
+```{r}
+preds <- ggpredict(marchar8, terms = c("ola", "educ"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+#  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Attending marches-demonstrations",
+    color = "Education"
+  ) +
+  ylim(0, 5) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+```
+
+- Participation in demonstrations, age and education
+
+```{r}
+preds <- ggpredict(marchar11, terms = c("ola", "edad", "educ"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 3) +
+  labs(
+    x = "Year",
+    y = "Attending marches-demonstrations",
+    color = "Age"
+  ) +
+  ylim(0, 5) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Participation in demonstrations and political position
+
+```{r}
+preds <- ggpredict(marchar9, terms = c("ola", "pos_id"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+#  facet_wrap(~ facet, ncol = 3) +
+  labs(
+    x = "Year",
+    y = "Attending marches-demonstrations",
+    color = "Political position"
+  ) +
+  ylim(0, 5) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+```
+
+- Participation in demonstrations, age and political position
+
+```{r}
+preds <- ggpredict(marchar10, terms = c("ola", "edad", "pos_id"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Attending marches-demonstrations",
+    color = "Age"
+  ) +
+  ylim(0, 5) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+```
+
+# Support to same-sex adoption
+
+```{r}
+#if (!require("pacman")) install.packedads("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,adop_homo, edad, sexo, pos_id, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Between 18 and 23",
+                          edad >23 & edad <=28 ~ "Between 24 and 28",
+                          edad >28 & edad <=45 ~ "Between 29 and 45",
+                          edad > 45 ~ "More than 45")) 
+
+df_study1$edad <- factor(df_study1$edad, levels = c("More than 45", "Between 29 and 45", "Between 24 and 28", "Between 18 and 23"))
+df_study1$sexo <- factor(df_study1$sexo, levels = c(1, 2), labels = c("Man", "Woman"))
+df_study1$educ <- factor(df_study1$educ,
+                         levels = c("Media o menos", "Técnica", "Universitaria"),
+                         labels = c("Secondary or less", "Technical", "University or more"))
+df_study1$pos_id <- factor(df_study1$pos_id,
+                         levels = c("Izquierda", "Centro", "Derecha", "No se identifica"),
+                         labels = c("Left", "Center", "Right", "Doesn't identify"))
+
+marchar.null <- lmer(formula(paste0("adop_homo~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar1 <- lmer(formula(paste0("adop_homo~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar2 <- lmer(formula(paste0("adop_homo~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar3 <- lmer(formula(paste0("adop_homo~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar4 <- lmer(formula(paste0("adop_homo~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("adop_homo~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("adop_homo~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("adop_homo~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("adop_homo~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("adop_homo~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("adop_homo~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("adop_homo~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar12 <- lmer(formula(paste0("adop_homo~",h12,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+## Main effects
+
+```{r results='asis'}
+ccoef <- list(
+  "(Intercept)" = "Intercept",
+  "ola4" = "2019",
+  "ola5" = "2021",
+  "ola6" = "2022",
+  "ola7" = "2023",
+  "edadBetween 29 and 45" = "Between 29 and 45",
+  "edadBetween 24 and 28" = "Between 24 and 28",
+  "edadBetween 18 and 23" = "Between 18 and 23",
+  "sexoWoman" = "Woman (Ref.= Man)",
+  "educTechnical" = "Technical",
+  "educUniversity or more" = "University or more",
+  "pos_idCenter" = "Center",
+  "pos_idRight" = "Right",
+  "pos_idDoesn't identify" = "Doesn't identify"
+  )
+
+texreg::knitreg(list(marchar1, marchar2, marchar3, marchar4, marchar5),
+               custom.model.names = c(paste0("Model ", seq(1:5))),
+               caption.above = T,
+               caption = NULL,
+               stars = c(0.05, 0.01, 0.001),
+               custom.coef.map = ccoef,
+               digits = 2,
+               groups = list("Wave (Ref.= 2018)" = 2:5,
+                             "Age (Ref.= More than 45)" = 6:8,
+                             "Education (Ref.= Secondary)" = 10:11,
+                             "Political position (Ref.= Left)" = 12:14),
+               custom.note = "Note: Cells contain regression coefficients with standard errors in parentheses. \n %stars.",
+               leading.zero = T,
+               use.packages = F,
+               booktabs = F,
+               scalebox = 0.80,
+               include.loglik = FALSE,
+               include.aic = FALSE,
+               center = T,
+               custom.gof.names = c("BIC", "Numb. obs.", "Num. groups: individuals", "Var: individuals (Intercept)", "Var: Residual")
+               )
+```
+
+## Interaction effects 
+
+```{r results='asis'}
+ccoef2 <- list(
+  "(Intercept)" = "Intercept",
+  "ola4:edadBetween 29 and 45" = "2019*Age 29-45",
+  "ola5:edadBetween 29 and 45" = "2021*Age 29-45",
+  "ola6:edadBetween 29 and 45" = "2022*Age 29-45",
+  "ola7:edadBetween 29 and 45" = "2023*Age 29-45",
+  "ola4:edadBetween 24 and 28" = "2019*Age 24-28",
+  "ola5:edadBetween 24 and 28" = "2021*Age 24-28",
+  "ola6:edadBetween 24 and 28" = "2022*Age 24-28",
+  "ola7:edadBetween 24 and 28" = "2023*Age 24-28",
+  "ola4:edadBetween 18 and 23" = "2019*Age 18-23",
+  "ola5:edadBetween 18 and 23" = "2021*Age 18-23",
+  "ola6:edadBetween 18 and 23" = "2022*Age 18-23",
+  "ola7:edadBetween 18 and 23" = "2023*Age 18-23",
+  "ola4:sexoWoman" = "2019*Woman",
+  "ola5:sexoWoman" = "2021*Woman",
+  "ola6:sexoWoman" = "2022*Woman",
+  "ola7:sexoWoman" = "2023*Woman",
+  "ola4:educTechnical" = "2019*Technical",
+  "ola5:educTechnical" = "2021*Technical",
+  "ola6:educTechnical" = "2022*Technical",
+  "ola7:educTechnical" = "2023*Technical",
+  "ola4:educUniversity or more" = "2019*University",
+  "ola5:educUniversity or more" = "2021*University",
+  "ola6:educUniversity or more" = "2022*University",
+  "ola7:educUniversity or more" = "2023*University",
+  "ola4:pos_idCenter" = "2019*Center",
+  "ola5:pos_idCenter" = "2021*Center",
+  "ola6:pos_idCenter" = "2022*Center",
+  "ola7:pos_idCenter" = "2023*Center",
+  "ola4:pos_idRight" = "2019*Right",
+  "ola5:pos_idRight" = "2021*Right",
+  "ola6:pos_idRight" = "2022*Right",
+  "ola7:pos_idRight" = "2023*Right",
+  "ola4:pos_idDoesn't identify" = "2019*Doesn't identify",
+  "ola5:pos_idDoesn't identify" = "2021*Doesn't identify",
+  "ola6:pos_idDoesn't identify" = "2022*Doesn't identify",
+  "ola7:pos_idDoesn't identify" = "2023*Doesn't identify",
+  "pos_idCenter:edadBetween 29 and 45" = "Center*Age 29-45",
+  "pos_idRight:edadBetween 29 and 45" = "Right*Age 29-45",
+  "pos_idDoesn't identify:edadBetween 29 and 45" = "Doesn't identify * Age 29-45",
+  "pos_idCenter:edadBetween 29 and 45" = "Center*Age 24-28",
+  "pos_idRight:edadBetween 29 and 45" = "Right*Age 24-28",
+  "pos_idDoesn't identify:edadBetween 29 and 45" = "Doesn't identify * Age 24-28",
+  "pos_idCenter:edadBetween 29 and 45" = "Center*Age 18-23",
+  "pos_idRight:edadBetween 29 and 45" = "Right*Age 18-23",
+  "pos_idDoesn't identify:edadBetween 29 and 45" = "Doesn't identify * Age 18-23",
+  "ola4:pos_idCenter:edadBetween 29 and 45" = "2019 * Center * Age 29-45",
+  "ola5:pos_idCenter:edadBetween 29 and 45" = "2021 * Center * Age 29-45",
+  "ola6:pos_idCenter:edadBetween 29 and 45" = "2022 * Center * Age 29-45",
+  "ola7:pos_idCenter:edadBetween 29 and 45" = "2023 * Center * Age 29-45",
+  "ola4:pos_idRight:edadBetween 29 and 45" = "2019 * Right * Age 29-45",
+  "ola5:pos_idRight:edadBetween 29 and 45" = "2021 * Right * Age 29-45",
+  "ola6:pos_idRight:edadBetween 29 and 45" = "2022 * Right * Age 29-45",
+  "ola7:pos_idRight:edadBetween 29 and 45" = "2023 * Right * Age 29-45",
+  "ola4:pos_idDoesn't identify:edadBetween 29 and 45" = "2019 * Doesn't identify * Age 29-45",
+  "ola5:pos_idDoesn't identify:edadBetween 29 and 45" = "2021 * Doesn't identify * Age 29-45",
+  "ola6:pos_idDoesn't identify:edadBetween 29 and 45" = "2022 * Doesn't identify * Age 29-45",
+  "ola7:pos_idDoesn't identify:edadBetween 29 and 45" = "2023 * Doesn't identify * Age 29-45",
+  "ola4:pos_idCenter:edadBetween 24 and 28" = "2019 * Center * Age 24-28",
+  "ola5:pos_idCenter:edadBetween 24 and 28" = "2021 * Center * Age 24-28",
+  "ola6:pos_idCenter:edadBetween 24 and 28" = "2022 * Center * Age 24-28",
+  "ola7:pos_idCenter:edadBetween 24 and 28" = "2023 * Center * Age 24-28",
+  "ola4:pos_idRight:edadBetween 24 and 28" = "2019 * Right * Age 24-28",
+  "ola5:pos_idRight:edadBetween 24 and 28" = "2021 * Right * Age 24-28",
+  "ola6:pos_idRight:edadBetween 24 and 28" = "2022 * Right * Age 24-28",
+  "ola7:pos_idRight:edadBetween 24 and 28" = "2023 * Right * Age 24-28",
+  "ola4:pos_idDoesn't identify:edadBetween 24 and 28" = "2019 * Doesn't identify * Age 24-28",
+  "ola5:pos_idDoesn't identify:edadBetween 24 and 28" = "2021 * Doesn't identify * Age 24-28",
+  "ola6:pos_idDoesn't identify:edadBetween 24 and 28" = "2022 * Doesn't identify * Age 24-28",
+  "ola7:pos_idDoesn't identify:edadBetween 24 and 28" = "2023 * Doesn't identify * Age 24-28",
+  "ola4:pos_idCenter:edadBetween 18 and 23" = "2019 * Center * Age 18-23",
+  "ola5:pos_idCenter:edadBetween 18 and 23" = "2021 * Center * Age 18-23",
+  "ola6:pos_idCenter:edadBetween 18 and 23" = "2022 * Center * Age 18-23",
+  "ola7:pos_idCenter:edadBetween 18 and 23" = "2023 * Center * Age 18-23",
+  "ola4:pos_idRight:edadBetween 18 and 23" = "2019 * Right * Age 18-23",
+  "ola5:pos_idRight:edadBetween 18 and 23" = "2021 * Right * Age 18-23",
+  "ola6:pos_idRight:edadBetween 18 and 23" = "2022 * Right * Age 18-23",
+  "ola7:pos_idRight:edadBetween 18 and 23" = "2023 * Right * Age 18-23",
+  "ola4:pos_idDoesn't identify:edadBetween 18 and 23" = "2019 * Doesn't identify * Age 18-23",
+  "ola5:pos_idDoesn't identify:edadBetween 18 and 23" = "2021 * Doesn't identify * Age 18-23",
+  "ola6:pos_idDoesn't identify:edadBetween 18 and 23" = "2022 * Doesn't identify * Age 18-23",
+  "ola7:pos_idDoesn't identify:edadBetween 18 and 23" = "2023 * Doesn't identify * Age 18-23",
+  "educTechnical:edadBetween 29 and 45" = "Technical * Age 29-45",
+  "educUniversity or more:edadBetween 29 and 45" = "University * Age 29-45",
+  "educTechnical:edadBetween 24 and 28" = "Technical * Age 24-28",
+  "educUniversity or more:edadBetween 24 and 28" = "University * Age 24-28",
+  "educTechnical:edadBetween 18 and 23" = "Technical * Age 18-23",
+  "educUniversity or more:edadBetween 18 and 23" = "University * Age 18-23",
+  "ola4:educTechnical:edadBetween 29 and 45" = "2019 * Technical * Age 29-45",
+  "ola5:educTechnical:edadBetween 29 and 45" = "2021 * Technical * Age 29-45",
+  "ola6:educTechnical:edadBetween 29 and 45" = "2022 * Technical * Age 29-45",
+  "ola7:educTechnical:edadBetween 29 and 45" = "2023 * Technical * Age 29-45",
+  "ola4:educUniversity or more:edadBetween 29 and 45" = "2019 * University * Age 29-45",
+  "ola5:educUniversity or more:edadBetween 29 and 45" = "2021 * University * Age 29-45",
+  "ola6:educUniversity or more:edadBetween 29 and 45" = "2022 * University * Age 29-45",
+  "ola7:educUniversity or more:edadBetween 29 and 45" = "2023 * University * Age 29-45",
+  "ola4:educTechnical:edadBetween 24 and 28" = "2019 * Technical * Age 24-28",
+  "ola5:educTechnical:edadBetween 24 and 28" = "2021 * Technical * Age 24-28",
+  "ola6:educTechnical:edadBetween 24 and 28" = "2022 * Technical * Age 24-28",
+  "ola7:educTechnical:edadBetween 24 and 28" = "2023 * Technical * Age 24-28",
+  "ola4:educUniversity or more:edadBetween 24 and 28" = "2019 * University * Age 24-28",
+  "ola5:educUniversity or more:edadBetween 24 and 28" = "2021 * University * Age 24-28",
+  "ola6:educUniversity or more:edadBetween 24 and 28" = "2022 * University * Age 24-28",
+  "ola7:educUniversity or more:edadBetween 24 and 28" = "2023 * University * Age 24-28",
+  "ola4:educTechnical:edadBetween 18 and 23" = "2019 * Technical * Age 18-23",
+  "ola5:educTechnical:edadBetween 18 and 23" = "2021 * Technical * Age 18-23",
+  "ola6:educTechnical:edadBetween 18 and 23" = "2022 * Technical * Age 18-23",
+  "ola7:educTechnical:edadBetween 18 and 23" = "2023 * Technical * Age 18-23",
+  "ola4:educUniversity or more:edadBetween 18 and 23" = "2019 * University * Age 18-23",
+  "ola5:educUniversity or more:edadBetween 18 and 23" = "2021 * University * Age 18-23",
+  "ola6:educUniversity or more:edadBetween 18 and 23" = "2022 * University * Age 18-23",
+  "ola7:educUniversity or more:edadBetween 18 and 23" = "2023 * University * Age 18-23",
+  "sexoWoman:edadBetween 29 and 45" = "Woman * Age 29-45",
+  "sexoWoman:edadBetween 29 and 45" = "Woman * Age 24-28",
+  "sexoWoman:edadBetween 29 and 45" = "Woman * Age 18-23",
+  "ola4:sexoWoman:edadBetween 29 and 45" = "2019 * Woman * Age 29-45",
+  "ola5:sexoWoman:edadBetween 29 and 45" = "2021 * Woman * Age 29-45",
+  "ola6:sexoWoman:edadBetween 29 and 45" = "2022 * Woman * Age 29-45",
+  "ola7:sexoWoman:edadBetween 29 and 45" = "2023 * Woman * Age 29-45",
+  "ola4:sexoWoman:edadBetween 24 and 28" = "2019 * Woman * Age 24-28",
+  "ola5:sexoWoman:edadBetween 24 and 28" = "2021 * Woman * Age 24-28",
+  "ola6:sexoWoman:edadBetween 24 and 28" = "2022 * Woman * Age 24-28",
+  "ola7:sexoWoman:edadBetween 24 and 28" = "2023 * Woman * Age 24-28",
+  "ola4:sexoWoman:edadBetween 18 and 23" = "2019 * Woman * Age 18-23",
+  "ola5:sexoWoman:edadBetween 18 and 23" = "2021 * Woman * Age 18-23",
+  "ola6:sexoWoman:edadBetween 18 and 23" = "2022 * Woman * Age 18-23",
+  "ola7:sexoWoman:edadBetween 18 and 23" = "2023 * Woman * Age 18-23"
+  )
+
+texreg::knitreg(list(marchar6, marchar7, marchar8, marchar9, marchar10, marchar11,marchar12),
+               custom.model.names = c(paste0("Model ", seq(6:12))),
+               caption.above = T,
+               caption = NULL,
+               stars = c(0.05, 0.01, 0.001),
+               custom.coef.map = ccoef2,
+               digits = 2,
+               custom.note = "Note: Cells contain regression coefficients with standard errors in parentheses. \n %stars.",
+               leading.zero = T,
+               use.packages = F,
+               booktabs = F,
+               scalebox = 0.80,
+               include.loglik = FALSE,
+               include.aic = FALSE,
+               center = T,
+               custom.gof.names = c("BIC", "Numb. obs.", "Num. groups: individuals", "Var: individuals (Intercept)", "Var: Residual"))
+```
+
+### Resume table
+
+```{r}
+betas <- marchar12@beta                           # Coeficientes
+vcov_mat <- as.matrix(vcov(marchar12))              # Matriz de varianzas-covarianzas
+ses <- sqrt(diag(vcov_mat))                         # Errores estándar
+tvals <- betas / ses                              # Valores t
+
+ses <- ses[34:45]
+betas <- betas[34:45]
+tvals <- tvals[34:45]
+
+pvals <- 2 * pnorm(-abs(tvals))  # Aproximación tipo Wald (z-score)
+
+signif_stars <- ifelse(pvals <= 0.001, "***",
+                 ifelse(pvals <= 0.01, "**",
+                 ifelse(pvals <= 0.05, "*", "")))
+
+olasexoedad<-data.frame(
+  Estimate = betas,
+  Signif = signif_stars
+)
+
+betas <- marchar11@beta                          # Coeficientes
+vcov_mat <- as.matrix(vcov(marchar11))              # Matriz de varianzas-covarianzas
+ses <- sqrt(diag(vcov_mat))                         # Errores estándar
+tvals <- betas / ses                              # Valores t
+
+ses <- ses[41:64]
+betas <- betas[41:64]
+tvals <- tvals[41:64]
+
+pvals <- 2 * pnorm(-abs(tvals))  # Aproximación tipo Wald (z-score)
+
+signif_stars <- ifelse(pvals <= 0.001, "***",
+                 ifelse(pvals <= 0.01, "**",
+                 ifelse(pvals <= 0.05, "*", "")))
+
+olaeducedad<-data.frame(
+  Estimate = betas,
+  Signif = signif_stars
+)
+
+betas <- marchar10@beta                          # Coeficientes
+vcov_mat <- as.matrix(vcov(marchar10))              # Matriz de varianzas-covarianzas
+ses <- sqrt(diag(vcov_mat))                         # Errores estándar
+tvals <- betas / ses                              # Valores t
+
+ses <- ses[48:83]
+betas <- betas[48:83]
+tvals <- tvals[48:83]
+
+pvals <- 2 * pnorm(-abs(tvals))  # Aproximación tipo Wald (z-score)
+
+signif_stars <- ifelse(pvals <= 0.001, "***",
+                 ifelse(pvals <= 0.01, "**",
+                 ifelse(pvals <= 0.05, "*", "")))
+
+olapospoledad<-data.frame(
+  Estimate = betas,
+  Signif = signif_stars
+)
+
+# Woman (olasexoedad) – 12 términos
+woman_idx <- c(1, 5, 9,   # 29–45
+               2, 6,10,   # 24–28
+               3, 7,11,   # 18–23
+               4, 8,12)   # orden por ola: 2019, 2021, 2022, 2023
+
+# Technical (olaeducedad) – 24 términos
+technical_idx <- c(1, 9,17,  # 29–45
+                   2,10,18,  # 24–28
+                   3,11,19,  # 18–23
+                   4,12,20)  # ola 2021
+# university ocupa las posiciones 5:8, 13:16, 21:24
+university_idx <- c(5,13,21,  # 29–45
+                    6,14,22,  # 24–28
+                    7,15,23,  # 18–23
+                    8,16,24)
+
+# Center (olapospoledad) – 36 términos
+center_idx <- c(1,13,25,  # 29–45
+                2,14,26,  # 24–28
+                3,15,27,  # 18–23
+                4,16,28)  # ola 2021
+right_idx <-  c(5,17,29,  # 29–45
+                6,18,30,
+                7,19,31,
+                8,20,32)
+dni_idx   <-  c(9,21,33,
+                10,22,34,
+                11,23,35,
+                12,24,36)
+
+tabla <- cbind(
+  Year = c("2019", "2019", "2019",
+          "2021", "2021", "2021", 
+          "2022", "2022", "2022", 
+          "2023", "2023", "2023"),
+  Age = rep(c("29–45", "24–28", "18–23"), times = 4),
+  Woman = paste0(round(olasexoedad$Estimate[woman_idx], 2), olasexoedad$Signif[woman_idx]),
+  Technical = paste0(round(olaeducedad$Estimate[technical_idx], 2), olaeducedad$Signif[technical_idx]),
+  University = paste0(round(olaeducedad$Estimate[university_idx], 2), olaeducedad$Signif[university_idx]),
+  Center = paste0(round(olapospoledad$Estimate[center_idx], 2), olapospoledad$Signif[center_idx]),
+  Right = paste0(round(olapospoledad$Estimate[right_idx], 2), olapospoledad$Signif[right_idx]),
+  `Doesnt Identify` = paste0(round(olapospoledad$Estimate[dni_idx], 2), olapospoledad$Signif[dni_idx])
+)
+```
+
+```{r}
+kbl(tabla, 
+    align = "c") %>% 
+    add_header_above(c(" " = 3,
+                     "Education"=2, 
+                     "Political position"=3),
+                   bold = T)%>%  
+  kable_paper("hover",full_width = F) %>%
+     column_spec(1, bold = T) %>%
+     collapse_rows(columns = 1, valign = "middle") %>% 
+  footnote("***p < 0.001; **p < 0.01; *p < 0.05.")
+```
+
+## Interaction effects graphs
+
+- Support to same-sex adoption and age
+
+```{r}
+waves3 <- c("2018", "2019", "2021", "2022", "2023")
+preds <- ggpredict(marchar6, terms = c("ola", "edad"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+ # facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Support for same-sex adoption",
+    color = "Age"
+  ) +
+  ylim(1, 5) +
+  scale_x_discrete(labels = waves3) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Support to same-sex adoption and sex
+
+```{r}
+preds <- ggpredict(marchar7, terms = c("ola", "sexo"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+ # facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Support for same-sex adoption",
+    color = "Sex"
+  ) +
+  ylim(1, 5) +
+  scale_x_discrete(labels = waves3) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Support to same-sex adoption, age and sex
+
+```{r}
+preds <- ggpredict(marchar12, terms = c("ola", "edad", "sexo"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Support for same-sex adoption",
+    color = "Age"
+  ) +
+  ylim(1, 5) +
+  scale_x_discrete(labels = waves3) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Support to same-sex adoption and education
+
+```{r}
+preds <- ggpredict(marchar8, terms = c("ola", "educ"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+#  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Support for same-sex adoption",
+    color = "Education"
+  ) +
+  ylim(1, 5) +
+  scale_x_discrete(labels = waves3) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Support to same-sex adoption, age and education
+
+```{r}
+preds <- ggpredict(marchar11, terms = c("ola", "edad", "educ"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 3) +
+  labs(
+    x = "Year",
+    y = "Support for same-sex adoption",
+    color = "Age"
+  ) +
+  ylim(1, 5) +
+  scale_x_discrete(labels = waves3) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Support to same-sex adoption and political position
+
+```{r}
+preds <- ggpredict(marchar9, terms = c("ola", "pos_id"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+#  facet_wrap(~ facet, ncol = 3) +
+  labs(
+    x = "Year",
+    y = "Support for same-sex adoption",
+    color = "Political position"
+  ) +
+  ylim(1, 5) +
+  scale_x_discrete(labels = waves3) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Support to same-sex adoption, age and political position
+
+```{r}
+preds <- ggpredict(marchar10, terms = c("ola", "edad", "pos_id"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Support for same-sex adoption",
+    color = "edad"
+  ) +
+  ylim(1, 5) +
+  scale_x_discrete(labels = waves3) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+# Support for abortion decriminalization
+
+```{r}
+#if (!require("pacman")) install.packedads("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,aborto, edad, sexo, pos_id, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Between 18 and 23",
+                          edad >23 & edad <=28 ~ "Between 24 and 28",
+                          edad >28 & edad <=45 ~ "Between 29 and 45",
+                          edad > 45 ~ "More than 45")) 
+
+df_study1$edad <- factor(df_study1$edad, levels = c("More than 45", "Between 29 and 45", "Between 24 and 28", "Between 18 and 23"))
+df_study1$sexo <- factor(df_study1$sexo, levels = c(1, 2), labels = c("Man", "Woman"))
+df_study1$educ <- factor(df_study1$educ,
+                         levels = c("Media o menos", "Técnica", "Universitaria"),
+                         labels = c("Secondary or less", "Technical", "University or more"))
+df_study1$pos_id <- factor(df_study1$pos_id,
+                         levels = c("Izquierda", "Centro", "Derecha", "No se identifica"),
+                         labels = c("Left", "Center", "Right", "Doesn't identify"))
+
+marchar.null <- lmer(formula(paste0("aborto~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar1 <- lmer(formula(paste0("aborto~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar2 <- lmer(formula(paste0("aborto~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar3 <- lmer(formula(paste0("aborto~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar4 <- lmer(formula(paste0("aborto~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("aborto~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("aborto~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("aborto~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("aborto~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("aborto~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("aborto~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("aborto~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar12 <- lmer(formula(paste0("aborto~",h12,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+## Main effects
+
+```{r results='asis'}
+ccoef <- list(
+  "(Intercept)" = "Intercept",
+  "ola4" = "2019",
+  "ola5" = "2021",
+  "ola6" = "2022",
+  "ola7" = "2023",
+  "edadBetween 29 and 45" = "Between 29 and 45",
+  "edadBetween 24 and 28" = "Between 24 and 28",
+  "edadBetween 18 and 23" = "Between 18 and 23",
+  "sexoWoman" = "Woman (Ref.= Man)",
+  "educTechnical" = "Technical",
+  "educUniversity or more" = "University or more",
+  "pos_idCenter" = "Center",
+  "pos_idRight" = "Right",
+  "pos_idDoesn't identify" = "Doesn't identify"
+  )
+
+texreg::knitreg(list(marchar1, marchar2, marchar3, marchar4, marchar5),
+               custom.model.names = c(paste0("Model ", seq(1:5))),
+               caption.above = T,
+               caption = NULL,
+               stars = c(0.05, 0.01, 0.001),
+               custom.coef.map = ccoef,
+               digits = 2,
+               groups = list("Wave (Ref.= 2018)" = 2:5,
+                             "Age (Ref.= More than 45)" = 6:8,
+                             "Education (Ref.= Secondary)" = 10:11,
+                             "Political position (Ref.= Left)" = 12:14),
+               custom.note = "Note: Cells contain regression coefficients with standard errors in parentheses. \n %stars.",
+               leading.zero = T,
+               use.packages = F,
+               booktabs = F,
+               scalebox = 0.80,
+               include.loglik = FALSE,
+               include.aic = FALSE,
+               center = T,
+               custom.gof.names = c("BIC", "Numb. obs.", "Num. groups: individuals", "Var: individuals (Intercept)", "Var: Residual")
+               )
+```
+
+## Interaction effects 
+
+```{r results='asis'}
+ccoef2 <- list(
+  "(Intercept)" = "Intercept",
+  "ola4:edadBetween 29 and 45" = "2019*Age 29-45",
+  "ola5:edadBetween 29 and 45" = "2021*Age 29-45",
+  "ola6:edadBetween 29 and 45" = "2022*Age 29-45",
+  "ola7:edadBetween 29 and 45" = "2023*Age 29-45",
+  "ola4:edadBetween 24 and 28" = "2019*Age 24-28",
+  "ola5:edadBetween 24 and 28" = "2021*Age 24-28",
+  "ola6:edadBetween 24 and 28" = "2022*Age 24-28",
+  "ola7:edadBetween 24 and 28" = "2023*Age 24-28",
+  "ola4:edadBetween 18 and 23" = "2019*Age 18-23",
+  "ola5:edadBetween 18 and 23" = "2021*Age 18-23",
+  "ola6:edadBetween 18 and 23" = "2022*Age 18-23",
+  "ola7:edadBetween 18 and 23" = "2023*Age 18-23",
+  "ola4:sexoWoman" = "2019*Woman",
+  "ola5:sexoWoman" = "2021*Woman",
+  "ola6:sexoWoman" = "2022*Woman",
+  "ola7:sexoWoman" = "2023*Woman",
+  "ola4:educTechnical" = "2019*Technical",
+  "ola5:educTechnical" = "2021*Technical",
+  "ola6:educTechnical" = "2022*Technical",
+  "ola7:educTechnical" = "2023*Technical",
+  "ola4:educUniversity or more" = "2019*University",
+  "ola5:educUniversity or more" = "2021*University",
+  "ola6:educUniversity or more" = "2022*University",
+  "ola7:educUniversity or more" = "2023*University",
+  "ola4:pos_idCenter" = "2019*Center",
+  "ola5:pos_idCenter" = "2021*Center",
+  "ola6:pos_idCenter" = "2022*Center",
+  "ola7:pos_idCenter" = "2023*Center",
+  "ola4:pos_idRight" = "2019*Right",
+  "ola5:pos_idRight" = "2021*Right",
+  "ola6:pos_idRight" = "2022*Right",
+  "ola7:pos_idRight" = "2023*Right",
+  "ola4:pos_idDoesn't identify" = "2019*Doesn't identify",
+  "ola5:pos_idDoesn't identify" = "2021*Doesn't identify",
+  "ola6:pos_idDoesn't identify" = "2022*Doesn't identify",
+  "ola7:pos_idDoesn't identify" = "2023*Doesn't identify",
+  "pos_idCenter:edadBetween 29 and 45" = "Center*Age 29-45",
+  "pos_idRight:edadBetween 29 and 45" = "Right*Age 29-45",
+  "pos_idDoesn't identify:edadBetween 29 and 45" = "Doesn't identify * Age 29-45",
+  "pos_idCenter:edadBetween 29 and 45" = "Center*Age 24-28",
+  "pos_idRight:edadBetween 29 and 45" = "Right*Age 24-28",
+  "pos_idDoesn't identify:edadBetween 29 and 45" = "Doesn't identify * Age 24-28",
+  "pos_idCenter:edadBetween 29 and 45" = "Center*Age 18-23",
+  "pos_idRight:edadBetween 29 and 45" = "Right*Age 18-23",
+  "pos_idDoesn't identify:edadBetween 29 and 45" = "Doesn't identify * Age 18-23",
+  "ola4:pos_idCenter:edadBetween 29 and 45" = "2019 * Center * Age 29-45",
+  "ola5:pos_idCenter:edadBetween 29 and 45" = "2021 * Center * Age 29-45",
+  "ola6:pos_idCenter:edadBetween 29 and 45" = "2022 * Center * Age 29-45",
+  "ola7:pos_idCenter:edadBetween 29 and 45" = "2023 * Center * Age 29-45",
+  "ola4:pos_idRight:edadBetween 29 and 45" = "2019 * Right * Age 29-45",
+  "ola5:pos_idRight:edadBetween 29 and 45" = "2021 * Right * Age 29-45",
+  "ola6:pos_idRight:edadBetween 29 and 45" = "2022 * Right * Age 29-45",
+  "ola7:pos_idRight:edadBetween 29 and 45" = "2023 * Right * Age 29-45",
+  "ola4:pos_idDoesn't identify:edadBetween 29 and 45" = "2019 * Doesn't identify * Age 29-45",
+  "ola5:pos_idDoesn't identify:edadBetween 29 and 45" = "2021 * Doesn't identify * Age 29-45",
+  "ola6:pos_idDoesn't identify:edadBetween 29 and 45" = "2022 * Doesn't identify * Age 29-45",
+  "ola7:pos_idDoesn't identify:edadBetween 29 and 45" = "2023 * Doesn't identify * Age 29-45",
+  "ola4:pos_idCenter:edadBetween 24 and 28" = "2019 * Center * Age 24-28",
+  "ola5:pos_idCenter:edadBetween 24 and 28" = "2021 * Center * Age 24-28",
+  "ola6:pos_idCenter:edadBetween 24 and 28" = "2022 * Center * Age 24-28",
+  "ola7:pos_idCenter:edadBetween 24 and 28" = "2023 * Center * Age 24-28",
+  "ola4:pos_idRight:edadBetween 24 and 28" = "2019 * Right * Age 24-28",
+  "ola5:pos_idRight:edadBetween 24 and 28" = "2021 * Right * Age 24-28",
+  "ola6:pos_idRight:edadBetween 24 and 28" = "2022 * Right * Age 24-28",
+  "ola7:pos_idRight:edadBetween 24 and 28" = "2023 * Right * Age 24-28",
+  "ola4:pos_idDoesn't identify:edadBetween 24 and 28" = "2019 * Doesn't identify * Age 24-28",
+  "ola5:pos_idDoesn't identify:edadBetween 24 and 28" = "2021 * Doesn't identify * Age 24-28",
+  "ola6:pos_idDoesn't identify:edadBetween 24 and 28" = "2022 * Doesn't identify * Age 24-28",
+  "ola7:pos_idDoesn't identify:edadBetween 24 and 28" = "2023 * Doesn't identify * Age 24-28",
+  "ola4:pos_idCenter:edadBetween 18 and 23" = "2019 * Center * Age 18-23",
+  "ola5:pos_idCenter:edadBetween 18 and 23" = "2021 * Center * Age 18-23",
+  "ola6:pos_idCenter:edadBetween 18 and 23" = "2022 * Center * Age 18-23",
+  "ola7:pos_idCenter:edadBetween 18 and 23" = "2023 * Center * Age 18-23",
+  "ola4:pos_idRight:edadBetween 18 and 23" = "2019 * Right * Age 18-23",
+  "ola5:pos_idRight:edadBetween 18 and 23" = "2021 * Right * Age 18-23",
+  "ola6:pos_idRight:edadBetween 18 and 23" = "2022 * Right * Age 18-23",
+  "ola7:pos_idRight:edadBetween 18 and 23" = "2023 * Right * Age 18-23",
+  "ola4:pos_idDoesn't identify:edadBetween 18 and 23" = "2019 * Doesn't identify * Age 18-23",
+  "ola5:pos_idDoesn't identify:edadBetween 18 and 23" = "2021 * Doesn't identify * Age 18-23",
+  "ola6:pos_idDoesn't identify:edadBetween 18 and 23" = "2022 * Doesn't identify * Age 18-23",
+  "ola7:pos_idDoesn't identify:edadBetween 18 and 23" = "2023 * Doesn't identify * Age 18-23",
+  "educTechnical:edadBetween 29 and 45" = "Technical * Age 29-45",
+  "educUniversity or more:edadBetween 29 and 45" = "University * Age 29-45",
+  "educTechnical:edadBetween 24 and 28" = "Technical * Age 24-28",
+  "educUniversity or more:edadBetween 24 and 28" = "University * Age 24-28",
+  "educTechnical:edadBetween 18 and 23" = "Technical * Age 18-23",
+  "educUniversity or more:edadBetween 18 and 23" = "University * Age 18-23",
+  "ola4:educTechnical:edadBetween 29 and 45" = "2019 * Technical * Age 29-45",
+  "ola5:educTechnical:edadBetween 29 and 45" = "2021 * Technical * Age 29-45",
+  "ola6:educTechnical:edadBetween 29 and 45" = "2022 * Technical * Age 29-45",
+  "ola7:educTechnical:edadBetween 29 and 45" = "2023 * Technical * Age 29-45",
+  "ola4:educUniversity or more:edadBetween 29 and 45" = "2019 * University * Age 29-45",
+  "ola5:educUniversity or more:edadBetween 29 and 45" = "2021 * University * Age 29-45",
+  "ola6:educUniversity or more:edadBetween 29 and 45" = "2022 * University * Age 29-45",
+  "ola7:educUniversity or more:edadBetween 29 and 45" = "2023 * University * Age 29-45",
+  "ola4:educTechnical:edadBetween 24 and 28" = "2019 * Technical * Age 24-28",
+  "ola5:educTechnical:edadBetween 24 and 28" = "2021 * Technical * Age 24-28",
+  "ola6:educTechnical:edadBetween 24 and 28" = "2022 * Technical * Age 24-28",
+  "ola7:educTechnical:edadBetween 24 and 28" = "2023 * Technical * Age 24-28",
+  "ola4:educUniversity or more:edadBetween 24 and 28" = "2019 * University * Age 24-28",
+  "ola5:educUniversity or more:edadBetween 24 and 28" = "2021 * University * Age 24-28",
+  "ola6:educUniversity or more:edadBetween 24 and 28" = "2022 * University * Age 24-28",
+  "ola7:educUniversity or more:edadBetween 24 and 28" = "2023 * University * Age 24-28",
+  "ola4:educTechnical:edadBetween 18 and 23" = "2019 * Technical * Age 18-23",
+  "ola5:educTechnical:edadBetween 18 and 23" = "2021 * Technical * Age 18-23",
+  "ola6:educTechnical:edadBetween 18 and 23" = "2022 * Technical * Age 18-23",
+  "ola7:educTechnical:edadBetween 18 and 23" = "2023 * Technical * Age 18-23",
+  "ola4:educUniversity or more:edadBetween 18 and 23" = "2019 * University * Age 18-23",
+  "ola5:educUniversity or more:edadBetween 18 and 23" = "2021 * University * Age 18-23",
+  "ola6:educUniversity or more:edadBetween 18 and 23" = "2022 * University * Age 18-23",
+  "ola7:educUniversity or more:edadBetween 18 and 23" = "2023 * University * Age 18-23",
+  "sexoWoman:edadBetween 29 and 45" = "Woman * Age 29-45",
+  "sexoWoman:edadBetween 29 and 45" = "Woman * Age 24-28",
+  "sexoWoman:edadBetween 29 and 45" = "Woman * Age 18-23",
+  "ola4:sexoWoman:edadBetween 29 and 45" = "2019 * Woman * Age 29-45",
+  "ola5:sexoWoman:edadBetween 29 and 45" = "2021 * Woman * Age 29-45",
+  "ola6:sexoWoman:edadBetween 29 and 45" = "2022 * Woman * Age 29-45",
+  "ola7:sexoWoman:edadBetween 29 and 45" = "2023 * Woman * Age 29-45",
+  "ola4:sexoWoman:edadBetween 24 and 28" = "2019 * Woman * Age 24-28",
+  "ola5:sexoWoman:edadBetween 24 and 28" = "2021 * Woman * Age 24-28",
+  "ola6:sexoWoman:edadBetween 24 and 28" = "2022 * Woman * Age 24-28",
+  "ola7:sexoWoman:edadBetween 24 and 28" = "2023 * Woman * Age 24-28",
+  "ola4:sexoWoman:edadBetween 18 and 23" = "2019 * Woman * Age 18-23",
+  "ola5:sexoWoman:edadBetween 18 and 23" = "2021 * Woman * Age 18-23",
+  "ola6:sexoWoman:edadBetween 18 and 23" = "2022 * Woman * Age 18-23",
+  "ola7:sexoWoman:edadBetween 18 and 23" = "2023 * Woman * Age 18-23"
+  )
+
+texreg::knitreg(list(marchar6, marchar7, marchar8, marchar9, marchar10, marchar11,marchar12),
+               custom.model.names = c(paste0("Model ", seq(6:12))),
+               caption.above = T,
+               caption = NULL,
+               stars = c(0.05, 0.01, 0.001),
+               custom.coef.map = ccoef2,
+               digits = 2,
+               custom.note = "Note: Cells contain regression coefficients with standard errors in parentheses. \n %stars.",
+               leading.zero = T,
+               use.packages = F,
+               booktabs = F,
+               scalebox = 0.80,
+               include.loglik = FALSE,
+               include.aic = FALSE,
+               center = T,
+               custom.gof.names = c("BIC", "Numb. obs.", "Num. groups: individuals", "Var: individuals (Intercept)", "Var: Residual"))
+```
+
+### Resume table
+
+```{r}
+betas <- marchar12@beta                           # Coeficientes
+vcov_mat <- as.matrix(vcov(marchar12))              # Matriz de varianzas-covarianzas
+ses <- sqrt(diag(vcov_mat))                         # Errores estándar
+tvals <- betas / ses                              # Valores t
+
+ses <- ses[34:45]
+betas <- betas[34:45]
+tvals <- tvals[34:45]
+
+pvals <- 2 * pnorm(-abs(tvals))  # Aproximación tipo Wald (z-score)
+
+signif_stars <- ifelse(pvals <= 0.001, "***",
+                 ifelse(pvals <= 0.01, "**",
+                 ifelse(pvals <= 0.05, "*", "")))
+
+olasexoedad<-data.frame(
+  Estimate = betas,
+  Signif = signif_stars
+)
+
+betas <- marchar11@beta                          # Coeficientes
+vcov_mat <- as.matrix(vcov(marchar11))              # Matriz de varianzas-covarianzas
+ses <- sqrt(diag(vcov_mat))                         # Errores estándar
+tvals <- betas / ses                              # Valores t
+
+ses <- ses[41:64]
+betas <- betas[41:64]
+tvals <- tvals[41:64]
+
+pvals <- 2 * pnorm(-abs(tvals))  # Aproximación tipo Wald (z-score)
+
+signif_stars <- ifelse(pvals <= 0.001, "***",
+                 ifelse(pvals <= 0.01, "**",
+                 ifelse(pvals <= 0.05, "*", "")))
+
+olaeducedad<-data.frame(
+  Estimate = betas,
+  Signif = signif_stars
+)
+
+betas <- marchar10@beta                          # Coeficientes
+vcov_mat <- as.matrix(vcov(marchar10))              # Matriz de varianzas-covarianzas
+ses <- sqrt(diag(vcov_mat))                         # Errores estándar
+tvals <- betas / ses                              # Valores t
+
+ses <- ses[48:83]
+betas <- betas[48:83]
+tvals <- tvals[48:83]
+
+pvals <- 2 * pnorm(-abs(tvals))  # Aproximación tipo Wald (z-score)
+
+signif_stars <- ifelse(pvals <= 0.001, "***",
+                 ifelse(pvals <= 0.01, "**",
+                 ifelse(pvals <= 0.05, "*", "")))
+
+olapospoledad<-data.frame(
+  Estimate = betas,
+  Signif = signif_stars
+)
+
+# Woman (olasexoedad) – 12 términos
+woman_idx <- c(1, 5, 9,   # 29–45
+               2, 6,10,   # 24–28
+               3, 7,11,   # 18–23
+               4, 8,12)   # orden por ola: 2019, 2021, 2022, 2023
+
+# Technical (olaeducedad) – 24 términos
+technical_idx <- c(1, 9,17,  # 29–45
+                   2,10,18,  # 24–28
+                   3,11,19,  # 18–23
+                   4,12,20)  # ola 2021
+# university ocupa las posiciones 5:8, 13:16, 21:24
+university_idx <- c(5,13,21,  # 29–45
+                    6,14,22,  # 24–28
+                    7,15,23,  # 18–23
+                    8,16,24)
+
+# Center (olapospoledad) – 36 términos
+center_idx <- c(1,13,25,  # 29–45
+                2,14,26,  # 24–28
+                3,15,27,  # 18–23
+                4,16,28)  # ola 2021
+right_idx <-  c(5,17,29,  # 29–45
+                6,18,30,
+                7,19,31,
+                8,20,32)
+dni_idx   <-  c(9,21,33,
+                10,22,34,
+                11,23,35,
+                12,24,36)
+
+tabla <- cbind(
+  Year = c("2019", "2019", "2019",
+          "2021", "2021", "2021", 
+          "2022", "2022", "2022", 
+          "2023", "2023", "2023"),
+  Age = rep(c("29–45", "24–28", "18–23"), times = 4),
+  Woman = paste0(round(olasexoedad$Estimate[woman_idx], 2), olasexoedad$Signif[woman_idx]),
+  Technical = paste0(round(olaeducedad$Estimate[technical_idx], 2), olaeducedad$Signif[technical_idx]),
+  University = paste0(round(olaeducedad$Estimate[university_idx], 2), olaeducedad$Signif[university_idx]),
+  Center = paste0(round(olapospoledad$Estimate[center_idx], 2), olapospoledad$Signif[center_idx]),
+  Right = paste0(round(olapospoledad$Estimate[right_idx], 2), olapospoledad$Signif[right_idx]),
+  `Doesnt Identify` = paste0(round(olapospoledad$Estimate[dni_idx], 2), olapospoledad$Signif[dni_idx])
+)
+```
+
+```{r}
+kbl(tabla, 
+    align = "c") %>% 
+    add_header_above(c(" " = 3,
+                     "Education"=2, 
+                     "Political position"=3),
+                   bold = T)%>%  
+  kable_paper("hover",full_width = F) %>%
+     column_spec(1, bold = T) %>%
+     collapse_rows(columns = 1, valign = "middle") %>% 
+  footnote("***p < 0.001; **p < 0.01; *p < 0.05.")
+```
+
+## Interaction effects graphs
+
+- Support for abortion decriminalization and age
+
+```{r}
+preds <- ggpredict(marchar6, terms = c("ola", "edad"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+ # facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Support for the legalization of abortion",
+    color = "Age"
+  ) +
+  ylim(1, 5) +
+  scale_x_discrete(labels = waves3) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Support for abortion decriminalization and sex
+
+```{r}
+preds <- ggpredict(marchar7, terms = c("ola", "sexo"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+ # facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Support for the legalization of abortion",
+    color = "Sex"
+  ) +
+  ylim(1, 5) +
+  scale_x_discrete(labels = waves3) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Support for abortion decriminalization, age and sex
+
+```{r}
+preds <- ggpredict(marchar12, terms = c("ola", "edad", "sexo"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Support for the legalization of abortion",
+    color = "Age"
+  ) +
+  ylim(1, 5) +
+  scale_x_discrete(labels = waves3) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Support for abortion decriminalization and education
+
+```{r}
+preds <- ggpredict(marchar8, terms = c("ola", "educ"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+#  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Support for the legalization of abortion",
+    color = "Education"
+  ) +
+  ylim(1, 5) +
+  scale_x_discrete(labels = waves3) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Support for abortion decriminalization, age and education
+
+```{r}
+preds <- ggpredict(marchar11, terms = c("ola", "edad", "educ"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 3) +
+  labs(
+    x = "Year",
+    y = "Support for the legalization of abortion",
+    color = "Age"
+  ) +
+  ylim(1, 5) +
+  scale_x_discrete(labels = waves3) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Support for abortion decriminalization and political position
+
+```{r}
+preds <- ggpredict(marchar9, terms = c("ola", "pos_id"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+#  facet_wrap(~ facet, ncol = 3) +
+  labs(
+    x = "Year",
+    y = "Support for the legalization of abortion",
+    color = "Political position"
+  ) +
+  ylim(1, 5) +
+  scale_x_discrete(labels = waves3) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Support for abortion decriminalization, agen and political position
+
+```{r}
+preds <- ggpredict(marchar10, terms = c("ola", "edad", "pos_id"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Support for the legalization of abortion",
+    color = "edad"
+  ) +
+  ylim(1, 5) +
+  scale_x_discrete(labels = waves3) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+# Support to student's social movement
+
+```{r}
+#if (!require("pacman")) install.packedads("pacman") # instalar pacman
+                            # cargar librerias
+pacman::p_load(dplyr,       # Manipulacion de datos
+               knitr,
+               kableExtra,
+               summarytools,
+               lme4,
+               texreg
+               )
+load(file = here::here("input/data-proc/df_study1_long_t7.RData"))
+
+# generate analytical sample
+df_study1 <- 
+  df_study1_long_t7 %>%
+  select(idencuesta,ola,mov_estudiantil, edad, sexo, pos_id, educ, universitaria, ponderador_long_total) %>% 
+  na.omit() %>% 
+  mutate(ola_num=as.numeric(ola),
+         ola=as.factor(ola),
+         edad = case_when(edad <=23~"Between 18 and 23",
+                          edad >23 & edad <=28 ~ "Between 24 and 28",
+                          edad >28 & edad <=45 ~ "Between 29 and 45",
+                          edad > 45 ~ "More than 45")) 
+
+df_study1$edad <- factor(df_study1$edad, levels = c("More than 45", "Between 29 and 45", "Between 24 and 28", "Between 18 and 23"))
+df_study1$sexo <- factor(df_study1$sexo, levels = c(1, 2), labels = c("Man", "Woman"))
+df_study1$educ <- factor(df_study1$educ,
+                         levels = c("Media o menos", "Técnica", "Universitaria"),
+                         labels = c("Secondary or less", "Technical", "University or more"))
+df_study1$pos_id <- factor(df_study1$pos_id,
+                         levels = c("Izquierda", "Centro", "Derecha", "No se identifica"),
+                         labels = c("Left", "Center", "Right", "Doesn't identify"))
+
+marchar.null <- glmer(formula(paste0("mov_estudiantil~","1 + (1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = 'binomial')
+marchar1 <- glmer(formula(paste0("mov_estudiantil~",h1,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = 'binomial')
+marchar2 <- glmer(formula(paste0("mov_estudiantil~",h2,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = 'binomial')
+marchar3 <- glmer(formula(paste0("mov_estudiantil~",h3,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total, family = 'binomial')
+marchar4 <- lmer(formula(paste0("mov_estudiantil~",h4,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar5 <- lmer(formula(paste0("mov_estudiantil~",h5,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar6 <- lmer(formula(paste0("mov_estudiantil~",h6,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar7 <- lmer(formula(paste0("mov_estudiantil~",h7,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar8 <- lmer(formula(paste0("mov_estudiantil~",h8,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar9 <- lmer(formula(paste0("mov_estudiantil~",h9,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar10 <- lmer(formula(paste0("mov_estudiantil~",h10,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar11 <- lmer(formula(paste0("mov_estudiantil~",h11,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+marchar12 <- lmer(formula(paste0("mov_estudiantil~",h12,"+(1|idencuesta)")),data = df_study1, weights = ponderador_long_total)
+```
+
+## Main effects
+
+```{r results='asis'}
+ccoef <- list(
+  "(Intercept)" = "Intercept",
+  "ola2" = "2017",
+  "ola3" = "2018",
+  "ola4" = "2019",
+  "ola5" = "2021",
+  "ola6" = "2022",
+  "ola7" = "2023",
+  "edadBetween 29 and 45" = "Between 29 and 45",
+  "edadBetween 24 and 28" = "Between 24 and 28",
+  "edadBetween 18 and 23" = "Between 18 and 23",
+  "sexoWoman" = "Woman (Ref.= Man)",
+  "educTechnical" = "Technical",
+  "educUniversity or more" = "University or more",
+  "pos_idCenter" = "Center",
+  "pos_idRight" = "Right",
+  "pos_idDoesn't identify" = "Doesn't identify"
+  )
+
+texreg::knitreg(list(marchar1, marchar2, marchar3, marchar4, marchar5),
+               custom.model.names = c(paste0("Model ", seq(1:5))),
+               caption.above = T,
+               caption = NULL,
+               stars = c(0.05, 0.01, 0.001),
+               custom.coef.map = ccoef,
+               digits = 2,
+               groups = list("Wave (Ref.= 2016)" = 2:7,
+                             "Age (Ref.= More than 45)" = 8:10,
+                             "Education (Ref.= Secondary)" = 12:13,
+                             "Political position (Ref.= Left)" = 14:16),
+               custom.note = "Note: Cells contain regression coefficients with standard errors in parentheses. \n %stars.",
+               leading.zero = T,
+               use.packages = F,
+               booktabs = F,
+               scalebox = 0.80,
+               include.loglik = FALSE,
+               include.aic = FALSE,
+               center = T,
+               custom.gof.names = c("BIC", "Numb. obs.", "Num. groups: individuals", "Var: individuals (Intercept)", "Var: Residual")
+               )
+```
+
+## Interaction effects
+
+```{r results='asis'}
+ccoef2 <- list(
+  "(Intercept)" = "Intercept",
+  "ola2:edadBetween 29 and 45" = "2017*Age 29-45",
+  "ola3:edadBetween 29 and 45" = "2018*Age 29-45",
+  "ola4:edadBetween 29 and 45" = "2019*Age 29-45",
+  "ola5:edadBetween 29 and 45" = "2021*Age 29-45",
+  "ola6:edadBetween 29 and 45" = "2022*Age 29-45",
+  "ola7:edadBetween 29 and 45" = "2023*Age 29-45",
+  "ola2:edadBetween 24 and 28" = "2017*Age 24-28",
+  "ola3:edadBetween 24 and 28" = "2018*Age 24-28",
+  "ola4:edadBetween 24 and 28" = "2019*Age 24-28",
+  "ola5:edadBetween 24 and 28" = "2021*Age 24-28",
+  "ola6:edadBetween 24 and 28" = "2022*Age 24-28",
+  "ola7:edadBetween 24 and 28" = "2023*Age 24-28",
+  "ola2:edadBetween 18 and 23" = "2017*Age 18-23",
+  "ola3:edadBetween 18 and 23" = "2018*Age 18-23",
+  "ola4:edadBetween 18 and 23" = "2019*Age 18-23",
+  "ola5:edadBetween 18 and 23" = "2021*Age 18-23",
+  "ola6:edadBetween 18 and 23" = "2022*Age 18-23",
+  "ola7:edadBetween 18 and 23" = "2023*Age 18-23",
+  "ola2:sexoWoman" = "2017*Woman",
+  "ola3:sexoWoman" = "2018*Woman",
+  "ola4:sexoWoman" = "2019*Woman",
+  "ola5:sexoWoman" = "2021*Woman",
+  "ola6:sexoWoman" = "2022*Woman",
+  "ola7:sexoWoman" = "2023*Woman",
+  "ola2:educTechnical" = "2017*Technical",
+  "ola3:educTechnical" = "2018*Technical",
+  "ola4:educTechnical" = "2019*Technical",
+  "ola5:educTechnical" = "2021*Technical",
+  "ola6:educTechnical" = "2022*Technical",
+  "ola7:educTechnical" = "2023*Technical",
+  "ola2:educUniversity or more" = "2017*University",
+  "ola3:educUniversity or more" = "2018*University",
+  "ola4:educUniversity or more" = "2019*University",
+  "ola5:educUniversity or more" = "2021*University",
+  "ola6:educUniversity or more" = "2022*University",
+  "ola7:educUniversity or more" = "2023*University",
+  "ola2:pos_idCenter" = "2017*Center",
+  "ola3:pos_idCenter" = "2018*Center",
+  "ola4:pos_idCenter" = "2019*Center",
+  "ola5:pos_idCenter" = "2021*Center",
+  "ola6:pos_idCenter" = "2022*Center",
+  "ola7:pos_idCenter" = "2023*Center",
+  "ola2:pos_idRight" = "2017*Right",
+  "ola3:pos_idRight" = "2018*Right",
+  "ola4:pos_idRight" = "2019*Right",
+  "ola5:pos_idRight" = "2021*Right",
+  "ola6:pos_idRight" = "2022*Right",
+  "ola7:pos_idRight" = "2023*Right",
+  "ola2:pos_idDoesn't identify" = "2017*Doesn't identify",
+  "ola3:pos_idDoesn't identify" = "2018*Doesn't identify",
+  "ola4:pos_idDoesn't identify" = "2019*Doesn't identify",
+  "ola5:pos_idDoesn't identify" = "2021*Doesn't identify",
+  "ola6:pos_idDoesn't identify" = "2022*Doesn't identify",
+  "ola7:pos_idDoesn't identify" = "2023*Doesn't identify",
+  "pos_idCenter:edadBetween 29 and 45" = "Center*Age 29-45",
+  "pos_idRight:edadBetween 29 and 45" = "Right*Age 29-45",
+  "pos_idDoesn't identify:edadBetween 29 and 45" = "Doesn't identify * Age 29-45",
+  "pos_idCenter:edadBetween 29 and 45" = "Center*Age 24-28",
+  "pos_idRight:edadBetween 29 and 45" = "Right*Age 24-28",
+  "pos_idDoesn't identify:edadBetween 29 and 45" = "Doesn't identify * Age 24-28",
+  "pos_idCenter:edadBetween 29 and 45" = "Center*Age 18-23",
+  "pos_idRight:edadBetween 29 and 45" = "Right*Age 18-23",
+  "pos_idDoesn't identify:edadBetween 29 and 45" = "Doesn't identify * Age 18-23",
+  "ola2:pos_idCenter:edadBetween 29 and 45" = "2017 * Center * Age 29-45",
+  "ola3:pos_idCenter:edadBetween 29 and 45" = "2018 * Center * Age 29-45",
+  "ola4:pos_idCenter:edadBetween 29 and 45" = "2019 * Center * Age 29-45",
+  "ola5:pos_idCenter:edadBetween 29 and 45" = "2021 * Center * Age 29-45",
+  "ola6:pos_idCenter:edadBetween 29 and 45" = "2022 * Center * Age 29-45",
+  "ola7:pos_idCenter:edadBetween 29 and 45" = "2023 * Center * Age 29-45",
+  "ola2:pos_idRight:edadBetween 29 and 45" = "2017 * Right * Age 29-45",
+  "ola3:pos_idRight:edadBetween 29 and 45" = "2018 * Right * Age 29-45",
+  "ola4:pos_idRight:edadBetween 29 and 45" = "2019 * Right * Age 29-45",
+  "ola5:pos_idRight:edadBetween 29 and 45" = "2021 * Right * Age 29-45",
+  "ola6:pos_idRight:edadBetween 29 and 45" = "2022 * Right * Age 29-45",
+  "ola7:pos_idRight:edadBetween 29 and 45" = "2023 * Right * Age 29-45",
+  "ola2:pos_idDoesn't identify:edadBetween 29 and 45" = "2017 * Doesn't identify * Age 29-45",
+  "ola3:pos_idDoesn't identify:edadBetween 29 and 45" = "2018 * Doesn't identify * Age 29-45",
+  "ola4:pos_idDoesn't identify:edadBetween 29 and 45" = "2019 * Doesn't identify * Age 29-45",
+  "ola5:pos_idDoesn't identify:edadBetween 29 and 45" = "2021 * Doesn't identify * Age 29-45",
+  "ola6:pos_idDoesn't identify:edadBetween 29 and 45" = "2022 * Doesn't identify * Age 29-45",
+  "ola7:pos_idDoesn't identify:edadBetween 29 and 45" = "2023 * Doesn't identify * Age 29-45",
+  "ola2:pos_idCenter:edadBetween 24 and 28" = "2017 * Center * Age 24-28",
+  "ola3:pos_idCenter:edadBetween 24 and 28" = "2018 * Center * Age 24-28",
+  "ola4:pos_idCenter:edadBetween 24 and 28" = "2019 * Center * Age 24-28",
+  "ola5:pos_idCenter:edadBetween 24 and 28" = "2021 * Center * Age 24-28",
+  "ola6:pos_idCenter:edadBetween 24 and 28" = "2022 * Center * Age 24-28",
+  "ola7:pos_idCenter:edadBetween 24 and 28" = "2023 * Center * Age 24-28",
+  "ola2:pos_idRight:edadBetween 24 and 28" = "2017 * Right * Age 24-28",
+  "ola3:pos_idRight:edadBetween 24 and 28" = "2018 * Right * Age 24-28",
+  "ola4:pos_idRight:edadBetween 24 and 28" = "2019 * Right * Age 24-28",
+  "ola5:pos_idRight:edadBetween 24 and 28" = "2021 * Right * Age 24-28",
+  "ola6:pos_idRight:edadBetween 24 and 28" = "2022 * Right * Age 24-28",
+  "ola7:pos_idRight:edadBetween 24 and 28" = "2023 * Right * Age 24-28",
+  "ola2:pos_idDoesn't identify:edadBetween 24 and 28" = "2017 * Doesn't identify * Age 24-28",
+  "ola3:pos_idDoesn't identify:edadBetween 24 and 28" = "2018 * Doesn't identify * Age 24-28",
+  "ola4:pos_idDoesn't identify:edadBetween 24 and 28" = "2019 * Doesn't identify * Age 24-28",
+  "ola5:pos_idDoesn't identify:edadBetween 24 and 28" = "2021 * Doesn't identify * Age 24-28",
+  "ola6:pos_idDoesn't identify:edadBetween 24 and 28" = "2022 * Doesn't identify * Age 24-28",
+  "ola7:pos_idDoesn't identify:edadBetween 24 and 28" = "2023 * Doesn't identify * Age 24-28",
+  "ola2:pos_idCenter:edadBetween 18 and 23" = "2017 * Center * Age 18-23",
+  "ola3:pos_idCenter:edadBetween 18 and 23" = "2018 * Center * Age 18-23",
+  "ola4:pos_idCenter:edadBetween 18 and 23" = "2019 * Center * Age 18-23",
+  "ola5:pos_idCenter:edadBetween 18 and 23" = "2021 * Center * Age 18-23",
+  "ola6:pos_idCenter:edadBetween 18 and 23" = "2022 * Center * Age 18-23",
+  "ola7:pos_idCenter:edadBetween 18 and 23" = "2023 * Center * Age 18-23",
+  "ola2:pos_idRight:edadBetween 18 and 23" = "2017 * Right * Age 18-23",
+  "ola3:pos_idRight:edadBetween 18 and 23" = "2018 * Right * Age 18-23",
+  "ola4:pos_idRight:edadBetween 18 and 23" = "2019 * Right * Age 18-23",
+  "ola5:pos_idRight:edadBetween 18 and 23" = "2021 * Right * Age 18-23",
+  "ola6:pos_idRight:edadBetween 18 and 23" = "2022 * Right * Age 18-23",
+  "ola7:pos_idRight:edadBetween 18 and 23" = "2023 * Right * Age 18-23",
+  "ola2:pos_idDoesn't identify:edadBetween 18 and 23" = "2017 * Doesn't identify * Age 18-23",
+  "ola3:pos_idDoesn't identify:edadBetween 18 and 23" = "2018 * Doesn't identify * Age 18-23",
+  "ola4:pos_idDoesn't identify:edadBetween 18 and 23" = "2019 * Doesn't identify * Age 18-23",
+  "ola5:pos_idDoesn't identify:edadBetween 18 and 23" = "2021 * Doesn't identify * Age 18-23",
+  "ola6:pos_idDoesn't identify:edadBetween 18 and 23" = "2022 * Doesn't identify * Age 18-23",
+  "ola7:pos_idDoesn't identify:edadBetween 18 and 23" = "2023 * Doesn't identify * Age 18-23",
+  "educTechnical:edadBetween 29 and 45" = "Technical * Age 29-45",
+  "educUniversity or more:edadBetween 29 and 45" = "University * Age 29-45",
+  "educTechnical:edadBetween 24 and 28" = "Technical * Age 24-28",
+  "educUniversity or more:edadBetween 24 and 28" = "University * Age 24-28",
+  "educTechnical:edadBetween 18 and 23" = "Technical * Age 18-23",
+  "educUniversity or more:edadBetween 18 and 23" = "University * Age 18-23",
+  "ola2:educTechnical:edadBetween 29 and 45" = "2017 * Technical * Age 29-45",
+  "ola3:educTechnical:edadBetween 29 and 45" = "2018 * Technical * Age 29-45",
+  "ola4:educTechnical:edadBetween 29 and 45" = "2019 * Technical * Age 29-45",
+  "ola5:educTechnical:edadBetween 29 and 45" = "2021 * Technical * Age 29-45",
+  "ola6:educTechnical:edadBetween 29 and 45" = "2022 * Technical * Age 29-45",
+  "ola7:educTechnical:edadBetween 29 and 45" = "2023 * Technical * Age 29-45",
+  "ola2:educUniversity or more:edadBetween 29 and 45" = "2017 * University * Age 29-45",
+  "ola3:educUniversity or more:edadBetween 29 and 45" = "2018 * University * Age 29-45",
+  "ola4:educUniversity or more:edadBetween 29 and 45" = "2019 * University * Age 29-45",
+  "ola5:educUniversity or more:edadBetween 29 and 45" = "2021 * University * Age 29-45",
+  "ola6:educUniversity or more:edadBetween 29 and 45" = "2022 * University * Age 29-45",
+  "ola7:educUniversity or more:edadBetween 29 and 45" = "2023 * University * Age 29-45",
+  "ola2:educTechnical:edadBetween 24 and 28" = "2017 * Technical * Age 24-28",
+  "ola3:educTechnical:edadBetween 24 and 28" = "2018 * Technical * Age 24-28",
+  "ola4:educTechnical:edadBetween 24 and 28" = "2019 * Technical * Age 24-28",
+  "ola5:educTechnical:edadBetween 24 and 28" = "2021 * Technical * Age 24-28",
+  "ola6:educTechnical:edadBetween 24 and 28" = "2022 * Technical * Age 24-28",
+  "ola7:educTechnical:edadBetween 24 and 28" = "2023 * Technical * Age 24-28",
+  "ola2:educUniversity or more:edadBetween 24 and 28" = "2017 * University * Age 24-28",
+  "ola3:educUniversity or more:edadBetween 24 and 28" = "2018 * University * Age 24-28",
+  "ola4:educUniversity or more:edadBetween 24 and 28" = "2019 * University * Age 24-28",
+  "ola5:educUniversity or more:edadBetween 24 and 28" = "2021 * University * Age 24-28",
+  "ola6:educUniversity or more:edadBetween 24 and 28" = "2022 * University * Age 24-28",
+  "ola7:educUniversity or more:edadBetween 24 and 28" = "2023 * University * Age 24-28",
+  "ola2:educTechnical:edadBetween 18 and 23" = "2017 * Technical * Age 18-23",
+  "ola3:educTechnical:edadBetween 18 and 23" = "2018 * Technical * Age 18-23",
+  "ola4:educTechnical:edadBetween 18 and 23" = "2019 * Technical * Age 18-23",
+  "ola5:educTechnical:edadBetween 18 and 23" = "2021 * Technical * Age 18-23",
+  "ola6:educTechnical:edadBetween 18 and 23" = "2022 * Technical * Age 18-23",
+  "ola7:educTechnical:edadBetween 18 and 23" = "2023 * Technical * Age 18-23",
+  "ola2:educUniversity or more:edadBetween 18 and 23" = "2017 * University * Age 18-23",
+  "ola3:educUniversity or more:edadBetween 18 and 23" = "2018 * University * Age 18-23",
+  "ola4:educUniversity or more:edadBetween 18 and 23" = "2019 * University * Age 18-23",
+  "ola5:educUniversity or more:edadBetween 18 and 23" = "2021 * University * Age 18-23",
+  "ola6:educUniversity or more:edadBetween 18 and 23" = "2022 * University * Age 18-23",
+  "ola7:educUniversity or more:edadBetween 18 and 23" = "2023 * University * Age 18-23",
+  "sexoWoman:edadBetween 29 and 45" = "Woman * Age 29-45",
+  "sexoWoman:edadBetween 29 and 45" = "Woman * Age 24-28",
+  "sexoWoman:edadBetween 29 and 45" = "Woman * Age 18-23",
+  "ola2:sexoWoman:edadBetween 29 and 45" = "2017 * Woman * Age 29-45",
+  "ola3:sexoWoman:edadBetween 29 and 45" = "2018 * Woman * Age 29-45",
+  "ola4:sexoWoman:edadBetween 29 and 45" = "2019 * Woman * Age 29-45",
+  "ola5:sexoWoman:edadBetween 29 and 45" = "2021 * Woman * Age 29-45",
+  "ola6:sexoWoman:edadBetween 29 and 45" = "2022 * Woman * Age 29-45",
+  "ola7:sexoWoman:edadBetween 29 and 45" = "2023 * Woman * Age 29-45",
+  "ola2:sexoWoman:edadBetween 24 and 28" = "2017 * Woman * Age 24-28",
+  "ola3:sexoWoman:edadBetween 24 and 28" = "2018 * Woman * Age 24-28",
+  "ola4:sexoWoman:edadBetween 24 and 28" = "2019 * Woman * Age 24-28",
+  "ola5:sexoWoman:edadBetween 24 and 28" = "2021 * Woman * Age 24-28",
+  "ola6:sexoWoman:edadBetween 24 and 28" = "2022 * Woman * Age 24-28",
+  "ola7:sexoWoman:edadBetween 24 and 28" = "2023 * Woman * Age 24-28",
+  "ola2:sexoWoman:edadBetween 18 and 23" = "2017 * Woman * Age 18-23",
+  "ola3:sexoWoman:edadBetween 18 and 23" = "2018 * Woman * Age 18-23",
+  "ola4:sexoWoman:edadBetween 18 and 23" = "2019 * Woman * Age 18-23",
+  "ola5:sexoWoman:edadBetween 18 and 23" = "2021 * Woman * Age 18-23",
+  "ola6:sexoWoman:edadBetween 18 and 23" = "2022 * Woman * Age 18-23",
+  "ola7:sexoWoman:edadBetween 18 and 23" = "2023 * Woman * Age 18-23"
+  )
+
+texreg::knitreg(list(marchar6, marchar7, marchar8, marchar9, marchar10, marchar11,marchar12),
+               custom.model.names = c(paste0("Model ", seq(6:12))),
+               caption.above = T,
+               caption = NULL,
+               stars = c(0.05, 0.01, 0.001),
+               custom.coef.map = ccoef2,
+               digits = 2,
+               custom.note = "Note: Cells contain regression coefficients with standard errors in parentheses. \n %stars.",
+               leading.zero = T,
+               use.packages = F,
+               booktabs = F,
+               scalebox = 0.80,
+               include.loglik = FALSE,
+               include.aic = FALSE,
+               center = T,
+               custom.gof.names = c("BIC", "Numb. obs.", "Num. groups: individuals", "Var: individuals (Intercept)", "Var: Residual"))
+```
+
+### Resume table
+
+```{r}
+betas <- marchar12@beta                           # Coeficientes
+vcov_mat <- as.matrix(vcov(marchar12))              # Matriz de varianzas-covarianzas
+ses <- sqrt(diag(vcov_mat))                         # Errores estándar
+tvals <- betas / ses                              # Valores t
+
+ses <- ses[44:61]
+betas <- betas[44:61]
+tvals <- tvals[44:61]
+
+pvals <- 2 * pnorm(-abs(tvals))  # Aproximación tipo Wald (z-score)
+
+signif_stars <- ifelse(pvals <= 0.001, "***",
+                 ifelse(pvals <= 0.01, "**",
+                 ifelse(pvals <= 0.05, "*", "")))
+
+olasexoedad<-data.frame(
+  Estimate = betas,
+  Signif = signif_stars
+)
+
+betas <- marchar11@beta                          # Coeficientes
+vcov_mat <- as.matrix(vcov(marchar11))              # Matriz de varianzas-covarianzas
+ses <- sqrt(diag(vcov_mat))                         # Errores estándar
+tvals <- betas / ses                              # Valores t
+
+ses <- ses[53:88]
+betas <- betas[53:88]
+tvals <- tvals[53:88]
+
+pvals <- 2 * pnorm(-abs(tvals))  # Aproximación tipo Wald (z-score)
+
+signif_stars <- ifelse(pvals <= 0.001, "***",
+                 ifelse(pvals <= 0.01, "**",
+                 ifelse(pvals <= 0.05, "*", "")))
+
+olaeducedad<-data.frame(
+  Estimate = betas,
+  Signif = signif_stars
+)
+
+betas <- marchar10@beta                          # Coeficientes
+vcov_mat <- as.matrix(vcov(marchar10))              # Matriz de varianzas-covarianzas
+ses <- sqrt(diag(vcov_mat))                         # Errores estándar
+tvals <- betas / ses                              # Valores t
+
+ses <- ses[62:115]
+betas <- betas[62:115]
+tvals <- tvals[62:115]
+
+pvals <- 2 * pnorm(-abs(tvals))  # Aproximación tipo Wald (z-score)
+
+signif_stars <- ifelse(pvals <= 0.001, "***",
+                 ifelse(pvals <= 0.01, "**",
+                 ifelse(pvals <= 0.05, "*", "")))
+
+olapospoledad<-data.frame(
+  Estimate = betas,
+  Signif = signif_stars
+)
+
+# Woman (olasexoedad)
+woman_idx <- c(1, 7, 13, 2, 8, 14, 3, 9, 15, 4, 10, 16, 5, 11, 17, 6, 12, 18)
+
+# Technical (olaeducedad)
+technical_idx <- c(1, 13, 25, 2, 14, 26, 3, 15, 27, 4, 16, 28, 5, 17, 29, 6, 18, 30)
+
+# University (olaeducedad)
+university_idx <- c(7, 19, 31, 8, 20, 32, 9, 21, 33, 10, 22, 34, 11, 23, 35, 12, 24, 36)
+
+# Edad 29–45 → posiciones: 1, 19, 37, 2, 20, 38, 3, 21, 39, ...
+center_idx <- c(1, 19, 37, 2, 20, 38, 3, 21, 39, 4, 22, 40, 5, 23, 41, 6, 24, 42)
+right_idx  <- c(7, 25, 43, 8, 26, 44, 9, 27, 45,10, 28, 46,11, 29, 47,12, 30, 48)
+dni_idx    <- c(13, 31, 49,14, 32, 50,15, 33, 51,16, 34, 52,17, 35, 53,18, 36, 54)
+
+
+
+
+tabla <- cbind(
+  Year = c("2017", "2017", "2017", 
+          "2018", "2018", "2018",
+          "2019", "2019", "2019",
+          "2021", "2021", "2021", 
+          "2022", "2022", "2022", 
+          "2023", "2023", "2023"),
+  Age = rep(c("29–45", "24–28", "18–23"), times = 6),
+  Woman = paste0(round(olasexoedad$Estimate[woman_idx], 2), olasexoedad$Signif[woman_idx]),
+  Technical = paste0(round(olaeducedad$Estimate[technical_idx], 2), olaeducedad$Signif[technical_idx]),
+  University = paste0(round(olaeducedad$Estimate[university_idx], 2), olaeducedad$Signif[university_idx]),
+  Center = paste0(round(olapospoledad$Estimate[center_idx], 2), olapospoledad$Signif[center_idx]),
+  Right = paste0(round(olapospoledad$Estimate[right_idx], 2), olapospoledad$Signif[right_idx]),
+  `Doesnt Identify` = paste0(round(olapospoledad$Estimate[dni_idx], 2), olapospoledad$Signif[dni_idx])
+)
+```
+
+```{r}
+kbl(tabla, 
+    align = "c") %>% 
+    add_header_above(c(" " = 3,
+                     "Education"=2, 
+                     "Political position"=3),
+                   bold = T)%>%  
+  kable_paper("hover",full_width = F) %>%
+     column_spec(1, bold = T) %>%
+     collapse_rows(columns = 1, valign = "middle") %>% 
+  footnote("***p < 0.001; **p < 0.01; *p < 0.05.")
+```
+
+## Interaction effects graphs
+
+- Support to student’s social movement and age
+
+```{r}
+preds <- ggpredict(marchar6, terms = c("ola", "edad"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+ # facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Support for the student movement",
+    color = "Age"
+  ) +
+  ylim(0, 1) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Support to student’s social movement and sex
+
+```{r}
+preds <- ggpredict(marchar7, terms = c("ola", "sexo"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+ # facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Support for the student movement",
+    color = "Sex"
+  ) +
+  ylim(0, 1) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Support to student’s social movement, age and sex
+
+```{r}
+preds <- ggpredict(marchar12, terms = c("ola", "edad", "sexo"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Support for the student movement",
+    color = "Age"
+  ) +
+  ylim(0, 1) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Support to student’s social movement and education
+
+```{r}
+preds <- ggpredict(marchar8, terms = c("ola", "educ"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+#  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Support for the student movement",
+    color = "Education"
+  ) +
+  ylim(0, 1) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Support to student’s social movement, age and education
+
+```{r}
+preds <- ggpredict(marchar11, terms = c("ola", "edad", "educ"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 3) +
+  labs(
+    x = "Year",
+    y = "Support for the student movement",
+    color = "Age"
+  ) +
+  ylim(0, 1) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Support to student’s social movement and political position
+
+```{r}
+preds <- ggpredict(marchar9, terms = c("ola", "pos_id"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+#  facet_wrap(~ facet, ncol = 3) +
+  labs(
+    x = "Year",
+    y = "Support for the student movement",
+    color = "Political position"
+  ) +
+  ylim(0, 1) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+- Support to student’s social movement, age and political position
+
+```{r}
+preds <- ggpredict(marchar10, terms = c("ola", "edad", "pos_id"))
+
+ggplot(preds, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  facet_wrap(~ facet, ncol = 2) +
+  labs(
+    x = "Year",
+    y = "Support for the student movement",
+    color = "edad"
+  ) +
+  ylim(-0.3, 1) +
+  scale_x_discrete(labels = waves) + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
